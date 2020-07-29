@@ -4,9 +4,9 @@ SmartChordGen 智弦	2.0 读我文件
 
 程序作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
 
-[1 - 第一作者] 陈文戈（星海音乐学院）：知乎：https://www.zhihu.com/people/musiclxzmr ，网易云音乐：https://music.163.com/#/artist?id=28612174
-
 [1 - 第一作者] 沈智云（清华大学）：知乎：https://www.zhihu.com/people/shen-zhi-yun-66 ，网易云音乐：https://music.163.com/#/user/home?id=503598921
+
+[1 - 第一作者] 陈文戈（星海音乐学院）：知乎：https://www.zhihu.com/people/musiclxzmr ，网易云音乐：https://music.163.com/#/artist?id=28612174
 
 
 （此版本程序为开源，遵循 GNU GPLv3 许可协议；功能更完善的商业应用版本请见文末。）
