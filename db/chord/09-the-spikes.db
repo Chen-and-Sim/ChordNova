@@ -1,0 +1,26 @@
+// SmartChordGen Chord Database
+// (c) 2020 Ji-woon Sim.
+// Database begins below.
+title_en = The spikes
+title_ch = 尖锐刺耳
+0 1 2
+0 1 3
+0 2 3
+0 1 2 3
+0 1 2 4
+0 1 3 4
+0 1 3 5
+0 2 3 4
+0 2 3 5
+0 2 4 5
+0 1 2 3 4
+0 1 2 3 5
+0 1 2 4 5
+0 1 2 4 6
+0 1 3 4 5
+0 1 3 4 6
+0 1 3 5 6
+0 2 3 4 5
+0 2 3 4 6
+0 2 3 5 6
+0 2 4 5 6
