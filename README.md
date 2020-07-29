@@ -1,4 +1,4 @@
-【★本文字版README文件不含主界面截图，请前往README.pdf】
+[ 太长不看：运行软件请打开 \bin\SmartChordGen.exe ；聆听示例音乐请打开 \samples\ 。 ]
 
 SmartChordGen 智弦	2.0 读我文件
 
