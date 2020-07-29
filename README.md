@@ -1,4 +1,4 @@
-[ 太长不看：运行软件请打开 \bin\SmartChordGen.exe ；聆听示例音乐请打开 \samples\ 。 ]
+[ 太长不看：运行软件请打开 \bin\SmartChordGen.exe ；聆听示例音乐请打开 \samples\ 。本软件免费开源，另将推出两个功能更完善的商业版本，售价分别为 RMB 39 和 RMB 99。 ]
 
 SmartChordGen 智弦	2.0 读我文件
 
