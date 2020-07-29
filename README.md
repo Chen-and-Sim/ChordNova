@@ -2,21 +2,9 @@
 
 SmartChordGen 智弦	2.0 读我文件
 
-程序作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
-
-[1 - 第一作者] 沈智云（清华大学）：知乎：https://www.zhihu.com/people/shen-zhi-yun-66 ，网易云音乐：https://music.163.com/#/user/home?id=503598921
-
-[1 - 第一作者] 陈文戈（星海音乐学院）：
-微信号：rcswex   QQ：925792714
-知乎：https://www.zhihu.com/people/musiclxzmr
-微博：https://weibo.com/musiclxzmr/
-网易云音乐：https://music.163.com/#/artist?id=28612174
-哔哩哔哩（bilibili）：https://space.bilibili.com/10348238
-YouTube：https://www.youtube.com/channel/UCdbMvB-jKxMalA0b1NwWFaQ
-
+程序作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试） - 联系方式见文末
 
 （此版本程序为开源，遵循 GNU GPLv3 许可协议；功能更完善的商业应用版本请见文末。）
-
 
 
 智弦（SmartChordGen）是清华大学沈智云和星海音乐学院陈文戈共同开发的一款功能强大的和弦进行自动生成软件。该软件是对当代和声理论的“集大成” ，支持十二平均律下10项筛选指标、40余项详细参数，支持MIDI文件输出，并提供一系列和弦库、排列库和预设。目前的最新版本是2.0，在 https://github.com/Chen-and-Sim/SmartChordGen 提供开源下载。
@@ -50,6 +38,19 @@ YouTube：https://www.youtube.com/channel/UCdbMvB-jKxMalA0b1NwWFaQ
 智弦作曲伴侣+ Composer Companion Plus    |  售价：RMB 99
 
 Composer Companion Plus是在Composer Companion的基础上支持微分音（小于半音的任意频率音），同时支持导入Scala音阶（.scl）文件和带弯音的MIDI文件。
+
+
+作者联系方式：
+
+[1 - 第一作者] 沈智云（清华大学）：知乎：https://www.zhihu.com/people/shen-zhi-yun-66 ，网易云音乐：https://music.163.com/#/user/home?id=503598921
+
+[1 - 第一作者] 陈文戈（星海音乐学院）：
+微信号：rcswex   QQ：925792714
+知乎：https://www.zhihu.com/people/musiclxzmr
+微博：https://weibo.com/musiclxzmr/
+网易云音乐：https://music.163.com/#/artist?id=28612174
+哔哩哔哩（bilibili）：https://space.bilibili.com/10348238
+YouTube：https://www.youtube.com/channel/UCdbMvB-jKxMalA0b1NwWFaQ
 
 
 
