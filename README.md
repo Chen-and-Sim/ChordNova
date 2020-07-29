@@ -2,7 +2,7 @@ GitHub：最新 Release：版本 2.0.0730 下载→
 
 # [ 太长不看：运行软件请打开 \bin\SmartChordGen.exe ；聆听示例音乐请打开 \samples\ 。本软件免费开源（\source\，以 GNU GPLv3 协议共享）；另将推出两个功能更完善的商业版本，售价分别为 RMB 39 和 RMB 99。 ]
 
-# SmartChordGen 智弦 2.0
+# SmartChordGen 智弦  2.0
 
 # 程序作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试） - 联系方式见文末
 
