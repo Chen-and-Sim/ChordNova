@@ -82,6 +82,5 @@ Composer Companion Plus是在Composer Companion的基础上支持微分音（小
 2020-06-22：智弦SmartChordGen 1.0 [1.0.0622]（命令行界面的“最原始版本”）。
 2020-07-02：智弦SmartChordGen 1.5 [1.5.0702]（加入主程序的辅助工具 —— ultilities文件夹）。
 （※注：1系列版本为只有命令行界面的版本，2.0版本已包含其全部功能，因此这些版本已淘汰，不作发行。）
-2020-07-19：智弦SmartChordGen 2.0 alpha [2.0.0719]（具备GUI图形界面）。
-2020-07-21：智弦SmartChordGen 2.0 beta [2.0.0721]（完善功能并修正了一些bug）。
+2020-07-21：智弦SmartChordGen 2.0 beta [2.0.0721]（具备GUI图形界面；完善功能并修正了一些bug）。
 2020-07-30：智弦SmartChordGen 2.0 正式版 [2.0.0730]（GitHub开源正式发布的版本）。
