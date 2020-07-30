@@ -64,4 +64,5 @@ sv: min = 4; max = 12;
 R: min = 0; max = 11;
 H: min = 0; max = 50;
 G: min = 0; max = 70;
+X: min = 0; max = 100;
 sort order = KTCSG;
