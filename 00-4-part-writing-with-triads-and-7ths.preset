@@ -1,0 +1,68 @@
+// SmartChordGen Preset File
+// Preset data begins below.
+title_en = 4-part writing with triads and 7ths;
+title_ch = 四部和声（使用三、七和弦）;
+language = Chinese;
+
+output name = 00-4-part-writing-with-triads-and-7ths;
+output mode = continual;
+output format = Both;
+
+number of progressions = 50;
+number of parts: min = 3; max = 4;
+number of notes: min = 3; max = 4;
+keep number of parts unchanged = false;
+ditto = true;
+
+chord database filename = 13-basic-triads-and-7ths.db;
+title of chord database (English) = Basic triads and 7ths;
+title of chord database (Chinese) = 基础三、七和弦;
+size of chord database = 11;
+
+range of notes: min = 40; max = 76;
+overall scale = [0 1 2 3 4 6 8 9 11];
+enable pedal = false;
+enable more rules = true;
+
+input mode = automatic;
+connect pedal notes = false;
+interlace = false;
+unique mode = RemoveDup;
+
+omission for 3-note chords = [];
+omission for 4-note chords = [5];
+omission for 5-note chords = [3 5];
+omission for 6-note chords = [];
+omission for 7-note chords = [];
+
+bass note allowed = [1 3 5];
+
+align mode = Interval;
+intervals: i_low = 7; i_high = 11; i_min = 3; i_max = 9;
+
+in bass = true;
+pedal notes = [];
+realign = false;
+period = 4;
+
+voice leading setting = Number;
+enable steady voices = false;
+enable ascending voices = true;
+enable descending voices = true;
+steady voices: min = 0; max = 15;
+ascending voices: min = 1; max = 3;
+descending voices: min = 1; max = 3;
+range of voice leading: custom = true; min = 0; max = 6;
+custom root movement = false;
+custom exclusion = true;
+exclusion = \1 \13 \25 \37 74 72;
+
+K: min = 30; max = 70;
+T: min = 0; max = 60;
+C: min = 0; max = 2;
+sv: min = 4; max = 12;
+R: min = 0; max = 11;
+H: min = 0; max = 50;
+G: min = 0; max = 70;
+X: min = 0; max = 100;
+sort order = KTCSG;
