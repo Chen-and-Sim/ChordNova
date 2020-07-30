@@ -22,7 +22,7 @@ size of chord database = 15;
 range of notes: min = 48; max = 76;
 overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
 enable pedal = false;
-enable more rules = false;
+enable more rules = true;
 
 input mode = automatic;
 connect pedal notes = true;
@@ -55,12 +55,14 @@ descending voices: min = 0; max = 4;
 range of voice leading: custom = false; min = 0; max = 4;
 custom root movement = false;
 custom exclusion = false;
+custom total voice leading = false;
 
-K: min = 30; max = 100;
+K: min = 0; max = 100;
 T: min = 0; max = 100;
 C: min = 0; max = 15;
 sv: min = 0; max = 2000;
 R: min = 0; max = 11;
 H: min = 0; max = 50;
 G: min = 0; max = 100;
-sort order = K;
+X: min = 0; max = 100;
+sort order = ;

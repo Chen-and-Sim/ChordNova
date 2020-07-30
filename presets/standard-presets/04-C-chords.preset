@@ -64,4 +64,5 @@ sv: min = 2; max = 12;
 R: min = 0; max = 0;
 H: min = 0; max = 12;
 G: min = 0; max = 100;
+X: min = 0; max = 100;
 sort order = CSR;

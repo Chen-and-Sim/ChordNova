@@ -64,4 +64,5 @@ sv: min = 0; max = 100;
 R: min = 0; max = 11;
 H: min = 0; max = 1;
 G: min = 12; max = 88;
+X: min = 0; max = 100;
 sort order = T+G+H;

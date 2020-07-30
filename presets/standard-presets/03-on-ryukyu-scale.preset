@@ -64,4 +64,5 @@ sv: min = 0; max = 2000;
 R: min = 0; max = 11;
 H: min = 0; max = 50;
 G: min = 16; max = 83;
+X: min = 0; max = 100;
 sort order = KCG;

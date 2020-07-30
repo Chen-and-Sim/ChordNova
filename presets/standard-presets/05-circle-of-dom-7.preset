@@ -68,4 +68,5 @@ sv: min = 7; max = 9;
 R: min = 0; max = 11;
 H: min = 0; max = 0;
 G: min = 0; max = 100;
+X: min = 0; max = 100;
 sort order = SHG;
