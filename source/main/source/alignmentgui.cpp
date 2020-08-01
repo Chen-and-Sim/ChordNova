@@ -11,14 +11,14 @@ void Interface::alignmentGui()
 	alignment_window -> setWindowFlag(Qt::Window, true);
 	alignment_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	if(language == Chinese)
-		alignment_window -> setFixedSize(500, 350);
-	else  alignment_window -> setFixedSize(640, 350);
+		alignment_window -> setFixedSize(500 * scale, 350 * _scale);
+	else  alignment_window -> setFixedSize(640 * scale, 350 * _scale);
 	QStringList str0 = {"Set alignment", "设置排列方式"};
 	alignment_window -> setWindowTitle(str0[language]);
 	alignment_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(alignment_window);
-	grid -> setContentsMargins(20, 25, 20, 25);
+	grid -> setContentsMargins(20 * _scale, 25 * scale, 20 * _scale, 25 * scale);
 	grid -> setVerticalSpacing(15);
 
 	QStringList str1 = {"Custom alignment: ", "自定义排列："};
@@ -99,7 +99,7 @@ void Interface::alignmentGui()
 
 	QStringList str10 = {"Import alignment database file (.db)...", "载入排列类型库文件(.db)…"};
 	btn_align_db = new QPushButton(str10[language], alignment_window);
-	btn_align_db -> setMinimumHeight(25);
+	btn_align_db -> setMinimumHeight(25 * _scale);
 	hbox4 -> addWidget(btn_align_db, Qt::AlignLeft);
 	hbox4 -> setSpacing(10);
 	grid -> addLayout(hbox4, 4, 1, Qt::AlignLeft);

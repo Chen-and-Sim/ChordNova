@@ -18,16 +18,16 @@ void Interface::moreParamGui()
 	more_param_window -> setWindowFlag(Qt::Window, true);
 	more_param_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	more_param_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
-	more_param_window -> setFixedSize(640, 540);
+	more_param_window -> setFixedSize(640 * scale, 540 * _scale);
 	QStringList str0 = {"Set more parameters and sort priorties", "更多指标设置及排序设置"};
 	more_param_window -> setWindowTitle(str0[language]);
 	more_param_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(more_param_window);
-	grid -> setContentsMargins(20, 30, 20, 20);
+	grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 20 * scale);
 	grid -> setColumnStretch(2, 0);
 	if(language == Chinese)
-		grid -> setHorizontalSpacing(20);
+		grid -> setHorizontalSpacing(20 * scale);
 
 	QStringList str1 = {"Range of parameters", "指 标 范 围"};
 	QLabel* label1 = new QLabel(str1[language], more_param_window);
@@ -58,8 +58,8 @@ void Interface::moreParamGui()
 												  "≤ 和弦的重复音加权厚度 (H) ≤"},
 												 {"≤                Geometric center of a chord (G%)               ≤",
 												  "≤     和弦的几何中心 (G%)    ≤"},
-												 {"≤               Similarity of adjacent chords (X%)               ≤",
-												  "≤     相邻和弦相似度 (X%)    ≤"},
+												 {"≤               Similarity of adjacent chords (X%)                ≤",
+												  "≤     相邻和弦相似度 (X%)     ≤"},
 												 {"Root movement in a progression (V)", "和弦进行的根音运动音程 (V)"} };
 	QStringList str3 = {"Ascending", "升序"};
 	for(int i = 0; i < _TOTAL; ++i)

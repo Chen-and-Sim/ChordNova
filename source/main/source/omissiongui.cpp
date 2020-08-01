@@ -10,14 +10,14 @@ void Interface::omissionGui()
 	omission_window -> setWindowModality(Qt::WindowModal);
 	omission_window -> setWindowFlag(Qt::Window, true);
 	omission_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
-	omission_window -> setFixedSize(640, 370);
+	omission_window -> setFixedSize(640 * scale, 370 * _scale);
 	QStringList str0 = {"Set omission", "设置省略音"};
 	omission_window -> setWindowTitle(str0[language]);
 	omission_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(omission_window);
-	grid -> setContentsMargins(20, 30, 20, 25);
-	grid -> setRowMinimumHeight(7, 40);
+	grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 25 * scale);
+	grid -> setRowMinimumHeight(7, 40 * _scale);
 	grid -> setVerticalSpacing(15);
 
 	QStringList str1[2] = { {"Root", "3rd",  "5th",  "7th", " 9th/2nd ",  " 11th/4th ", " 13th/6th "},
@@ -58,7 +58,7 @@ void Interface::omissionGui()
 							  "&nbsp;&nbsp;&nbsp;根音 = 0，三音 = 3或4，五音 = 7，七音 = 10或11，九（附二）音 = 1或2，<br>"
 							  "&nbsp;&nbsp;&nbsp;十一（附四）音 = 5或6，十三（附六）音 = 8或9。"};
 	QLabel* label3 = new QLabel(str3.arg(str4[language]), omission_window);
-	label3 -> setFixedHeight(120);
+	label3 -> setFixedHeight(120 * _scale);
 	grid -> addWidget(label3, 6, 0, 1, 8, Qt::AlignLeft);
 
 	QStringList str5 = {"OK", "确定"};

@@ -6,6 +6,19 @@
 
 Interface::Interface(QWidget* parent): QWidget(parent)
 {
+#if __WIN32
+	HWND wnd = ::GetDesktopWindow();
+	HDC dc = ::GetDC(wnd);
+	double PIXX = GetDeviceCaps(dc, LOGPIXELSX);
+	scale = PIXX / 96;
+	if(scale != 1)
+		_scale = scale * 0.93;
+	else _scale = 1;
+#else
+	scale = 1.0;
+	_scale = 1.0;
+#endif
+
 	root_path = QDir::currentPath();
 	root_path = root_path.left(root_path.size() - 4);
 	font = QFont("Microsoft YaHei", 9, QFont::Normal);
@@ -20,10 +33,10 @@ Interface::Interface(QWidget* parent): QWidget(parent)
 
 void Interface::mainGui()
 {
-	setFixedWidth(640);
+	setFixedWidth(640 * scale);
 	if(language == Chinese)
-		setFixedHeight(730);
-	else  setFixedHeight(755);
+		setFixedHeight(730 * _scale);
+	else  setFixedHeight(755 * _scale);
 
 	const int PARTS = 8;
 	QGridLayout** grid = new QGridLayout*[PARTS];
@@ -32,9 +45,9 @@ void Interface::mainGui()
 
 
 	{
-		grid[0] -> setHorizontalSpacing(10);
-		grid[0] -> setVerticalSpacing(5);
-		grid[0] -> setContentsMargins(10, 0, 10, 0);
+		grid[0] -> setHorizontalSpacing(10 * scale);
+		grid[0] -> setVerticalSpacing(5 * scale);
+		grid[0] -> setContentsMargins(10 * scale, 0, 10 * scale, 0);
 
 		QString str1 = "程序：清华大学 沈智云\nProgram by Ji-woon Sim    \n(Tsinghua University)";
 		QLabel* label1 = new QLabel(str1, this);
@@ -61,11 +74,11 @@ void Interface::mainGui()
 
 	{
 		grid[1] -> setVerticalSpacing(0);
-		grid[1] -> setHorizontalSpacing(5);
+		grid[1] -> setHorizontalSpacing(5 * scale);
 		grid[1] -> setColumnStretch(0, 0);
 		grid[1] -> setColumnStretch(1, 1);
-		grid[1] -> setColumnMinimumWidth(3, 87);
-		grid[1] -> setContentsMargins(20, 0, 20, 0);
+		grid[1] -> setColumnMinimumWidth(3, 87 * scale);
+		grid[1] -> setContentsMargins(20 * scale, 0, 20 * scale, 0);
 
 		QStringList str1 = {"Current preset file: ", "当前预设文件："};
 		label_preset_filename = new QLabel(str1[language], this);
@@ -84,9 +97,17 @@ void Interface::mainGui()
 		QStringList str4 = {"Save / Save as...", "保存/另存为…"};
 		QPushButton* btn1 = new QPushButton(str3[language], this);
 		QPushButton* btn2 = new QPushButton(str4[language], this);
+		btn1 -> setFont(QFont("Microsoft YaHei", 9, QFont::Bold));
 		if(language == English)
-			btn2 -> setFixedWidth(170);
-		else  btn2 -> setFixedWidth(138);
+		{
+			btn1 -> setFixedWidth(190 * scale);
+			btn2 -> setFixedWidth(190 * scale);
+		}
+		else
+		{
+			btn1 -> setFixedWidth(150 * scale);
+			btn2 -> setFixedWidth(150 * scale);
+		}
 		grid[1] -> addWidget(btn1, 0, 2, Qt::AlignRight);
 		grid[1] -> addWidget(btn2, 1, 2, Qt::AlignRight);
 		connect(btn1, &QPushButton::clicked, this, &Interface::import_preset);
@@ -108,7 +129,7 @@ void Interface::mainGui()
 	}
 
 	{
-		grid[2] -> setVerticalSpacing(5);
+		grid[2] -> setVerticalSpacing(5 * scale);
 		QStringList str1 = {"Output filename:\n(omit extension)", "输出文件名：\n（省略扩展名）"};
 		QLabel* label1 = new QLabel(str1[language], this);
 		label1 -> setAlignment(Qt::AlignRight);
@@ -158,7 +179,7 @@ void Interface::mainGui()
 		QPixmap pic = QPixmap("icons/go.png");
 		QAbstractButton* btn = new QToolButton(this);
 		btn -> setIcon(pic);
-		btn -> setIconSize(QSize(50, 50));
+		btn -> setIconSize(QSize(50 * scale, 50 * scale));
 		grid[2] -> addWidget(btn, 0, 4, 3, 1, Qt::AlignCenter);
 		connect(btn, &QPushButton::clicked, this, &Interface::run);
 	}
@@ -166,16 +187,16 @@ void Interface::mainGui()
 	{
 		if(language == English)
 		{
-			grid[3] -> setContentsMargins(0, 5, 0, 0);
-			grid[3] -> setColumnMinimumWidth(1, 50);
+			grid[3] -> setContentsMargins(0, 5 * scale, 0, 0);
+			grid[3] -> setColumnMinimumWidth(1, 50 * scale);
 		}
 		else
 		{
-			grid[3] -> setContentsMargins(20, 5, 20, 0);
-			grid[3] -> setColumnMinimumWidth(1, 100);
+			grid[3] -> setContentsMargins(20 * scale, 5 * scale, 20 * scale, 0);
+			grid[3] -> setColumnMinimumWidth(1, 100 * scale);
 		}
-		grid[3] -> setHorizontalSpacing(5);
-		grid[3] -> setVerticalSpacing(5);
+		grid[3] -> setHorizontalSpacing(5 * scale);
+		grid[3] -> setVerticalSpacing(5 * scale);
 
 		QStringList str1 = {"Number of progressions: ", "和弦进行数量："};
 		label_loop_count = new QLabel(str1[language], this);
@@ -183,8 +204,8 @@ void Interface::mainGui()
 
 		edit_loop_count = new QLineEdit(this);
 		if(language == English)
-			edit_loop_count -> setFixedWidth(30);
-		else  edit_loop_count -> setFixedWidth(60);
+			edit_loop_count -> setFixedWidth(30 * scale);
+		else  edit_loop_count -> setFixedWidth(60 * scale);
 		grid[3] -> addWidget(edit_loop_count, 0, 1, Qt::AlignLeft);
 		connect(edit_loop_count, &QLineEdit::textChanged, this, &Interface::set_loop_count1);
 		connect(edit_loop_count, &QLineEdit::editingFinished, this, &Interface::set_loop_count2);
@@ -236,7 +257,7 @@ void Interface::mainGui()
 	{
 		QHBoxLayout* hbox1 = new QHBoxLayout();
 		QHBoxLayout* hbox2 = new QHBoxLayout();
-		hbox2 -> setSpacing(5);
+		hbox2 -> setSpacing(5 * scale);
 
 		QStringList str1 = {"Chord database: ", "和弦类型库："};
 		QLabel* label1 = new QLabel(str1[language], this);
@@ -279,15 +300,15 @@ void Interface::mainGui()
 		QLabel* _label2 = new QLabel(" ", this);
 		hbox2 -> addWidget(_label2, 1);
 
-		grid[4] -> setContentsMargins(20, 5, 20, 0);
-		grid[4] -> setVerticalSpacing(5);
+		grid[4] -> setContentsMargins(20 * scale, 5 * scale, 20 * scale, 0);
+		grid[4] -> setVerticalSpacing(5 * scale);
 		grid[4] -> addLayout(hbox1, 0, 0);
 		grid[4] -> addLayout(hbox2, 1, 0);
 	}
 
 	{
 		QHBoxLayout* hbox1 = new QHBoxLayout();
-		hbox1 -> setSpacing(5);
+		hbox1 -> setSpacing(5 * scale);
 
 		QStringList str1 = {"Range of notes: ", "音域范围："};
 		QLabel* label1 = new QLabel(str1[language], this);
@@ -314,7 +335,7 @@ void Interface::mainGui()
 
 		QGridLayout* _grid = new QGridLayout();
 		_grid -> addWidget(cb_overall_scale, 0, 0);
-		_grid -> setContentsMargins(0, 0, 0, 5);
+		_grid -> setContentsMargins(0, 0, 0, 5 * scale);
 		connect(cb_overall_scale, &QCheckBox::stateChanged, this, &Interface::set_default_overall_scale);
 
 		QLabel* label_0_11[12];
@@ -329,7 +350,7 @@ void Interface::mainGui()
 		}
 
 		QHBoxLayout* hbox3 = new QHBoxLayout();
-		hbox3 -> setSpacing(5);
+		hbox3 -> setSpacing(5 * scale);
 
 		QStringList str7 = {"Omission: ", "省略音："};
 		QLabel* label4 = new QLabel(str7[language], this);
@@ -359,7 +380,7 @@ void Interface::mainGui()
 		connect(btn3, &QPushButton::clicked, this, &Interface::alignmentGui);
 
 		QHBoxLayout* hbox4 = new QHBoxLayout();
-		hbox4 -> setSpacing(5);
+		hbox4 -> setSpacing(5 * scale);
 
 		QStringList str13 = {"Enable pedal notes: ", "应用持续音："};
 		cb_pedal = new QCheckBox(str13[language], this);
@@ -384,11 +405,11 @@ void Interface::mainGui()
 		connect(btn_more_rules, &QPushButton::clicked, this, &Interface::moreRulesGui);
 
 		QHBoxLayout* hbox5 = new QHBoxLayout();
-		hbox5 -> setSpacing(20);
+		hbox5 -> setSpacing(20 * scale);
 
 		QStringList str17 = {"Set more parameters\nand sort priorities...", "更多指标设置\n及排序设置…"};
 		btn_more_param = new QPushButton(str17[language], this);
-		btn_more_param -> setMinimumWidth(100);
+		btn_more_param -> setMinimumWidth(100 * scale);
 		hbox5 -> addWidget(btn_more_param, 0, Qt::AlignLeft);
 		connect(btn_more_param, &QPushButton::clicked, this, &Interface::moreParamGui);
 
@@ -400,9 +421,9 @@ void Interface::mainGui()
 		label7 -> setStyleSheet("color: #FF0000;");
 		hbox5 -> addWidget(label7, 1, Qt::AlignLeft);
 
-		grid[5] -> setContentsMargins(20, 5, 20, 0);
-		grid[5] -> setVerticalSpacing(5);
-		grid[5] -> setRowMinimumHeight(4, 50);
+		grid[5] -> setContentsMargins(20 * scale, 5 * scale, 20 * scale, 0);
+		grid[5] -> setVerticalSpacing(5 * scale);
+		grid[5] -> setRowMinimumHeight(4, 50 * scale);
 		grid[5] -> addLayout(hbox1, 0, 0, 1, 2);
 		grid[5] -> addLayout(_grid, 1, 0);
 		grid[5] -> addLayout(hbox3, 2, 0, 1, 2);
@@ -411,14 +432,14 @@ void Interface::mainGui()
 
 		QLabel* _label1 = new QLabel(" ", this);
 		grid[5] -> addWidget(_label1, 1, 1);
-		grid[5] -> setColumnMinimumWidth(1, 180);
+		grid[5] -> setColumnMinimumWidth(1, 180 * scale);
 	}
 
 	{
 		grid[6] = new QGridLayout();
 		grid[6] -> setVerticalSpacing(5);
 		if(language == Chinese)
-			grid[6] -> setContentsMargins(20, 0, 20, 0);
+			grid[6] -> setContentsMargins(20, 0, 20 * scale, 0);
 		else  grid[6] -> setContentsMargins(0, 0, 15, 0);
 		grid[6] -> setColumnStretch(0, 0);
 		grid[6] -> setColumnStretch(3, 1);
@@ -500,7 +521,7 @@ void Interface::mainGui()
 		grid[7] -> addWidget(label, 0, 1, Qt::AlignRight);
 	}
 
-	vbox -> setSpacing(15);
+	vbox -> setSpacing(15 * scale);
 	for(int i = 0; i < PARTS; ++i)
 		vbox -> addLayout(grid[i]);
 	initMain();
@@ -571,22 +592,22 @@ void Interface::doPainting()
 
 	painter.setPen(QColor("#99D9EA"));
 	painter.setBrush(QBrush("#99D9EA"));
-	painter.drawRect(0, 0, 640, 80);
+	painter.drawRect(0, 0, 640 * scale, 75 * _scale);
 
 	painter.setPen(QColor("#EFE4B0"));
 	painter.setBrush(QBrush("#EFE4B0"));
-	painter.drawRect(0, 80, 640, 60);
+	painter.drawRect(0, 75 * _scale, 640 * scale, 65 * _scale);
 
 	painter.setPen(QColor("#00A2E8"));
-	painter.drawLine(445, 85, 445, 135);
+	painter.drawLine(445 * scale, 85 * _scale, 445 * scale, 135 * _scale);
 
-	painter.drawLine(20, 245, 620, 245);
-	painter.drawLine(20, 315, 620, 315);
-	painter.drawLine(20, 380, 620, 380);
-	painter.drawLine(20, 585, 620, 585);
+	painter.drawLine(20 * scale, 245 * _scale, 620 * scale, 245 * _scale);
+	painter.drawLine(20 * scale, 315 * _scale, 620 * scale, 315 * _scale);
+	painter.drawLine(20 * scale, 380 * _scale, 620 * scale, 380 * _scale);
+	painter.drawLine(20 * scale, 585 * _scale, 620 * scale, 585 * _scale);
 	if(language == Chinese)
-		painter.drawLine(20, 675, 620, 675);
-	else  painter.drawLine(20, 700, 620, 700);
+		painter.drawLine(20 * scale, 675 * _scale, 620 * scale, 675 * _scale);
+	else  painter.drawLine(20 * scale, 700 * _scale, 620 * scale, 700 * _scale);
 }
 
 void Interface::clear(QLayout* layout)

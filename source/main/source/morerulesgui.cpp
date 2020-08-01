@@ -11,15 +11,15 @@ void Interface::moreRulesGui()
 	more_rules_window -> setWindowFlag(Qt::Window, true);
 	more_rules_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	if(language == Chinese)
-		more_rules_window -> setFixedSize(640, 510);
-	else  more_rules_window -> setFixedSize(640, 550);
+		more_rules_window -> setFixedSize(640 * scale, 510 * _scale);
+	else  more_rules_window -> setFixedSize(640 * scale, 550 * _scale);
 	QStringList str1 = {"Set more rules", "设置更多规则"};
 	more_rules_window -> setWindowTitle(str1[language]);
 	more_rules_window -> setFont(font);
 
 	QVBoxLayout* vbox = new QVBoxLayout(more_rules_window);
-	vbox -> setSpacing(10);
-	vbox -> setContentsMargins(30, 30, 30, 30);
+	vbox -> setSpacing(10 * _scale);
+	vbox -> setContentsMargins(30 * _scale, 30 * scale, 30 * _scale, 30 * scale);
 
 	QHBoxLayout* hbox1 = new QHBoxLayout();
 	QStringList str2 = {"Number of voice leading: ", "声部进行数量："};
@@ -42,7 +42,7 @@ void Interface::moreRulesGui()
 	if(language == Chinese)
 	{
 		QLabel* label0 = new QLabel("", more_rules_window);
-		label0 -> setFixedWidth(200);
+		label0 -> setFixedWidth(200 * scale);
 		hbox1 -> addWidget(label0, 0);
 	}
 	vbox -> addLayout(hbox1);
@@ -121,7 +121,7 @@ void Interface::moreRulesGui()
 	hbox2 -> addWidget(edit_vl_max);
 	connect(edit_vl_max, &QLineEdit::textChanged, this, &Interface::set_vl_max);
 	vbox -> addLayout(hbox2);
-	vbox -> addSpacing(10);
+	vbox -> addSpacing(10 * _scale);
 
 	QGridLayout* grid2 = new QGridLayout();
 	QStringList str11 = {"Root movement and its priority: ", "根音运动音程及优先顺序："};
@@ -141,7 +141,7 @@ void Interface::moreRulesGui()
 	btns2 -> addButton(btn_custom_rm);
 
 	edit_custom_rm = new QLineEdit(more_rules_window);
-	edit_custom_rm -> setFixedWidth(200);
+	edit_custom_rm -> setFixedWidth(200 * scale);
 	grid2 -> addWidget(edit_custom_rm, 1, 2, Qt::AlignLeft);
 	connect(edit_custom_rm, &QLineEdit::editingFinished, this, &Interface::input_rm);
 
@@ -162,7 +162,7 @@ void Interface::moreRulesGui()
 	btns3 -> addButton(btn_custom_ex);
 
 	edit_custom_ex = new QLineEdit(more_rules_window);
-	edit_custom_ex -> setFixedWidth(200);
+	edit_custom_ex -> setFixedWidth(200 * scale);
 	grid2 -> addWidget(edit_custom_ex, 3, 2, Qt::AlignLeft);
 	connect(edit_custom_ex, &QLineEdit::editingFinished, this, &Interface::input_ex);
 
@@ -182,14 +182,14 @@ void Interface::moreRulesGui()
 	btns4 -> addButton(btn_custom_sim);
 
 	edit_custom_sim = new QLineEdit(more_rules_window);
-	edit_custom_sim -> setFixedWidth(200);
+	edit_custom_sim -> setFixedWidth(200 * scale);
 	grid2 -> addWidget(edit_custom_sim, 5, 2, Qt::AlignLeft);
 	connect(edit_custom_sim, &QLineEdit::editingFinished, this, &Interface::input_sim);
 
 	grid2 -> setColumnStretch(1, 0);
 	grid2 -> setColumnStretch(2, 1);
 	vbox -> addLayout(grid2);
-	vbox -> addSpacing(15);
+	vbox -> addSpacing(15 * _scale);
 
 	QString str18 = "<p style=\"line-height:150%\">%1<p>";
 	QStringList str19 = {"Warning: All settings above is restricted by the range of notes;<br>"
@@ -200,13 +200,13 @@ void Interface::moreRulesGui()
 	label5 -> setFont(QFont("Microsoft Yahei", 11, QFont::Bold));
 	label5 -> setStyleSheet("color: #FF0000;");
 	if(language == Chinese)
-		label5 -> setFixedHeight(30);
-	else  label5 -> setFixedHeight(60);
+		label5 -> setFixedHeight(30 * _scale);
+	else  label5 -> setFixedHeight(60 * _scale);
 	vbox -> addWidget(label5, 0, Qt::AlignLeft);
 
 	QStringList str20 = {"OK", "确定"};
 	QPushButton* btn = new QPushButton(str20[language], more_rules_window);
-	btn -> setFixedWidth(80);
+	btn -> setFixedWidth(80 * scale);
 	vbox -> addWidget(btn, 1, Qt::AlignRight);
 	connect(btn, SIGNAL(clicked()), more_rules_window, SLOT(close()));
 

@@ -11,8 +11,8 @@ void Interface::pedalNotesGui()
 	pedal_notes_window -> setWindowFlag(Qt::Window, true);
 	pedal_notes_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	if(language == Chinese)
-		pedal_notes_window -> setFixedSize(560, 330);
-	else  pedal_notes_window -> setFixedSize(640, 340);
+		pedal_notes_window -> setFixedSize(560 * scale, 330 * _scale);
+	else  pedal_notes_window -> setFixedSize(640 * scale, 340 * _scale);
 	QStringList str0 = {"Set pedal notes", "设置持续音"};
 	pedal_notes_window -> setWindowTitle(str0[language]);
 	pedal_notes_window -> setFont(font);
@@ -23,7 +23,7 @@ void Interface::pedalNotesGui()
 	connect(cb_in_bass, &QCheckBox::stateChanged, this, &Interface::set_in_bass);
 
 	QVBoxLayout* vbox1 = new QVBoxLayout(pedal_notes_window);
-	vbox1 -> setContentsMargins(30, 15, 30, 30);
+	vbox1 -> setContentsMargins(30 * _scale, 15 * scale, 30 * _scale, 30 * scale);
 	vbox1 -> addWidget(cb_in_bass, 0, Qt::AlignTop);
 
 	QButtonGroup* btns = new QButtonGroup(pedal_notes_window);
@@ -38,8 +38,8 @@ void Interface::pedalNotesGui()
 	QVBoxLayout* vbox3 = new QVBoxLayout();
 	edit_pitch_mode = new QLineEdit(pedal_notes_window);
 	if(language == Chinese)
-		edit_pitch_mode -> setMinimumWidth(300);
-	else  edit_pitch_mode -> setMinimumWidth(330);
+		edit_pitch_mode -> setMinimumWidth(300 * scale);
+	else  edit_pitch_mode -> setMinimumWidth(330 * scale);
 	edit_pitch_mode -> setDisabled(true);
 	vbox3 -> addWidget(edit_pitch_mode, 0, Qt::AlignHCenter);
 	connect(edit_pitch_mode, &QLineEdit::editingFinished, this, &Interface::input_pedal_notes);
@@ -47,7 +47,7 @@ void Interface::pedalNotesGui()
 	QStringList str4 = {"(automatically judges MIDI note numbers/pitch names)\n", "（自动判别MIDI键位号/音符输入方式）\n"};
 	label_pitch_mode = new QLabel(str4[language], this);
 	label_pitch_mode -> setDisabled(true);
-	label_pitch_mode -> setMinimumHeight(30);
+	label_pitch_mode -> setMinimumHeight(30 * _scale);
 	vbox3 -> addWidget(label_pitch_mode, 0, Qt::AlignHCenter);
 
 	QHBoxLayout* hbox2 = new QHBoxLayout();
@@ -72,20 +72,20 @@ void Interface::pedalNotesGui()
 
 	QVBoxLayout* vbox2 = new QVBoxLayout();
 	vbox2 -> addLayout(hbox2, 0);
-	vbox2 -> setSpacing(10);
+	vbox2 -> setSpacing(10 * _scale);
 	vbox2 -> addLayout(hbox3, 0);
 
 	QStringList str5 = {"Pedal note format: ", "持续音形式："};
 	QLabel* label3 = new QLabel(str5[language], pedal_notes_window);
 	QHBoxLayout* hbox1 = new QHBoxLayout();
-	vbox1 -> setSpacing(20);
+	vbox1 -> setSpacing(20 * _scale);
 	hbox1 -> addWidget(label3, 0, Qt::AlignTop);
 	hbox1 -> addLayout(vbox2, 1);
 	vbox1 -> addLayout(hbox1, 0);
 
 	QStringList str6 = {"Always realign pedal notes(only apply to set input mode)", "强制换列（只适用于音集形式的持续音）"};
 	cb_realign = new QCheckBox(str6[language], pedal_notes_window);
-	cb_realign -> setMinimumWidth(300);
+	cb_realign -> setMinimumWidth(300 * scale);
 	cb_realign -> setLayoutDirection(Qt::LeftToRight);
 	connect(cb_realign, &QCheckBox::clicked, this, &Interface::set_realign);
 
@@ -98,25 +98,25 @@ void Interface::pedalNotesGui()
 	{
 		QHBoxLayout* hbox4 = new QHBoxLayout();
 		hbox4 -> addWidget(cb_realign, 0);
-		hbox4 -> addSpacing(60);
+		hbox4 -> addSpacing(60 * scale);
 		hbox4 -> addWidget(label_period, 0);
 		hbox4 -> addWidget(edit_period, 0);
-		vbox1 -> addSpacing(10);
+		vbox1 -> addSpacing(10 * _scale);
 		vbox1 -> addLayout(hbox4, 0);
-		vbox1 -> setSpacing(20);
+		vbox1 -> setSpacing(20 * _scale);
 	}
 	else
 	{
 		QHBoxLayout* hbox4 = new QHBoxLayout();
-		hbox4 -> setSpacing(10);
+		hbox4 -> setSpacing(10 * scale);
 		hbox4 -> setContentsMargins(0, 0, 0, 0);
 		hbox4 -> addWidget(label_period, 0, Qt::AlignRight);
 		hbox4 -> addWidget(edit_period);
-		edit_period -> setFixedWidth(60);
-		vbox1 -> addSpacing(15);
+		edit_period -> setFixedWidth(60 * scale);
+		vbox1 -> addSpacing(15 * _scale);
 		vbox1 -> addWidget(cb_realign, 1, Qt::AlignLeft);
 		vbox1 -> addLayout(hbox4, 1);
-		vbox1 -> setSpacing(15);
+		vbox1 -> setSpacing(15 * _scale);
 	}
 
 	QStringList str8 = {"OK", "确定"};

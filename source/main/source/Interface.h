@@ -11,7 +11,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
-#include <QFileinfo>
+#include <QFileInfo>
 #include <QFont>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -27,6 +27,9 @@
 #include <QString>
 #include <QToolButton>
 #include <QUrl>
+#if __WIN32
+#include <windows.h>
+#endif
 
 #include "chord.h"
 #include "functions.h"
@@ -38,7 +41,9 @@ class Interface: public QWidget, public Chord
 	Q_OBJECT
 
 private:
-	QFont font;
+	double scale;
+	double _scale;
+	QFont  font;
 	QVBoxLayout* vbox;
 	QString  root_path;
 	QString  cur_preset[2];

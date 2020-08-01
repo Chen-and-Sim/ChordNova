@@ -19,7 +19,7 @@ CXXFLAGS      = -fno-keep-inline-dllexport -g -std=gnu++11 -Wall -W -Wextra -fex
 INCPATH       = -I..\source -I. -ID:\Qt\5.12.9\mingw73_64\include -ID:\Qt\5.12.9\mingw73_64\include\QtWidgets -ID:\Qt\5.12.9\mingw73_64\include\QtGui -ID:\Qt\5.12.9\mingw73_64\include\QtANGLE -ID:\Qt\5.12.9\mingw73_64\include\QtCore -Idebug -I/include -ID:\Qt\5.12.9\mingw73_64\mkspecs\win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,windows -mthreads
-LIBS        =        D:\Qt\5.12.9\mingw73_64\lib\libQt5Widgetsd.a D:\Qt\5.12.9\mingw73_64\lib\libQt5Guid.a D:\Qt\5.12.9\mingw73_64\lib\libQt5Cored.a  -lmingw32 D:\Qt\5.12.9\mingw73_64\lib\libqtmaind.a -LC:\openssl\lib -LC:\Utils\my_sql\mysql-5.6.11-winx64\lib -LC:\Utils\postgresql\pgsql\lib -lshell32 
+LIBS        =        -lgdi32 D:\Qt\5.12.9\mingw73_64\lib\libQt5Widgetsd.a D:\Qt\5.12.9\mingw73_64\lib\libQt5Guid.a D:\Qt\5.12.9\mingw73_64\lib\libQt5Cored.a  -lmingw32 D:\Qt\5.12.9\mingw73_64\lib\libqtmaind.a -LC:\openssl\lib -LC:\Utils\my_sql\mysql-5.6.11-winx64\lib -LC:\Utils\postgresql\pgsql\lib -lshell32 
 QMAKE         = D:\Qt\5.12.9\mingw73_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl
@@ -262,7 +262,7 @@ debug/moc_Interface.cpp: ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -447,7 +447,7 @@ debug/alignmentgui.o: ../source/alignmentgui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -736,7 +736,7 @@ debug/inversiongui.o: ../source/inversiongui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -913,7 +913,7 @@ debug/main.o: ../source/main.cpp D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QAppl
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QHBoxLayout \
@@ -1067,7 +1067,7 @@ debug/maingui.o: ../source/maingui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -1232,7 +1232,7 @@ debug/moreparamgui.o: ../source/moreparamgui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -1397,7 +1397,7 @@ debug/morerulesgui.o: ../source/morerulesgui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -1562,7 +1562,7 @@ debug/omissiongui.o: ../source/omissiongui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -1727,7 +1727,7 @@ debug/pedalnotesgui.o: ../source/pedalnotesgui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \
@@ -1892,7 +1892,7 @@ debug/savesettingsgui.o: ../source/savesettingsgui.cpp ../source/Interface.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QFileDialog \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qfiledialog.h \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qdialog.h \
-		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileinfo \
+		D:/Qt/5.12.9/mingw73_64/include/QtCore/QFileInfo \
 		D:/Qt/5.12.9/mingw73_64/include/QtGui/QFont \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/QGridLayout \
 		D:/Qt/5.12.9/mingw73_64/include/QtWidgets/qgridlayout.h \

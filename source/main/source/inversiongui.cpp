@@ -11,14 +11,14 @@ void Interface::inversionGui()
 	inversion_window -> setWindowFlag(Qt::Window, true);
 	inversion_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	if(language == Chinese)
-		inversion_window -> setFixedSize(640, 250);
-	else  inversion_window -> setFixedSize(640, 225);
+		inversion_window -> setFixedSize(640 * scale, 250 * _scale);
+	else  inversion_window -> setFixedSize(640 * scale, 225 * _scale);
 	QStringList str0 = {"Set inversion", "设置转位"};
 	inversion_window -> setWindowTitle(str0[language]);
 	inversion_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(inversion_window);
-	grid -> setContentsMargins(20, 30, 20, 30);
+	grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 30 * scale);
 
 	QStringList str1 = {"Bass note allowed: ", "允许作为低音："};
 	QLabel* label1 = new QLabel(str1[language], inversion_window);
@@ -51,11 +51,11 @@ void Interface::inversionGui()
 	grid -> addWidget(btn, 3, 7);
 	connect(btn, SIGNAL(clicked()), inversion_window, SLOT(close()));
 
-	grid -> setColumnMinimumWidth(0, 80);
-	grid -> setColumnMinimumWidth(1, 50);
-	grid -> setColumnMinimumWidth(2, 50);
-	grid -> setColumnMinimumWidth(3, 50);
-	grid -> setColumnMinimumWidth(4, 60);
+	grid -> setColumnMinimumWidth(0, 80 * scale);
+	grid -> setColumnMinimumWidth(1, 50 * scale);
+	grid -> setColumnMinimumWidth(2, 50 * scale);
+	grid -> setColumnMinimumWidth(3, 50 * scale);
+	grid -> setColumnMinimumWidth(4, 60 * scale);
 	grid -> setRowStretch(2, 1);
 
 	initInversion();
