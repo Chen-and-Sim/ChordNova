@@ -10,7 +10,7 @@ vector<int> rm_priority;
 
 void ChordData::print(const ChordData& chord)
 {
-	fprint("new_chord = ", chord.notes, ", ", ",  ");
+	fprint("-> ", chord.notes, ", ", ",  ");
 	fout << "k = " << chord.chroma - chroma << ",  "
 		  << "x = " << chord.similarity << "%,  ";
 	fprint("v = ", chord.vec, ", ", ",  ");

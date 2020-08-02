@@ -574,26 +574,27 @@ void Chord::print1()
 
 	if(c_size == 0)
 	{
-		fout << "Results not found.";
 		if(language == English)
+		{
+			fout << "Results not found.\n\n";
 			throw "ERROR - results not found under these conditions. Please check your conditions and try again.";
-		else  throw "错误：在该条件下未找到结果。请检查条件后重试。";
-		return;
+		}
+		else
+		{
+			fout << "未找到结果。\n\n";
+			throw "错误：在该条件下未找到结果。请检查条件后重试。";
+		}
 	}
-	fout << c_size << " progression";
-	if(c_size != 1)  fout << 's';
-	fout << "\n\n";
+
+	if(language == English)
+		fout << c_size << " progression(s)\n\n";
+	else  fout << c_size << " 种可能的和弦进行\n\n";
 	sort_results();
 	if(output_mode != MidiOnly)
 	{
 		for(int j = 0; j < c_size; ++j)
 			print(new_chords[j]);
-		fout << "==========\n";
-		print_stats();
-		end = clock();
-		double dur = (double) (end - begin) / CLOCKS_PER_SEC;
-		fout << "\nGeneration completed in " << dur << " seconds.";
-		fout.close();
+		print_end();
 	}
 }
 
@@ -603,12 +604,10 @@ void Chord::print2()
 	{
 		if(output_mode != MidiOnly)
 		{
-			fout << "Results not found.\n\n" << "==========\n";
-			print_stats();
-			end = clock();
-			double dur = (double) (end - begin) / CLOCKS_PER_SEC;
-			fout << "Generation completed in " << dur << " seconds.";
-			fout.close();
+			if(language == English)
+				fout << "Results not found.\n\n";
+			else  fout << "未找到结果。\n\n";
+			print_end();
 		}
 		if(output_mode != TextOnly)  to_midi();
 		if(progr_count == 1)
@@ -651,12 +650,10 @@ void Chord::print2()
 	{
 		if(output_mode != MidiOnly)
 		{
-			fout << "Results not found.\n\n" << "==========\n";
-			print_stats();
-			end = clock();
-			double dur = (double) (end - begin) / CLOCKS_PER_SEC;
-			fout << "Generation completed in " << dur << " seconds.";
-			fout.close();
+			if(language == English)
+				fout << "Results not found.\n\n";
+			else  fout << "未找到结果。\n\n";
+			print_end();
 		}
 		if(output_mode != TextOnly)  to_midi();
 		if(progr_count == 1)
@@ -681,8 +678,7 @@ void Chord::print_stats()
 		ptr = &record;
 	else
 		ptr = &new_chords;
-	for(int i = 0; i < (int)ptr -> size(); ++i)
-		(*ptr)[i].index = i + 1;
+	int count = ptr -> size();
 
 	vector<Movement> movement;
 	movement.resize(2 * vl_max + 1);
@@ -690,7 +686,7 @@ void Chord::print_stats()
 		movement[i].amount = i - vl_max;
 
 	int cardinal_change = 0;
-	for(int i = 0; i < (int)ptr -> size(); ++i)
+	for(int i = 0; i < count; ++i)
 	{
 		for(int j = 0; j < (int)(*ptr)[i].get_vec().size(); ++j)
 		{
@@ -701,8 +697,10 @@ void Chord::print_stats()
 			++cardinal_change;
 	}
 
-	fout << "Voice leading stats:\n"
-		  << "Movement instances: " << "[0]  " << movement[vl_max].instance << endl;
+	if(language == English)
+		fout << "Voice leading stats:\n"
+			  << "Movement instances: " << "[0]  " << movement[vl_max].instance << endl;
+	else  fout << "声部进行统计：\n声部动向及相应出现次数：[0]  " << movement[vl_max].instance << endl;
 	for(int i = 1; i <= vl_max; ++i)
 		fout << "[+" << i << "] " << movement[i + vl_max].instance << "  ";
 	fout << endl;
@@ -718,94 +716,199 @@ void Chord::print_stats()
 	vector<Movement> sorted;
 	sorted.assign(movement.begin(), movement.end());
 	merge_sort(sorted.begin(), sorted.end(), *larger_perc);
-	fout << "\nMovement percentage (sorted H -> L):\n";
+	if(language == English)
+		fout << "\nMovement percentage (sorted H -> L):\n";
+	else  fout << "\n声部动向频次占比（从高到低）：\n";
 	for(int i = 0; i < 2 * vl_max + 1; ++i)
 	{
 		fout << "[";
 		if(sorted[i].amount > 0)  fout << "+";
 		fout << sorted[i].amount << "] " << round(sorted[i].percentage * 100.0) << "%  ";
 	}
-	fout << "\nCardinal change instances: " << cardinal_change << ", "
-		  << round((double)cardinal_change / ptr -> size() * 100.0) << "%\n\n";
+	if(language == English)
+		fout << "\nCardinal change instances: ";
+	else  fout << "\n和弦音个数 (N) 发生变化的次数：";
+	fout << cardinal_change << " (" << round((double)cardinal_change / count * 100.0) << "%)\n\n";
 
-	double _k_max = 0, _k_min = INF;
-	int k_max_index = 0, k_min_index = 0;
-	int _n_max = 0, _n_min = 12, n_min_index = 0, n_max_index = 0;
-	int _m_max = 0, _m_min = 15, m_min_index = 0, m_max_index = 0;
+
+	int _n_max = 0, _n_min = 12,  n_sum = 0, n_max_index = 0, n_min_index = 0;
+	int _m_max = 0, _m_min = 15,  m_sum = 0, m_min_index = 0, m_max_index = 0;
+	double _t_max = 0.0, _t_min = INF, _k_max = 0.0, _k_min = INF, t_sum = 0, k_sum = 0;
+	double _g_max = 0.0, _g_min = INF, _h_max = 0.0, _h_min = 50,  g_sum = 0, h_sum = 0;
+	int t_max_index = 0,    t_min_index = 0, k_max_index = 0, k_min_index = 0;
+	int g_max_index = 0,    g_min_index = 0, h_max_index = 0, h_min_index = 0;
+	int _c_max = 0, _c_min = 15,  c_sum = 0, c_max_index = 0, c_min_index = 0;
+	int _r_max = 0, _r_min = 11,  r_sum = 0, r_max_index = 0, r_min_index = 0;
+	int _s_max = 0, _s_min = 100, s_sum = 0, s_max_index = 0, s_min_index = 0;
+	int _x_max = 0, _x_min = 100, x_sum = 0, x_max_index = 0, x_min_index = 0;
 	int temp1;  double temp2;
-	for(int i = 0; i < (int)ptr -> size(); ++i)
-	{
-		temp2 = abs((*ptr)[i].get_chroma());
-		if(temp2 > _k_max)  { _k_max = temp2;  k_max_index = i + 1; }
-		if(temp2 < _k_min)  { _k_min = temp2;  k_min_index = i + 1; }
 
+	for(int i = 0; i < count; ++i)
+	{
 		temp1 = (*ptr)[i].get_s_size();
-		if(temp1 > _n_max)  { _n_max = temp1;  n_max_index = i + 1; }
-		if(temp1 < _n_min)  { _n_min = temp1;  n_min_index = i + 1; }
+		if(temp1 > _n_max)  { _n_max = temp1;  n_max_index = i; }
+		if(temp1 < _n_min)  { _n_min = temp1;  n_min_index = i; }
+		n_sum += temp1;
 
 		temp1 = (*ptr)[i].get_t_size();
-		if(temp1 > _m_max)  { _m_max = temp1;  m_max_index = i + 1; }
-		if(temp1 < _m_min)  { _m_min = temp1;  m_min_index = i + 1; }
+		if(temp1 > _m_max)  { _m_max = temp1;  m_max_index = i; }
+		if(temp1 < _m_min)  { _m_min = temp1;  m_min_index = i; }
+		m_sum += temp1;
+
+		temp2 = (*ptr)[i].get_tension();
+		if(temp2 > _t_max)  { _t_max = temp2;  t_max_index = i; }
+		if(temp2 < _t_min)  { _t_min = temp2;  t_min_index = i; }
+		t_sum += temp2;
+
+		temp2 = abs((*ptr)[i].get_chroma());
+		if(temp2 > _k_max)  { _k_max = temp2;  k_max_index = i; }
+		if(temp2 < _k_min)  { _k_min = temp2;  k_min_index = i; }
+		k_sum += temp2;
+
+		temp2 = (*ptr)[i].get_thickness();
+		if(temp2 > _h_max)  { _h_max = temp2;  h_max_index = i; }
+		if(temp2 < _h_min)  { _h_min = temp2;  h_min_index = i; }
+		h_sum += temp1;
+
+		if(i != 0)
+		{
+			temp1 = intersect((*ptr)[i].get_notes(), (*ptr)[i - 1].get_notes(), true).size();
+			if(temp1 > _c_max)  { _c_max = temp1;  c_max_index = i; }
+			if(temp1 < _c_min)  { _c_min = temp1;  c_min_index = i; }
+			c_sum += temp1;
+		}
+
+		temp1 = (*ptr)[i].get_root();
+		if(temp1 > _r_max)  { _r_max = temp1;  r_max_index = i; }
+		if(temp1 < _r_min)  { _r_min = temp1;  r_min_index = i; }
+		r_sum += temp1;
+
+		temp2 = (*ptr)[i].get_g_center();
+		if(temp2 > _g_max)  { _g_max = temp2;  g_max_index = i; }
+		if(temp2 < _g_min)  { _g_min = temp2;  g_min_index = i; }
+		g_sum += temp2;
+
+		if(i != 0)
+		{
+			temp1 = (*ptr)[i].get_sv();
+			if(temp1 > _s_max)  { _s_max = temp1;  s_max_index = i; }
+			if(temp1 < _s_min)  { _s_min = temp1;  s_min_index = i; }
+			s_sum += temp1;
+		}
+
+		if(i != 0)
+		{
+			temp1 = (*ptr)[i].get_similarity();
+			if(temp1 > _x_max)  { _x_max = temp1;  x_max_index = i; }
+			if(temp1 < _x_min)  { _x_min = temp1;  x_min_index = i; }
+			x_sum += temp1;
+		}
 	}
 
-	fout << "Other stats:\n" << "Chroma (|k|): "
-		  << "highest - " << _k_max << "(@ #" << k_max_index << "); "
-		  << "lowest - "  << _k_min << "(@ #" << k_min_index << ");\n";
-
-	merge_sort(ptr -> begin(), ptr -> end(), larger_similarity);
-	fout << "Similarity (x%): "
-		  << "highest - " << ptr -> begin() -> get_similarity() << "(@ #" << ptr -> begin() -> index << "); ";
-	if(continual)
-		fout << "lowest - " << (ptr -> rbegin() + 1) -> get_similarity()
-			  << "(@ #"      << (ptr -> rbegin() + 1) -> index << ").\n";
+	if(language == English)
+	{
+		fout << "Other stats:\n" << "Chroma (|k|): "
+			  << "highest - " << _k_max << "(@ #" << k_max_index + 1 << "); "
+			  << "lowest - "  << _k_min << "(@ #" << k_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << k_sum / count << ";\n";
+		fout << "Similarity (x%): "
+			  << "highest - " << _x_max << "(@ #" << x_max_index + 1 << "); "
+			  << "lowest - "  << _x_min << "(@ #" << x_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)x_sum / (count - 1) << ";\n";
+		fout << "Common notes (c): "
+			  << "most - "    << _c_max << "(@ #" << c_max_index + 1 << "); "
+			  << "least - "   << _c_min << "(@ #" << c_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)c_sum / (count - 1) << ";\n";
+		fout << "Total voice leading (Σvec): "
+			  << "highest - " << _s_max << "(@ #" << s_max_index + 1 << "); "
+			  << "lowest - "  << _s_min << "(@ #" << s_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)s_sum / (count - 1) << ";\n";
+		fout << "Number of notes (n): "
+			  << "highest - " << _n_max << "(@ #" << n_max_index + 1 << "); "
+			  << "lowest - "  << _n_min << "(@ #" << n_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
+		fout << "Number of parts (m): "
+			  << "highest - " << _m_max << "(@ #" << m_max_index + 1 << "); "
+			  << "lowest - "  << _m_min << "(@ #" << m_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)m_sum / count << ";\n";
+		fout << "Root (r): "
+			  << "highest - " << _r_max << "(@ #" << r_max_index + 1 << "); "
+			  << "lowest - "  << _r_min << "(@ #" << r_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)r_sum / count << ";\n";
+		fout << "Tension (t): "
+			  << "highest - " << _t_max << "(@ #" << t_max_index + 1 << "); "
+			  << "lowest - "  << _t_min << "(@ #" << t_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << t_sum / count << ";\n";
+		fout << "Thickness (h): "
+			  << "highest - " << _h_max << "(@ #" << h_max_index + 1 << "); "
+			  << "lowest - "  << _h_min << "(@ #" << h_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << h_sum / count << ";\n";
+		fout << "Geomertic center (g%): "
+			  << "highest - " << _g_max << "(@ #" << g_max_index + 1 << "); "
+			  << "lowest - "  << _g_min << "(@ #" << g_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << g_sum / count << ".\n";
+	}
 	else
-		fout << "lowest - " << ptr -> rbegin() -> get_similarity() << "(@ #" << ptr -> rbegin() -> index << ").\n";
+	{
+		fout << "其他统计：\n" << "和弦进行的色差 (|k|): "
+			  << "最高 - " << _k_max << "(@ #" << k_max_index + 1 << ")；"
+			  << "最低 - " << _k_min << "(@ #" << k_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << k_sum / count << ";\n";
+		fout << "相邻和弦相似度 (x%): "
+			  << "最高 - " << _x_max << "(@ #" << x_max_index + 1 << ")；"
+			  << "最低 - " << _x_min << "(@ #" << x_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)x_sum / (count - 1) << ";\n";
+		fout << "共同音个数 (c): "
+			  << "最多 - " << _c_max << "(@ #" << c_max_index + 1 << ")；"
+			  << "最少 - " << _c_min << "(@ #" << c_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)c_sum / (count - 1) << ";\n";
+		fout << "声部进行总大小 (Σvec): "
+			  << "最高 - " << _s_max << "(@ #" << s_max_index + 1 << ")；"
+			  << "最低 - " << _s_min << "(@ #" << s_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)s_sum / (count - 1) << ";\n";
+		fout << "和弦音集音数 (n): "
+			  << "最高 - " << _n_max << "(@ #" << n_max_index + 1 << ")；"
+			  << "最低 - " << _n_min << "(@ #" << n_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
+		fout << "和弦声部数量 (m): "
+			  << "最高 - " << _m_max << "(@ #" << m_max_index + 1 << ")；"
+			  << "最低 - " << _m_min << "(@ #" << m_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)m_sum / count << ";\n";
+		fout << "根音键位 (r): "
+			  << "最高 - " << _r_max << "(@ #" << r_max_index + 1 << ")；"
+			  << "最低 - " << _r_min << "(@ #" << r_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)r_sum / count << ";\n";
+		fout << "紧张度 (t): "
+			  << "最高 - " << _t_max << "(@ #" << t_max_index + 1 << ")；"
+			  << "最低 - " << _t_min << "(@ #" << t_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << t_sum / count << ";\n";
+		fout << "厚度 (h): "
+			  << "最高 - " << _h_max << "(@ #" << h_max_index + 1 << ")；"
+			  << "最低 - " << _h_min << "(@ #" << h_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << h_sum / count << ";\n";
+		fout << "几何中心位置占比 (g%): "
+			  << "最高 - " << _g_max << "(@ #" << g_max_index + 1 << ")；"
+			  << "最低 - " << _g_min << "(@ #" << g_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << g_sum / count << "。\n";
+	}
+}
 
-	merge_sort(ptr -> begin(), ptr -> end(), larger_common);
-	fout << "Common notes (c): "
-		  << "most - " << ptr -> begin() -> get_common_note() << "(@ #" << ptr -> begin() -> index << "); ";
-	if(continual)
-		fout << "least - " << (ptr -> rbegin() + 1) -> get_common_note()
-			  << "(@ #"     << (ptr -> rbegin() + 1) -> index << ").\n";
-	else
-		fout << "least - " << ptr -> rbegin() -> get_common_note() << "(@ #" << ptr -> rbegin() -> index << ").\n";
-
-	merge_sort(ptr -> begin(), ptr -> end(), larger_sv);
-	fout << "Total voice leading (sv): "
-		  << "highest - " << ptr -> begin() -> get_sv() << "(@ #" << ptr -> begin() -> index << "); ";
-	if(continual)
-		fout << "lowest - " << (ptr -> rbegin() + 1) -> get_sv()
-			  << "(@ #"      << (ptr -> rbegin() + 1) -> index << ").\n";
-	else
-		fout << "lowest - " << ptr -> rbegin() -> get_sv() << "(@ #" << ptr -> rbegin() -> index << ").\n";
-
-	fout << "Number of notes (n): "
-		  << "highest - " << _n_max << "(@ #" << n_max_index << "); "
-		  << "lowest - "  << _n_min << "(@ #" << n_min_index << ");\n";
-
-	fout << "Number of parts (m): "
-		  << "highest - " << _m_max << "(@ #" << m_max_index << "); "
-		  << "lowest - "  << _m_min << "(@ #" << m_min_index << ");\n";
-
-	merge_sort(ptr -> begin(), ptr -> end(), larger_root);
-	fout << "Root (r): "
-		  << "highest - " << ptr ->  begin() -> get_root() << "(@ #" << ptr ->  begin() -> index << "); "
-		  << "lowest - "  << ptr -> rbegin() -> get_root() << "(@ #" << ptr -> rbegin() -> index << ").\n";
-
-	merge_sort(ptr -> begin(), ptr -> end(), larger_tension);
-	fout << "Tension (t): "
-		  << "highest - " << ptr ->  begin() -> get_tension() << "(@ #" << ptr ->  begin() -> index << "); "
-		  << "lowest - "  << ptr -> rbegin() -> get_tension() << "(@ #" << ptr -> rbegin() -> index << ").\n";
-
-	merge_sort(ptr -> begin(), ptr -> end(), larger_thickness);
-	fout << "Thickness (h): "
-		  << "highest - " << ptr ->  begin() -> get_thickness() << "(@ #" << ptr ->  begin() -> index << "); "
-		  << "lowest - "  << ptr -> rbegin() -> get_thickness() << "(@ #" << ptr -> rbegin() -> index << ").\n";
-
-	merge_sort(ptr -> begin(), ptr -> end(), larger_g_center);
-	fout << "Geomertic center (g): "
-		  << "highest - " << ptr ->  begin() -> get_g_center() << "(@ #" << ptr ->  begin() -> index << "); "
-		  << "lowest - "  << ptr -> rbegin() -> get_g_center() << "(@ #" << ptr -> rbegin() -> index << ").\n";
+void Chord::print_end()
+{
+	if(language == Chinese)
+	{
+		fout << "（分析报告参数说明：）\n"
+			  << "和弦进行：k - 色差（华萃康法）； x - 相邻和弦的相似度； v - 各声部运动方向及距离（半音个数）； c - 相邻和弦的共同音个数\n"
+			  << "每个和弦：r - 根音； t - 紧张度； vec - 音程涵量表； d - 音程结构表； h - 厚度； g - 几何中心位置占比\n\n";
+	}
+	fout << "==========\n";
+	print_stats();
+	end = clock();
+	double dur = (double) (end - begin) / CLOCKS_PER_SEC;
+	if(language == English)
+		fout << "\nGeneration completed in " << dur << " seconds.";
+	else  fout << "\n本次生成耗时 " << dur << " 秒。";
+	fout.close();
 }
 
 void Chord::to_midi()
@@ -1051,14 +1154,18 @@ void Chord::Main()
 	sv = MINF;
 	common_note = MINF;
 	init( static_cast<ChordData&>(*this) );
-	fprint("original_chord = ", notes);
+	if(language == English)
+		fprint("original_chord: ", notes);
+	else  fprint("起始和弦：", notes);
 	fout << "r = " << root << ",  "
 		  << "t = " << tension << ",  ";
 	fprint("vec = ", count_vec, "\0", ",  ");
 	fprint("d = ", self_diff, ", ", ",  ");
 	fout << "h = " << thickness << ",  "
-		  << "g = " << g_center << "%\n\n"
-		  << "Results:\n";
+		  << "g = " << g_center << "%\n\n";
+	if(language == English)
+		fout << "Results:\n";
+	else  fout << "生成结果：\n";
 
 	if(continual)
 	{
@@ -1067,20 +1174,15 @@ void Chord::Main()
 #ifndef QT_CORE_LIB
 			cout << "\nProgression #" << progr_count << ":\n";
 #endif
-			fout << "Progression #" << progr_count << ":\n";
+			if(language == English)
+				fout << "Progression #" << progr_count << ":\n";
+			else  fout << "和弦进行 #" << progr_count << ":\n";
 			get_progression();
 		}
 	}
 	else  get_progression();
 	if(fout.is_open())
-	{
-		fout << "==========\n";
-		print_stats();
-		end = clock();
-		double dur = (double) (end - begin) / CLOCKS_PER_SEC;
-		fout << "\nGeneration completed in " << dur << " seconds.";
-		fout.close();
-	}
+		print_end();
 	if(output_mode != TextOnly)  to_midi();
 }
 

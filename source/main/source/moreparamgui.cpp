@@ -99,10 +99,10 @@ void Interface::moreParamGui()
 	QStringList str5 = {"<br>*&nbsp;&nbsp;Not selecting a parameter means not applying its conditions and keep it in disorder."
 							  "<br>&nbsp;&nbsp;&nbsp;The default order is descending order.<br>"
 							  "**&nbsp;Please set the range of M, N in the main Interface and set the conditions of V in 'Apply more rules'.<br>"
-							  "***Please fill in the order correctly (1, 2, 3...), otherwise the default order will be given.",
+							  "***Please fill in the order correctly (1, 2, 3...).",
 							  "<br>*&nbsp;&nbsp;不勾选则不应用该项指标的筛选条件，且保持乱序，默认排序为降序排列。 <br>"
 							  "**&nbsp;请于主界面设置M和N的范围，于“更多规则”处设置V的条件。<br>"
-							  "***请于排序次序框内正确填写序号(1、2、3……)，否则将赋予默认次序。"};
+							  "***请于排序次序框内正确填写序号(1、2、3……)。"};
 	QLabel* label3 = new QLabel(str4[language].arg(str5[language]), more_param_window);
 	grid -> addWidget(label3, 12, 0, 1, 6, Qt::AlignLeft);
 
@@ -290,48 +290,64 @@ void Interface::set_param_max(int index, int max)
 
 void Interface::closeMoreParam()
 {
-	vector<int> orders, indexes;
-	for(int i = 0; i < _TOTAL; ++i)
+	if(continual)
 	{
-		if(cb_param[i] -> isChecked())
+		int pos = 0;
+		for(int i = 0; i < _TOTAL; ++i)
 		{
-			int order = edit_order[i] -> text().toInt();
-			indexes.push_back(i);
-			orders.push_back(order);
+			if(cb_param[i] -> isChecked())
+				sort_order[pos++] = var[i];
 		}
+		sort_order[pos] = '\0';
+		more_param_window -> close();
 	}
-	bool valid = true;
-	int pos = 0, j = 0;
-	for(int i = 1; i <= (int)indexes.size(); ++i)
+	else
 	{
-		for(j = 0; j < (int)indexes.size(); ++j)
+		vector<int> orders, indexes;
+		for(int i = 0; i < _TOTAL; ++i)
 		{
-			if(orders[j] == i)
+			if(cb_param[i] -> isChecked())
 			{
-				sort_order[pos++] = var[indexes[j]];
-				if(cb_ascending_order[indexes[j]] -> isChecked())
-					sort_order[pos++] = '+';
+				int order = edit_order[i] -> text().toInt();
+				indexes.push_back(i);
+				orders.push_back(order);
+			}
+		}
+		bool valid = true;
+		int pos = 0, j = 0;
+		for(int i = 1; i <= (int)indexes.size(); ++i)
+		{
+			for(j = 0; j < (int)indexes.size(); ++j)
+			{
+				if(orders[j] == i)
+				{
+					sort_order[pos++] = var[indexes[j]];
+					if(cb_ascending_order[indexes[j]] -> isChecked())
+						sort_order[pos++] = '+';
+					break;
+				}
+			}
+			if(j == (int)indexes.size())
+			{
+				valid = false;
 				break;
 			}
 		}
-		if(j == (int)indexes.size())
+
+		if(valid)
 		{
-			valid = false;
-			break;
+			sort_order[pos] = '\0';
+			more_param_window -> close();
+		}
+		else
+		{
+			sort_order[0] = '\0';
+			QStringList str1 = {"Warning", "警告"};
+			QStringList str2 = {"Sorting orders are not correct - please check and try again.",
+									  "排序次序填写不正确，请检查。"};
+			QMessageBox::warning(this, str1[language], str2[language], QMessageBox::Close);
 		}
 	}
-	if(!valid)
-	{
-		pos = 0;
-		for(int j = 0; j < (int)indexes.size(); ++j)
-		{
-			sort_order[pos++] = var[indexes[j]];
-			if(cb_ascending_order[indexes[j]] -> isChecked())
-				sort_order[pos++] = '+';
-		}
-	}
-	sort_order[pos] = '\0';
-	more_param_window -> close();
 }
 
 void Interface::enable_param(bool state)
@@ -370,6 +386,21 @@ void Interface::enable_param(bool state)
 			cb_ascending_order[i] -> setDisabled(true);
 			edit_order[i] -> setDisabled(true);
 			edit_order[i] -> setText("0");
+		}
+	}
+	if(!continual)
+	{
+		int max_order = 0;
+		QString str;
+		for(int i = 0; i < _TOTAL; ++i)
+		{
+			if(edit_order[i] -> text().toInt() > max_order)
+				max_order = edit_order[i] -> text().toInt();
+		}
+		for(int i = 0; i < _TOTAL; ++i)
+		{
+			if(cb_param[i] -> isChecked() && edit_order[i] -> text().toInt() == 0)
+				edit_order[i] -> setText(str.setNum(++max_order));
 		}
 	}
 }

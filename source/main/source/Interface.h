@@ -27,6 +27,7 @@
 #include <QString>
 #include <QToolButton>
 #include <QUrl>
+
 #if __WIN32
 #include <windows.h>
 #endif

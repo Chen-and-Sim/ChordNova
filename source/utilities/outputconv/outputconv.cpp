@@ -27,7 +27,7 @@ int main()
 
 	char str[100] = "0";
 	int note, count = 0;
-	fin >> str >> str;
+	fin >> str;
 	fin.get();  fin.get();
 	do{
 		fin >> note;
@@ -41,9 +41,9 @@ int main()
 	{
 		do{
 			fin.getline(str, 100, '\n');
-		}  while(fin && !fin.eof() && fin.peek() != 'n');
+		}  while(fin && !fin.eof() && fin.peek() != '-');
 		if(!fin || fin.eof())  break;
-		fin >> str >> str;
+		fin >> str;
 		fin.get();  fin.get();
 		count = 0;
 		do{

@@ -129,6 +129,7 @@ protected:
 	void print1 ();
 	void print2 ();
 	void print_stats();
+	void print_end();
 	void to_midi();
 	void check_original();
 	void choose_original();

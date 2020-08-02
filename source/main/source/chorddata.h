@@ -36,7 +36,6 @@ protected:
 	void print(const ChordData&);
 
 public:
-	int index;
 	vector<int> pedal_notes_set;
 	vector<int> pedal_notes;
 	
