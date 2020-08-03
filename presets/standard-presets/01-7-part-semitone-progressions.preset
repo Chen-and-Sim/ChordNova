@@ -56,6 +56,7 @@ range of voice leading: custom = true; min = 0; max = 2;
 custom root movement = true;
 priority = [1];
 custom exclusion = false;
+custom similarity = false;
 
 K: min = 40; max = 60;
 T: min = 40; max = 70;

@@ -8,7 +8,6 @@ output name = 07-dom-7-surroundings-chroma-top-1-percent;
 output mode = single;
 output format = Both;
 
-number of progressions = 10;
 number of parts: min = 3; max = 7;
 number of notes: min = 3; max = 7;
 keep number of parts unchanged = false;
@@ -55,6 +54,7 @@ range of voice leading: custom = true; min = 0; max = 2;
 custom root movement = false;
 custom exclusion = true;
 exclusion = \\1[0];
+custom similarity = false;
 
 K: min = 99; max = 100;
 T: min = 0; max = 100;
