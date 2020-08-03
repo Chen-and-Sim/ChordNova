@@ -126,8 +126,8 @@ protected:
 	void init(ChordData&);
 	void get_progression();
 	void sort_results();
-	void print1 ();
-	void print2 ();
+	void print1();
+	void print2();
 	void print_stats();
 	void print_end();
 	void to_midi();

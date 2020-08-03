@@ -760,10 +760,15 @@ void Chord::print_stats()
 		if(temp2 < _t_min)  { _t_min = temp2;  t_min_index = i; }
 		t_sum += temp2;
 
-		temp2 = abs((*ptr)[i].get_chroma());
-		if(temp2 > _k_max)  { _k_max = temp2;  k_max_index = i; }
-		if(temp2 < _k_min)  { _k_min = temp2;  k_min_index = i; }
-		k_sum += temp2;
+		if(i != 0)
+		{
+			if(continual)
+				temp2 = abs((*ptr)[i].get_chroma() - (*ptr)[i - 1].get_chroma());
+			else  temp2 = abs((*ptr)[i].get_chroma() - (*ptr)[0].get_chroma());
+			if(temp2 > _k_max)  { _k_max = temp2;  k_max_index = i; }
+			if(temp2 < _k_min)  { _k_min = temp2;  k_min_index = i; }
+			k_sum += temp2;
+		}
 
 		temp2 = (*ptr)[i].get_thickness();
 		if(temp2 > _h_max)  { _h_max = temp2;  h_max_index = i; }
@@ -807,30 +812,30 @@ void Chord::print_stats()
 
 	if(language == English)
 	{
-		fout << "Other stats:\n" << "Chroma (|k|): "
-			  << "highest - " << _k_max << "(@ #" << k_max_index + 1 << "); "
-			  << "lowest - "  << _k_min << "(@ #" << k_min_index + 1 << "); "
-			  << "average - " << fixed << setprecision(2) << k_sum / count << ";\n";
-		fout << "Similarity (x%): "
-			  << "highest - " << _x_max << "(@ #" << x_max_index + 1 << "); "
-			  << "lowest - "  << _x_min << "(@ #" << x_min_index + 1 << "); "
-			  << "average - " << fixed << setprecision(2) << (double)x_sum / (count - 1) << ";\n";
+		fout << "Other stats:\n" << "Number of notes (n): "
+			  << "most - "    << _n_max << "(@ #" << n_max_index + 1 << "); "
+			  << "least - "   << _n_min << "(@ #" << n_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
+		fout << "Number of parts (m): "
+			  << "most - "    << _m_max << "(@ #" << m_max_index + 1 << "); "
+			  << "least - "   << _m_min << "(@ #" << m_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)m_sum / count << ";\n";
 		fout << "Common notes (c): "
 			  << "most - "    << _c_max << "(@ #" << c_max_index + 1 << "); "
 			  << "least - "   << _c_min << "(@ #" << c_min_index + 1 << "); "
 			  << "average - " << fixed << setprecision(2) << (double)c_sum / (count - 1) << ";\n";
+		fout << "Absolute value of chroma (|k|): "
+			  << "highest - " << _k_max << "(@ #" << k_max_index + 1 << "); "
+			  << "lowest - "  << _k_min << "(@ #" << k_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << k_sum / (count - 1) << ";\n";
+		fout << "Similarity (x%): "
+			  << "highest - " << _x_max << "(@ #" << x_max_index + 1 << "); "
+			  << "lowest - "  << _x_min << "(@ #" << x_min_index + 1 << "); "
+			  << "average - " << fixed << setprecision(2) << (double)x_sum / (count - 1) << ";\n";
 		fout << "Total voice leading (Σvec): "
 			  << "highest - " << _s_max << "(@ #" << s_max_index + 1 << "); "
 			  << "lowest - "  << _s_min << "(@ #" << s_min_index + 1 << "); "
 			  << "average - " << fixed << setprecision(2) << (double)s_sum / (count - 1) << ";\n";
-		fout << "Number of notes (n): "
-			  << "highest - " << _n_max << "(@ #" << n_max_index + 1 << "); "
-			  << "lowest - "  << _n_min << "(@ #" << n_min_index + 1 << "); "
-			  << "average - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
-		fout << "Number of parts (m): "
-			  << "highest - " << _m_max << "(@ #" << m_max_index + 1 << "); "
-			  << "lowest - "  << _m_min << "(@ #" << m_min_index + 1 << "); "
-			  << "average - " << fixed << setprecision(2) << (double)m_sum / count << ";\n";
 		fout << "Root (r): "
 			  << "highest - " << _r_max << "(@ #" << r_max_index + 1 << "); "
 			  << "lowest - "  << _r_min << "(@ #" << r_min_index + 1 << "); "
@@ -850,30 +855,30 @@ void Chord::print_stats()
 	}
 	else
 	{
-		fout << "其他统计：\n" << "和弦进行的色差 (|k|): "
-			  << "最高 - " << _k_max << "(@ #" << k_max_index + 1 << ")；"
-			  << "最低 - " << _k_min << "(@ #" << k_min_index + 1 << ")；"
-			  << "平均 - " << fixed << setprecision(2) << k_sum / count << ";\n";
-		fout << "相邻和弦相似度 (x%): "
-			  << "最高 - " << _x_max << "(@ #" << x_max_index + 1 << ")；"
-			  << "最低 - " << _x_min << "(@ #" << x_min_index + 1 << ")；"
-			  << "平均 - " << fixed << setprecision(2) << (double)x_sum / (count - 1) << ";\n";
+		fout << "其他统计：\n" << "和弦音集音数 (n): "
+			  << "最多 - " << _n_max << "(@ #" << n_max_index + 1 << ")；"
+			  << "最少 - " << _n_min << "(@ #" << n_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
+		fout << "和弦声部数量 (m): "
+			  << "最多 - " << _m_max << "(@ #" << m_max_index + 1 << ")；"
+			  << "最少 - " << _m_min << "(@ #" << m_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)m_sum / count << ";\n";
 		fout << "共同音个数 (c): "
 			  << "最多 - " << _c_max << "(@ #" << c_max_index + 1 << ")；"
 			  << "最少 - " << _c_min << "(@ #" << c_min_index + 1 << ")；"
 			  << "平均 - " << fixed << setprecision(2) << (double)c_sum / (count - 1) << ";\n";
+		fout << "和弦进行色差绝对值 (|k|): "
+			  << "最高 - " << _k_max << "(@ #" << k_max_index + 1 << ")；"
+			  << "最低 - " << _k_min << "(@ #" << k_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << k_sum / (count - 1) << ";\n";
+		fout << "相邻和弦相似度 (x%): "
+			  << "最高 - " << _x_max << "(@ #" << x_max_index + 1 << ")；"
+			  << "最低 - " << _x_min << "(@ #" << x_min_index + 1 << ")；"
+			  << "平均 - " << fixed << setprecision(2) << (double)x_sum / (count - 1) << ";\n";
 		fout << "声部进行总大小 (Σvec): "
 			  << "最高 - " << _s_max << "(@ #" << s_max_index + 1 << ")；"
 			  << "最低 - " << _s_min << "(@ #" << s_min_index + 1 << ")；"
 			  << "平均 - " << fixed << setprecision(2) << (double)s_sum / (count - 1) << ";\n";
-		fout << "和弦音集音数 (n): "
-			  << "最高 - " << _n_max << "(@ #" << n_max_index + 1 << ")；"
-			  << "最低 - " << _n_min << "(@ #" << n_min_index + 1 << ")；"
-			  << "平均 - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
-		fout << "和弦声部数量 (m): "
-			  << "最高 - " << _m_max << "(@ #" << m_max_index + 1 << ")；"
-			  << "最低 - " << _m_min << "(@ #" << m_min_index + 1 << ")；"
-			  << "平均 - " << fixed << setprecision(2) << (double)m_sum / count << ";\n";
 		fout << "根音键位 (r): "
 			  << "最高 - " << _r_max << "(@ #" << r_max_index + 1 << ")；"
 			  << "最低 - " << _r_min << "(@ #" << r_min_index + 1 << ")；"

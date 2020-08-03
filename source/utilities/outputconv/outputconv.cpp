@@ -27,8 +27,7 @@ int main()
 
 	char str[100] = "0";
 	int note, count = 0;
-	fin >> str;
-	fin.get();  fin.get();
+	fin.getline(str, 100, '[');
 	do{
 		fin >> note;
 		if(count != 0)  fout << ' ';

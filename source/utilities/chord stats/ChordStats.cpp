@@ -194,18 +194,18 @@ int main()
 		}
 	}
 
-	int width2 = ( (language == English) ? 28 : 26 );
+	int width2 = ( (language == English) ? 35 : 29 );
 	if(language == English)
 	{
 		cout << " > Other stats:\n" << setw(width2) << left << " > Cardinal (n): "
-			  << "highest - " << setw(6) << left << n_max << "(@ #" << setw(5) << left << n_max_index + 1 << "); "
-			  << "lowest - "  << setw(6) << left << n_min << "(@ #" << setw(5) << left << n_min_index + 1 << "); "
+			  << "most    - " << setw(6) << left << n_max << "(@ #" << setw(5) << left << n_max_index + 1 << "); "
+			  << "least  - "  << setw(6) << left << n_min << "(@ #" << setw(5) << left << n_min_index + 1 << "); "
 			  << "average - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
 		cout << setw(width2) << left << " > Tension (t): "
 			  << "highest - " << setw(6) << left << t_max << "(@ #" << setw(5) << left << t_max_index + 1 << "); "
 			  << "lowest - "  << setw(6) << left << t_min << "(@ #" << setw(5) << left << t_min_index + 1 << "); "
 			  << "average - " << fixed << setprecision(2) << t_sum / count << ";\n";
-		cout << setw(width2) << left << " > Chroma (|k|): "
+		cout << setw(width2) << left << " > Absolute value of chroma (|k|): "
 			  << "highest - " << setw(6) << left << k_max << "(@ #" << setw(5) << left << k_max_index + 1 << "); "
 			  << "lowest - "  << setw(6) << left << k_min << "(@ #" << setw(5) << left << k_min_index + 1 << "); "
 			  << "average - " << fixed << setprecision(2) << k_sum / count << ";\n";
@@ -237,14 +237,14 @@ int main()
 	else
 	{
 		cout << " > 其他统计：\n" << setw(width2) << left << " > 和弦音集音数 (n)："
-			  << "最高 - " << setw(6) << left << n_max << "(@ #" << setw(5) << left << n_max_index + 1 << ")；"
-			  << "最低 - " << setw(6) << left << n_min << "(@ #" << setw(5) << left << n_min_index + 1 << ")；"
+			  << "最多 - " << setw(6) << left << n_max << "(@ #" << setw(5) << left << n_max_index + 1 << ")；"
+			  << "最少 - " << setw(6) << left << n_min << "(@ #" << setw(5) << left << n_min_index + 1 << ")；"
 			  << "平均 - " << fixed << setprecision(2) << (double)n_sum / count << "；\n";
 		cout << setw(width2) << left << " > 紧张度 (t)："
 			  << "最高 - " << setw(6) << left << t_max << "(@ #" << setw(5) << left << t_max_index + 1 << ")；"
 			  << "最低 - " << setw(6) << left << t_min << "(@ #" << setw(5) << left << t_min_index + 1 << ")；"
 			  << "平均 - " << fixed << setprecision(2) << t_sum / count << "；\n";
-		cout << setw(width2) << left << " > 和弦进行的色差 (|k|)："
+		cout << setw(width2) << left << " > 和弦进行色差绝对值 (|k|)："
 			  << "最高 - " << setw(6) << left << k_max << "(@ #" << setw(5) << left << k_max_index + 1 << ")；"
 			  << "最低 - " << setw(6) << left << k_min << "(@ #" << setw(5) << left << k_min_index + 1 << ")；"
 			  << "平均 - " << fixed << setprecision(2) << k_sum / count << "；\n";
@@ -310,14 +310,14 @@ int main()
 		if(language == English)
 		{
 			fout << "Other stats:\n" << "Cardinal (n): "
-				  << "highest - " << n_max << "(@ #" << n_max_index + 1 << "); "
-				  << "lowest - "  << n_min << "(@ #" << n_min_index + 1 << "); "
+				  << "most - "    << n_max << "(@ #" << n_max_index + 1 << "); "
+				  << "least - "   << n_min << "(@ #" << n_min_index + 1 << "); "
 				  << "average - " << fixed << setprecision(2) << (double)n_sum / count << ";\n";
 			fout << "Tension (t): "
 				  << "highest - " << t_max << "(@ #" << t_max_index + 1 << "); "
 				  << "lowest - "  << t_min << "(@ #" << t_min_index + 1 << "); "
 				  << "average - " << fixed << setprecision(2) << t_sum / count << ";\n";
-			fout << "Chroma (|k|): "
+			fout << "Absolute value of chroma (|k|): "
 				  << "highest - " << k_max << "(@ #" << k_max_index + 1 << "); "
 				  << "lowest - "  << k_min << "(@ #" << k_min_index + 1 << "); "
 				  << "average - " << fixed << setprecision(2) << k_sum / count << ";\n";
@@ -349,14 +349,14 @@ int main()
 		else
 		{
 			fout << "其他统计：\n" << "和弦音集音数 (n)："
-				  << "最高 - " << n_max << "(@ #" << n_max_index + 1 << ")；"
-				  << "最低 - " << n_min << "(@ #" << n_min_index + 1 << ")；"
+				  << "最多 - " << n_max << "(@ #" << n_max_index + 1 << ")；"
+				  << "最少 - " << n_min << "(@ #" << n_min_index + 1 << ")；"
 				  << "平均 - " << fixed << setprecision(2) << (double)n_sum / count << "；\n";
 			fout << "紧张度 (t)："
 				  << "最高 - " << t_max << "(@ #" << t_max_index + 1 << ")；"
 				  << "最低 - " << t_min << "(@ #" << t_min_index + 1 << ")；"
 				  << "平均 - " << fixed << setprecision(2) << t_sum / count << "；\n";
-			fout << "和弦进行的色差 (|k|)："
+			fout << "和弦进行的色差绝对值 (|k|)："
 				  << "最高 - " << k_max << "(@ #" << k_max_index + 1 << ")；"
 				  << "最低 - " << k_min << "(@ #" << k_min_index + 1 << ")；"
 				  << "平均 - " << fixed << setprecision(2) << k_sum / count << "；\n";

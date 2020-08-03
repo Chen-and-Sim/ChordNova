@@ -207,8 +207,7 @@ public slots:
 	void set_output_name();
 	void set_continual(bool);
 	void set_output_format(bool);
-	void set_loop_count1(const QString&);
-	void set_loop_count2();
+	void set_loop_count();
 	void set_m_min();
 	void set_m_max();
 	void set_n_min();

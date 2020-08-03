@@ -58,6 +58,7 @@ void Interface::mainGui()
 		grid[0] -> addWidget(label2, 0, 1, 3, 1);
 
 		QPixmap pic1 = QPixmap("icons/icon.png");
+		pic1 = pic1.scaled(57 * scale, 57 * _scale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		QLabel* label3 = new QLabel(this);
 		label3 -> setPixmap(pic1);
 		grid[0] -> addWidget(label3, 0, 2, 3, 1, Qt::AlignRight);
@@ -207,8 +208,7 @@ void Interface::mainGui()
 			edit_loop_count -> setFixedWidth(30 * scale);
 		else  edit_loop_count -> setFixedWidth(60 * scale);
 		grid[3] -> addWidget(edit_loop_count, 0, 1, Qt::AlignLeft);
-		connect(edit_loop_count, &QLineEdit::textChanged, this, &Interface::set_loop_count1);
-		connect(edit_loop_count, &QLineEdit::editingFinished, this, &Interface::set_loop_count2);
+		connect(edit_loop_count, &QLineEdit::editingFinished, this, &Interface::set_loop_count);
 
 		QStringList str2 = {"(only used in continual mode)", "（仅用于连续生成模式）"};
 		QLabel* label1 = new QLabel(str2[language], this);
@@ -548,7 +548,9 @@ void Interface::initMain()
 	}
 
 	QString str;
-	edit_loop_count -> setText(str.setNum(loop_count));
+	if(continual)
+		edit_loop_count -> setText(str.setNum(loop_count));
+	else  edit_loop_count -> setText("/");
 	edit_m_min -> setText(str.setNum(m_min));
 	edit_m_max -> setText(str.setNum(m_max));
 	edit_n_min -> setText(str.setNum(n_min));
@@ -717,7 +719,8 @@ void Interface::read_preset(char* filename)
 	else if(strcmp(str, "TextOnly") == 0)  output_mode = TextOnly;
 	else if(strcmp(str, "MidiOnly") == 0)  output_mode = MidiOnly;
 
-	loop_count = read_data(fin, str);
+	if(continual)
+		loop_count = read_data(fin, str);
 	m_min = read_data(fin, str);
 	m_max = read_data(fin, str);
 	n_min = read_data(fin, str);
@@ -882,6 +885,11 @@ void Interface::set_continual(bool state)
 	{
 		continual = true;
 		edit_initial -> clear();
+		if(edit_loop_count -> text() == "/")
+		{
+			edit_loop_count -> setText("10");
+			loop_count = 10;
+		}
 		notes.clear();
 		edit_loop_count -> setEnabled(true);
 		label_loop_count -> setEnabled(true);
@@ -894,6 +902,7 @@ void Interface::set_continual(bool state)
 	{
 		continual = false;
 		enable_sim = false;
+		edit_loop_count -> setText("/");
 		edit_loop_count -> setDisabled(true);
 		label_loop_count -> setDisabled(true);
 		cb_pedal -> setDisabled(true);
@@ -927,13 +936,7 @@ void Interface::set_output_format(bool state)
 		cb_interlace -> setEnabled(true);
 }
 
-void Interface::set_loop_count1(const QString& text)
-{
-	if(!text.isEmpty())
-		set_loop_count2();
-}
-
-void Interface::set_loop_count2()
+void Interface::set_loop_count()
 {
 	loop_count = (edit_loop_count -> text()).toInt();
 	if(loop_count <= 0)

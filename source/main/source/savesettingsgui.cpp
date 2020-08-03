@@ -123,8 +123,9 @@ void Interface::write_preset()
 		case TextOnly:  fout << "output format = TextOnly;\n\n";  break;
 	}
 
-	fout << "number of progressions = " << loop_count << ";\n"
-		  << "number of parts: min = " << m_min << "; max = " << m_max << ";\n"
+	if(continual)
+		fout << "number of progressions = " << loop_count << ";\n";
+	fout << "number of parts: min = " << m_min << "; max = " << m_max << ";\n"
 		  << "number of notes: min = " << n_min << "; max = " << n_max << ";\n"
 		  << "keep number of parts unchanged = " << boolalpha << m_unchanged << ";\n"
 		  << "ditto = " << boolalpha << nm_same << ";\n\n";
@@ -200,7 +201,7 @@ void Interface::write_preset()
 	if(enable_rm)  fprint("priority = ", rm_priority, " ", ";\n");
 	fout << "custom exclusion = " << boolalpha << enable_ex << ";\n";
 	if(enable_ex)  fout << "exclusion = " << exclusion << ";\n";
-	fout << "custom total voice leading = " << boolalpha << enable_sim << ";\n";
+	fout << "custom similarity = " << boolalpha << enable_sim << ";\n";
 	if(enable_sim)  fout << "similarity = " << str_sim << ";\n\n";
 	else  fout << "\n";
 
