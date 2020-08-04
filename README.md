@@ -7,5 +7,6 @@
 
 # GitHub：最新 Release：版本 2.0.0730 下载 →
 
+# 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1MpK2o_zQpqSp1ap-xm7jxQ ，提取码：1234 。
 
 # 更多 README 请见：【使用前阅读】README.pdf。
