@@ -940,12 +940,12 @@ void Interface::set_to_English()
 
 void Interface::open_manual_Chinese()
 {
-    QDesktopServices::openUrl(QUrl("file:./guide/智弦（SmartChordGen 2.5）用户手册.pdf"));
+	 QDesktopServices::openUrl(QUrl("file:./guide/智弦（SmartChordGen）用户手册.pdf"));
 }
 
 void Interface::open_manual_English()
 {
-    QDesktopServices::openUrl(QUrl("file:./guide/User Guide for SmartChordGen 2.5.pdf"));
+	 QDesktopServices::openUrl(QUrl("file:./guide/SmartChordGen User Guide.pdf"));
 }
 
 void Interface::set_output_name()
