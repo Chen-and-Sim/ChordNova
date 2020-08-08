@@ -9,6 +9,7 @@
 
 # Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v2.5/SmartChordGen.v2.5.0808.Win.exe 
 
+
 # Linux 版：https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v2.5/SmartChordGen.v2.5.0808.Linux.zip
 
 # 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1MpK2o_zQpqSp1ap-xm7jxQ ，提取码：1234 
