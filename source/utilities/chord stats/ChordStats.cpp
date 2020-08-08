@@ -6,12 +6,12 @@
 #include <iostream>
 #include <vector>
 
-#include "..\..\main\source\chord.h"
-#include "..\..\main\source\chord.cpp"
-#include "..\..\main\source\chorddata.h"
-#include "..\..\main\source\chorddata.cpp"
-#include "..\..\main\source\functions.h"
-#include "..\..\main\source\functions.cpp"
+#include "../../main/chord.h"
+#include "../../main/chord.cpp"
+#include "../../main/chorddata.h"
+#include "../../main/chorddata.cpp"
+#include "../../main/functions.h"
+#include "../../main/functions.cpp"
 
 using namespace std;
 

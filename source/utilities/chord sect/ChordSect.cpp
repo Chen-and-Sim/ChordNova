@@ -5,8 +5,8 @@
 #include <iostream>
 #include <vector>
 
-#include "..\..\main\source\functions.h"
-#include "..\..\main\source\functions.cpp"
+#include "../../main/functions.h"
+#include "../../main/functions.cpp"
 using namespace std;
 
 int main()

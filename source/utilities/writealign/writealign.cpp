@@ -4,8 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include "..\..\main\source\functions.h"
-#include "..\..\main\source\functions.cpp"
+#include "../../main/functions.h"
+#include "../../main/functions.cpp"
 
 using namespace std;
 vector<vector<int>> rec1, rec2;

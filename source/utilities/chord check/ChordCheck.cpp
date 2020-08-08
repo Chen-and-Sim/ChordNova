@@ -5,12 +5,12 @@
 #include <iostream>
 #include <vector>
 
-#include "..\..\main\source\chord.h"
-#include "..\..\main\source\chord.cpp"
-#include "..\..\main\source\chorddata.h"
-#include "..\..\main\source\chorddata.cpp"
-#include "..\..\main\source\functions.h"
-#include "..\..\main\source\functions.cpp"
+#include "../../main/chord.h"
+#include "../../main/chord.cpp"
+#include "../../main/chorddata.h"
+#include "../../main/chorddata.cpp"
+#include "../../main/functions.h"
+#include "../../main/functions.cpp"
 
 using namespace std;
 
@@ -71,14 +71,14 @@ int main()
 	cout << "t(A) = " << A.get_tension() << ", "
 		  << "h(A) = " << A.get_thickness() << ", "
 		  << "r(A) = " << A.get_root() << ", "
-		  << "g(A) = " << A.get_g_center() << "\n   ";
+		  << "g(A) = " << A.get_g_center() << "%\n   ";
 	
 	cprint("d(B) = ",   B.get_self_diff(), ", ");
 	cprint("vec(B) = ", B.get_count_vec(), "\0");
 	cout << "t(B) = " << B.get_tension() << ", "
 		  << "h(B) = " << B.get_thickness() << ", "
 		  << "r(B) = " << B.get_root() << ", "
-		  << "g(B) = " << B.get_g_center() << "\n\n   ";
+		  << "g(B) = " << B.get_g_center() << "%\n\n   ";
 	
 	cout << "n(A) = " << A.get_s_size() << ", "
 		  << "n(B) = " << B.get_s_size() << ", "
@@ -125,7 +125,7 @@ int main()
 
 		char str1[100] = "\0", str2[100];
 		cout << "\n > Please input the name of the database (.db) file (Press Enter for default - Pop and Jazz): ";
-		inputFilename(str1, ".db", true, "..\\db\\chord\\00-pop-and-jazz");
+		inputFilename(str1, ".db", true, "../db/chord/00-pop-and-jazz");
 		ignore_path_ext(str2, str1); 
 		dbentry(str1);
 
