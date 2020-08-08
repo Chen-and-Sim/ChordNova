@@ -9,6 +9,7 @@ output mode = continual;
 output format = Both;
 
 number of progressions = 30;
+range of notes: min = 62; max = 96;
 number of parts: min = 1; max = 5;
 number of notes: min = 1; max = 5;
 keep number of parts unchanged = false;
@@ -19,16 +20,14 @@ title of chord database (English) = Ryukyu scale chords;
 title of chord database (Chinese) = “琉球”音阶和弦;
 size of chord database = 21;
 
-range of notes: min = 62; max = 96;
-overall scale = [1 2 4 6 7 9 11];
-enable pedal = false;
-enable more rules = true;
-
 input mode = manual;
 initial chord = 62 69 73 74 81;
 connect pedal notes = false;
 interlace = false;
 unique mode = RemoveDup;
+
+have set overall scale = true;
+overall scale = [1 2 4 6 7 9 11];
 
 omission for 3-note chords = [];
 omission for 4-note chords = [];
@@ -41,6 +40,7 @@ bass note allowed = [1 3 5 7 9 11 13];
 align mode = Interval;
 intervals: i_low = 4; i_high = 10; i_min = 1; i_max = 8;
 
+enable pedal notes = false;
 in bass = true;
 pedal notes = [];
 realign = true;

@@ -9,6 +9,7 @@ output mode = continual;
 output format = Both;
 
 number of progressions = 20;
+range of notes: min = 48; max = 96;
 number of parts: min = 3; max = 7;
 number of notes: min = 3; max = 7;
 keep number of parts unchanged = false;
@@ -19,16 +20,14 @@ title of chord database (English) = All chords;
 title of chord database (Chinese) = 所有和弦;
 size of chord database = 274;
 
-range of notes: min = 48; max = 96;
-overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
-enable pedal = true;
-enable more rules = true;
-
 input mode = manual;
 initial chord = 48 55 58 62;
 connect pedal notes = true;
 interlace = false;
 unique mode = RemoveDupType;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
 
 omission for 3-note chords = [];
 omission for 4-note chords = [5];
@@ -41,6 +40,7 @@ bass note allowed = [1];
 align mode = Interval;
 intervals: i_low = 7; i_high = 7; i_min = 2; i_max = 12;
 
+enable pedal notes = true;
 in bass = false;
 pedal notes = [0];
 realign = false;

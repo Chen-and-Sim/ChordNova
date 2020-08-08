@@ -9,6 +9,7 @@ output mode = continual;
 output format = Both;
 
 number of progressions = 20;
+range of notes: min = 54; max = 83;
 number of parts: min = 3; max = 3;
 number of notes: min = 3; max = 3;
 keep number of parts unchanged = true;
@@ -19,16 +20,14 @@ title of chord database (English) = Domainant 7th chords only;
 title of chord database (Chinese) = 只限大小七（属七）和弦;
 size of chord database = 1;
 
-range of notes: min = 54; max = 83;
-overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
-enable pedal = false;
-enable more rules = true;
-
 input mode = manual;
 initial chord = 67 77 83;
 connect pedal notes = false;
 interlace = false;
 unique mode = RemoveDup;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
 
 omission for 3-note chords = [];
 omission for 4-note chords = [5];
@@ -44,6 +43,7 @@ title of alignment database (English) = R-3-7 and R-7-3;
 title of alignment database (Chinese) = 根-三-七、根-七-三;
 size of alignment database = 2;
 
+enable pedal notes = false;
 in bass = true;
 pedal notes = [];
 realign = true;

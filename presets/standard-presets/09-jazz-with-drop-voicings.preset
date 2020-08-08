@@ -9,6 +9,7 @@ output mode = continual;
 output format = Both;
 
 number of progressions = 50;
+range of notes: min = 48; max = 76;
 number of parts: min = 4; max = 5;
 number of notes: min = 4; max = 5;
 keep number of parts unchanged = false;
@@ -19,15 +20,13 @@ title of chord database (English) = Pop and Jazz;
 title of chord database (Chinese) = 流行爵士和弦类型库;
 size of chord database = 65;
 
-range of notes: min = 48; max = 76;
-overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
-enable pedal = false;
-enable more rules = true;
-
 input mode = automatic;
 connect pedal notes = true;
 interlace = false;
 unique mode = RemoveDup;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
 
 omission for 3-note chords = [];
 omission for 4-note chords = [5];
@@ -43,6 +42,7 @@ title of alignment database (English) = Drop voicings (up to 9th);
 title of alignment database (Chinese) = “低移音”排列（三、七、九和弦）;
 size of alignment database = 44;
 
+enable pedal notes = false;
 in bass = true;
 pedal notes = [];
 realign = true;
@@ -55,10 +55,9 @@ enable descending voices = true;
 steady voices: min = 0; max = 4;
 ascending voices: min = 0; max = 4;
 descending voices: min = 0; max = 4;
-range of voice leading: custom = true; min = 0; max = 4;
+range of voice leading: custom = false; min = 0; max = 4;
 custom root movement = false;
-custom exclusion = true;
-exclusion = ;
+custom exclusion = false;
 custom similarity = false;
 
 K: min = 0; max = 100;

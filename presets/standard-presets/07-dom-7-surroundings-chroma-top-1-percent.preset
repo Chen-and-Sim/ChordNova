@@ -8,6 +8,7 @@ output name = 07-dom-7-surroundings-chroma-top-1-percent;
 output mode = single;
 output format = Both;
 
+range of notes: min = 53; max = 76;
 number of parts: min = 3; max = 7;
 number of notes: min = 3; max = 7;
 keep number of parts unchanged = false;
@@ -18,16 +19,14 @@ title of chord database (English) = All chords;
 title of chord database (Chinese) = 所有和弦;
 size of chord database = 350;
 
-range of notes: min = 53; max = 76;
-overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
-enable pedal = false;
-enable more rules = true;
-
 input mode = manual;
 initial chord = 55 65 71 74;
 connect pedal notes = false;
 interlace = true;
 unique mode = RemoveDup;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
 
 omission for 3-note chords = [];
 omission for 4-note chords = [5];
@@ -38,6 +37,8 @@ omission for 7-note chords = [3 5];
 bass note allowed = [1 3 5 7 9 11 13];
 
 align mode = Unlimited;
+
+enable pedal notes = false;
 in bass = true;
 pedal notes = [];
 realign = true;

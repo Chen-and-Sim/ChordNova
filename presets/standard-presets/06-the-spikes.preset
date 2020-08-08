@@ -9,6 +9,7 @@ output mode = continual;
 output format = Both;
 
 number of progressions = 50;
+range of notes: min = 80; max = 108;
 number of parts: min = 3; max = 5;
 number of notes: min = 3; max = 5;
 keep number of parts unchanged = false;
@@ -19,16 +20,14 @@ title of chord database (English) = The spikes;
 title of chord database (Chinese) = 尖锐刺耳;
 size of chord database = 21;
 
-range of notes: min = 80; max = 108;
-overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
-enable pedal = false;
-enable more rules = true;
-
 input mode = manual;
 initial chord = 93 94 95 96;
 connect pedal notes = false;
 interlace = false;
 unique mode = RemoveDup;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
 
 omission for 3-note chords = [];
 omission for 4-note chords = [];
@@ -44,6 +43,7 @@ title of alignment database (English) = The spikes (align);
 title of alignment database (Chinese) = 尖锐刺耳（排列）;
 size of alignment database = 9;
 
+enable pedal notes = false;
 in bass = true;
 pedal notes = [];
 realign = true;
