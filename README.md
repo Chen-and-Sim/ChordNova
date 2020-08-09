@@ -2,9 +2,9 @@
 
 # 智弦——无限和声生成器
 
-** by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM) | 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试） *
+**by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM) | 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
 
-![Alt text](graphics/screenshots/SmartChordGen-main-screenshot.png
+![Alt text](graphics/screenshots/SmartChordGen-main-screenshot.png)
 
 # Latest Release 最新：v2.5 Downloads 下载 ↓ 
 
