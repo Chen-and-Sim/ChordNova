@@ -1,8 +1,9 @@
-# SmartChordGen 智弦
+# SmartChordGen - Infinite chord progression generator 智弦——无限和声生成器
 
-# 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试） 
-![Alt text](graphics/screenshots/SmartChordGen-main-screenshot.png)
-# GitHub：最新 Release：版本 2.5 下载 ↓ 
+# by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM) | 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试） 
+![Alt text](graphics/screenshots/SmartChordGen-main-screenshot.png
+
+# Latest Release 最新：v2.5 Downloads 下载 ↓ 
 
 # Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v2.5/SmartChordGen.v2.5.0808.Win.exe
 
