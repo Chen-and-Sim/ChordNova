@@ -1,0 +1,14 @@
+// SmartChordGen Alignment Database
+// (c) 2020 Ji-woon Sim.
+// Database begins below.
+title_en = The spikes (align)
+title_ch = 尖锐刺耳（排列）
+1 9 9
+1 9 3
+1 9 9 3
+1 9 3 3
+1 9 3 11
+1 9 9 3 3
+1 9 9 3 11
+1 9 3 3 11
+1 9 3 11 11

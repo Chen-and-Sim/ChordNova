@@ -1,0 +1,10 @@
+// SmartChordGen Chord Database
+// (c) 2020 Ji-woon Sim.
+// Database begins below.
+title_en = Chords with vec [0xxxx0]
+title_ch = 音程涵量为 [0xxxx0] 的和弦
+0
+0 2 4 7
+0 3 5 7
+0 3 5 8
+0 2 4 7 9
