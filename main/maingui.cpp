@@ -4,8 +4,6 @@
 
 #include "Interface.h"
 
-#include <QDebug>
-
 Interface::Interface(QWidget* parent): QWidget(parent)
 {
 #if __WIN32
