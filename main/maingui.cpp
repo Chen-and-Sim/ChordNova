@@ -20,7 +20,12 @@ Interface::Interface(QWidget* parent): QWidget(parent)
 #endif
 
 	root_path = QDir::currentPath();
-	root_path = root_path.left(root_path.size() - 4);
+
+    // Change the way of getting ROOT_PATH
+    // Edited by Skykey
+    //root_path = root_path.left(root_path.size() - 4);
+    root_path = root_path.mid(0,root_path.lastIndexOf('/'));
+
 	font = QFont("Microsoft YaHei", 9, QFont::Normal);
 	setFont(font);
 	vbox = new QVBoxLayout(this);
@@ -940,12 +945,18 @@ void Interface::set_to_English()
 
 void Interface::open_manual_Chinese()
 {
-	 QDesktopServices::openUrl(QUrl("file:./guide/智弦（SmartChordGen）用户手册.pdf"));
+    // Fixed fileUrl error on linux
+    // Edited by Skykey
+    //QDesktopServices::openUrl(QUrl("file:./guide/智弦（SmartChordGen）用户手册.pdf"));
+    QDesktopServices::openUrl(QUrl(tr("file:%1/bin/guide/智弦（SmartChordGen）用户手册.pdf").arg(root_path)));
 }
 
 void Interface::open_manual_English()
 {
-	 QDesktopServices::openUrl(QUrl("file:./guide/SmartChordGen User Guide.pdf"));
+    // Fixed fileUrl error on linux
+    // Edited by Skykey
+    //QDesktopServices::openUrl(QUrl("file:./guide/SmartChordGen User Guide.pdf"));
+    QDesktopServices::openUrl(QUrl(tr("file:%1/bin/guide/SmartChordGen User Guide.pdf").arg(root_path)));
 }
 
 void Interface::set_output_name()
@@ -1367,7 +1378,10 @@ void Interface::set_remove_dup_type(int state)
 
 void Interface::open_utilities()
 {
-    QDesktopServices::openUrl(QUrl("file:../utilities"));
+    // Fixed fileUrl error on linux
+    // Edited by Skykey
+    //QDesktopServices::openUrl(QUrl("file:../utilities"));
+    QDesktopServices::openUrl(QUrl(tr("file:%1/utilities").arg(root_path)));
 }
 
 void Interface::run()
