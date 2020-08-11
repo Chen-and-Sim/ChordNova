@@ -1497,9 +1497,9 @@ void Interface::run()
 	if(completed -> clickedButton() == open)
 	{
 		if(output_mode != TextOnly)
-            QDesktopServices::openUrl( QUrl("file:../output/" + (QString)output_name + ".mid") );
+        		QDesktopServices::openUrl(QUrl( ((QString)"file:%1/output/%2.mid").arg(root_path).arg(output_name) ));
 		if(output_mode != MidiOnly)
-            QDesktopServices::openUrl( QUrl("file:../output/" + (QString)output_name + ".txt") );
+		    	QDesktopServices::openUrl(QUrl( ((QString)"file:%1/output/%2.txt").arg(root_path).arg(output_name) ));
 	}
 	rm_priority.assign(temp1.begin(), temp1.end());
 	notes.assign(temp2.begin(), temp2.end());
