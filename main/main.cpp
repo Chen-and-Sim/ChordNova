@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 	Interface window;
 
-	window.setWindowTitle("SmartChordGen 2.5.0808");
+	window.setWindowTitle("SmartChordGen v2.5.0808");
 	window.setWindowIcon(QIcon("icons/icon.png"));
 	window.show();
 
