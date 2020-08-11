@@ -1,4 +1,5 @@
 # SmartChordGen 智弦 - 无限和声生成器
+# 生成音乐试听：https://music.163.com/#/album?id=93026223
 ![Alt text](graphics/screenshots/SmartChordGen-main-screenshot.png)
 # by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM.)
 # 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
