@@ -1395,10 +1395,10 @@ void Interface::run()
 		read_alignment(path2);
 	}
 
-	if(automatic)  choose_original();
+	if(automatic)  choose_initial();
 	else
 	{
-		try{ check_original(); }
+		try{ check_initial(); }
 		catch(const char* msg)
 		{
 			QMessageBox::warning(this, str1[language], msg, QMessageBox::Close);

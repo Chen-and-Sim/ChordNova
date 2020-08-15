@@ -130,8 +130,8 @@ protected:
 	void print_stats();
 	void print_end();
 	void to_midi();
-	void check_original();
-	void choose_original();
+	void check_initial();
+	void choose_initial();
 
 public:
 	Chord();

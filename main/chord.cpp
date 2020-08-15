@@ -1025,7 +1025,8 @@ void Chord::to_midi()
 }
 
 
-void Chord::check_original()
+void Chord::check_initial()
+// check the initial chord the user input
 {
 	t_size = notes.size();
 	if(t_size < m_min || t_size > m_max)
@@ -1111,7 +1112,8 @@ void Chord::check_original()
 	}
 }
 
-void Chord::choose_original()
+void Chord::choose_initial()
+// automatically chooses an initial chord that satisfies the conditions
 {
 	vector<int> intersection;
 	while(true)
@@ -1136,7 +1138,6 @@ void Chord::choose_original()
 				&& (find(chord_library, set_id) == -1) && (find(bass_avail, alignment[0]) == -1)
 				&& (align_mode == Unlimited || valid_alignment(*this)) && ( !(enable_pedal && continual && !include_pedal(*this))
 				&& (!(enable_ex && !valid_exclusion(*this))) && ((int)intersection.size() == s_size));
-		// too ugly
 		if(b)  break;
 	}
 }
