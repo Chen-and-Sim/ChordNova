@@ -3,7 +3,7 @@
 # 生成音乐试听：https://music.163.com/#/album?id=93026223
 # by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM.)
 # 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
-# Latest Release 最新版本：v2.5r1 [20200814] Downloads 下载 ↓
+# Latest Release 最新版本：v2.5r1 [20200814] Downloads 下载 ↓ 
 # Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v2.5/SmartChordGen.v2.5.0808.Win.exe
 # Linux 版：https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v2.5/SmartChordGen.v2.5.0808.Linux.zip
 # 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1MpK2o_zQpqSp1ap-xm7jxQ ，提取码：1234
