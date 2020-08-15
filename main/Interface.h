@@ -28,7 +28,7 @@
 #include <QUrl>
 
 #if __WIN32
-#include <windows.h>
+#include <windows.h>  // in order to get 'scale'
 #endif
 
 #include "chord.h"
@@ -41,16 +41,20 @@ class Interface: public QWidget, public Chord
 	Q_OBJECT
 
 private:
-	double scale;
+	double scale;  // the actual magnification scale of the screen
 	double _scale;
-	QFont  font;
-	QVBoxLayout* vbox;
+	// The value 'scale' works perfect broadwise, but not lengthwise, so we provide an auxiliary value for it.
+	//	It is not guaranteed to work normally in all situations.
+	QFont  font;   // default font in the program
+	QVBoxLayout* vbox;  // the frame of maingui
 	QString  root_path;
 	QString  cur_preset[2];
 	QString  cur_preset_filename;
 	QString  cur_preset_path;
 	QString  preset[2];
 	QString  preset_filename;
+	// the two parameters above are used only when saving settings
+	// (i.e. temporarily records the data users input)
 	SaveMode save_mode;
 
 	QLabel* label_preset_filename;
@@ -110,15 +114,15 @@ private:
 	QRadioButton* btn_custom_overall_scale;
 	QCheckBox* cb_0_11[12];
 
-	bool have_set_omission;
+	bool have_set_omission;  // is false if and only if a preset is imported
 	QWidget* omission_window;
 	QCheckBox* cb_reserve[5][7];
 
-	bool have_set_inversion;
+	bool have_set_inversion; // is false if and only if a preset is imported
 	QWidget* inversion_window;
 	QCheckBox* cb_note[7];
 
-	bool have_set_alignment;
+	bool have_set_alignment; // is false if and only if a preset is imported
 	QWidget* alignment_window;
 	QRadioButton* btn_interval;
 	QRadioButton* btn_alignment;
@@ -131,6 +135,7 @@ private:
 	QLabel* label_custom[8];
 	QPushButton* btn_align_db;
 
+	// 'have_set_pedal_notes' is equivalent to 'Chord::enable_pedal'.
 	QWidget* pedal_notes_window;
 	QCheckBox* cb_enable_pedal;
 	QCheckBox* cb_in_bass;
@@ -176,6 +181,7 @@ private:
 	QRadioButton* btn_custom_sim;
 	QLineEdit* edit_custom_sim;
 
+	// 'have_set_more_param' is determined by whether 'sort_order' is empty.
 	QWidget* more_param_window;
 	QCheckBox* cb_param[_TOTAL];
 	QLineEdit* edit_min[_TOTAL];
@@ -200,19 +206,20 @@ private:
 	void initPedalNotes();
 	void initMoreRules();
 	void initMoreParam();
-	void doPainting();
+	void doPainting();  // draws the blue lines and background colours
 	void clear(QLayout*);
 	void paintEvent(QPaintEvent* e);
 	void closeEvent(QCloseEvent* e);
 	void set_default_param(int);
 	void set_param_min(int, int);
 	void set_param_max(int, int);
+	// The three functions above is used in 'moreparamgui'.
 
 public slots:
-	void import_preset();
-	int  read_data(ifstream&, char*);
-	void read_vec(ifstream&, char*, vector<int>&);
-	void read_preset(char*);
+	void import_preset();  // selects a preset and opens it
+	int  read_data(ifstream&, char*);  // can read a string, bool or int from preset
+	void read_vec(ifstream&, char*, vector<int>&);  // reads a vector from preset
+	void read_preset(char*);  // assigns values to variables from preset
 	void set_to_Chinese();
 	void set_to_English();
 	void open_manual_Chinese();
@@ -232,6 +239,7 @@ public slots:
 	void sync_minmax();
 	void sync_nm();
 	void import_database();
+	// not actually reads it; just gets some data that will appear in the interface
 	void set_manual(bool);
 	void input_initial();
 	void set_initial();
@@ -241,6 +249,8 @@ public slots:
 	void set_remove_dup_type(int);
 	void open_utilities();
 	void run();
+	// reads chord and align database, receives and displays error messages,
+	// and runs the program
 
 	void set_save_mode(bool);
 	void set_preset_Chinese();
@@ -263,7 +273,7 @@ public slots:
 	void set_i_high();
 	void set_i_min();
 	void set_i_max();
-	void import_alignment();
+	void import_alignment(); // similar to 'import_database'
 	void closeAlignment();
 
 	void set_enable_pedal_notes(int);
@@ -314,7 +324,7 @@ public slots:
 	void set_g_max();
 	void set_x_min();
 	void set_x_max();
-	void closeMoreParam();
+	void closeMoreParam();  // mainly checks whether the orders are set correctly
 
 public:
 	Interface(QWidget* parent = nullptr);
@@ -322,5 +332,6 @@ public:
 
 extern void (Interface::*set_min[_TOTAL]) ();
 extern void (Interface::*set_max[_TOTAL]) ();
+// The variables above unifies the functions in 'moreparamgui'.
 
 #endif

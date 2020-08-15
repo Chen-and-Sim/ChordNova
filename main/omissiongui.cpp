@@ -19,7 +19,7 @@ void Interface::omissionGui()
 	QGridLayout* grid = new QGridLayout(omission_window);
 	grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 25 * scale);
 	grid -> setRowMinimumHeight(7, 40 * _scale);
-	grid -> setVerticalSpacing(15);
+	grid -> setVerticalSpacing(15 * _scale);
 
 	QStringList str1[2] = { {"Root", "3rd",  "5th",  "7th", " 9th/2nd ",  " 11th/4th ", " 13th/6th "},
 									{"根音", "三音", "五音", "七音", "9（附2）音", "11（附4）音", "13（附6）音"} };

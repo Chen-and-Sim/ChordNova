@@ -11,29 +11,30 @@ using std::vector;
 class ChordData
 {
 protected:
-	int t_size; // n  // size of notes
-	int s_size; // m  // size of note_set
-	double tension; // t
+	int t_size;       // n; size of notes
+	int s_size;       // m; size of note_set
+	double tension;   // t
 	double thickness; // h
-	int root; // r
-	double g_center; // g
-	double chroma; // k
-	int common_note; // c
-	int sv; // s
-	int similarity; // x
+	int root;         // r
+	double g_center;  // g
+	double chroma;    // k
+	int common_note;  // c
+	int sv;           // s
+	int similarity;   // x
 	int steady_count;
 	int ascending_count;
 	int descending_count;
 	int root_movement;
 	
-	vector<int> notes;
-	vector<int> note_set; // set, not necessarily beginning with 0
-	vector<int> vec; // v
+	vector<int> notes;     // always regarded as a sorted (L -> H) vector
+	vector<int> note_set;  // set, not necessarily beginning with 0,
+								  // and is always regarded as a sorted (L -> H) vector
+	vector<int> vec;       // v
 	vector<int> self_diff; // d
 	vector<int> count_vec; // vec
-	vector<int> alignment;
+	vector<int> alignment; // e.g. [3, 1, 7] means the chord is aligned as '3rd note, root, 7th note'.
 
-	void print(const ChordData&);
+	void print(const ChordData&); // prints data of a single chord
 
 public:
 	vector<int> pedal_notes_set;
@@ -117,7 +118,9 @@ extern bool inferior_rm       (const ChordData&, const ChordData&);
 
 const int _TOTAL = 11;
 const char var[_TOTAL] = {'K', 'T', 'C', 'S', 'M', 'N', 'R', 'H', 'G', 'X', 'V'};
+// name of parameters
 extern bool (*compare[_TOTAL][2]) (const ChordData&, const ChordData&);
+// to unify the compare functions
 extern vector<int> rm_priority;
 
 #endif

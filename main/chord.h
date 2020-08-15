@@ -43,7 +43,7 @@ protected:
 	int  loop_count;
 	bool m_unchanged;
 	bool nm_same;
-	char database[2][100];
+	char database[2][100];  // English and Chinese name of chord database
 	char database_filename[100];
 	int  database_size;
 	bool enable_pedal;
@@ -53,7 +53,7 @@ protected:
 	char str_notes[100];
 	UniqueMode unique_mode;
 	vector<int> bass_avail;
-	char align_db[2][100];
+	char align_db[2][100];  // English and Chinese name of align database
 	char align_db_filename[100];
 	int  align_db_size;
 	AlignMode align_mode;
@@ -88,24 +88,24 @@ protected:
 	double h_min, h_max;
 	double g_min, g_max;
 	int    x_min, x_max;
-	int  highest, lowest;
-	int   vl_min, vl_max;
-	int    i_min, i_max, i_high, i_low;
+	int  highest, lowest; // range of notes
+	int   vl_min, vl_max; // range of movement
+	int    i_min, i_max, i_high, i_low; // range of interval
 	double steady_min, steady_max;
 	double ascending_min, ascending_max;
 	double descending_min, descending_max;
 
 	clock_t begin, begin_progr, end;
-	int exp_count;
+	int exp_count; // short for expansion_count
 	int progr_count;
-	int c_size; // size of new_chords
-	int set_id;
-	long long vec_id;
-	long long max_cnt;
-	vector<int> rec_id;
-	vector<long long> vec_ids;
-	vector<ChordData> record;
-	vector<ChordData> new_chords;
+	int c_size;    // size of new_chords
+	int set_id;    // an integer representing 'note_set'; unique for different 'note_set's
+	long long vec_id;   // an integer representing 'vec'; unique for different 'vec's
+	long long max_cnt;  // total number of possible movement vectors
+	vector<int> rec_id; // contains 'set_id' of all 12 transpositions of 'note_set'
+	vector<long long> vec_ids; // contains the 'vec_id' of generated chords in a single progression
+	vector<ChordData> record;  // contains the generated chords in continual mode
+	vector<ChordData> new_chords; // contains the generated chords in a single progression
 
 	void next(vector<int>&);
 	void expand(Chord&, const int&, const int&);
@@ -141,6 +141,7 @@ public:
 	int& get_set_id();
 	void Main();
 	void _set_vl_max(const int&);
+	// Used in utilities. This function is needed because 'similarity' is related to 'vl_max'.
 	void find_vec(Chord&);
 
 #ifdef QT_CORE_LIB

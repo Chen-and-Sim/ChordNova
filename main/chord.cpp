@@ -20,6 +20,7 @@ int restriction[12] = {0, 53, 53, 51, 50, 51, 52, 39, 51, 50, 51, 52};
 vector<int> overall_scale = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
 void Chord::next(vector<int>& orig_vec)
+// used for iteration in 'set_new_chords'
 {
 	int index = 0;
 	while(index < m_max)
@@ -37,6 +38,7 @@ void Chord::next(vector<int>& orig_vec)
 }
 
 void Chord::expand(Chord& expansion, const int& target_size, const int& index)
+// expand 'notes' to 'target_size' by using expansion method #'index'
 {
 	expansion.notes.clear();
 	for(int i = 0; i < target_size; ++i)
@@ -48,6 +50,7 @@ void Chord::expand(Chord& expansion, const int& target_size, const int& index)
 }
 
 bool Chord::valid(Chord& new_chord)
+// checks various conditions
 {
 	int i, pos = 1;
 	for(i = 1; i < new_chord.t_size; ++i)
@@ -293,6 +296,8 @@ void Chord::set_vec_id(Chord& chord)
 		exp *= (2 * vl_max + 1);
 	}
 }
+// e.g. for vl_max = 4, (vl_min = 1), vec = [2, 3, -2, 0, 4],
+//		  vec_id = 84276 in base 9 = 55635 in base 10.
 
 void Chord::set_g_center(Chord& chord)
 {
@@ -315,6 +320,7 @@ void Chord::set_similarity(Chord& chord1, Chord& chord2, const int& period = 1)
 }
 
 void Chord::set_param1()
+// these are parameters related only to the chord itself
 {
 	note_set.clear();
 	t_size = notes.size();
@@ -340,10 +346,10 @@ void Chord::set_param1()
 		set_id += (1 << note_set[i]);
 
 	chroma = 0.0;
-	for(int i = 0; i < t_size; ++i)
-		chroma = chroma + 6 - (5 * notes[i] + 6) % 12;
+	for(int i = 0; i < s_size; ++i)
+		chroma = chroma + 6 - (5 * note_set[i] + 6) % 12;
 	// You can check the result for notes from 0 to 11.
-	chroma /= (double)t_size;
+	chroma /= (double)s_size;
 	chroma = floor(chroma * 100) / 100.0;
 
 	self_diff.clear();
@@ -382,6 +388,7 @@ void Chord::set_param1()
 }
 
 void Chord::set_param2(Chord& chord)
+// these are parameters related to both the chord itself and the generated chord
 {
 	chord.ascending_count = 0;
 	chord.steady_count = 0;
@@ -405,6 +412,11 @@ void Chord::set_new_chords(Chord& chord)
 	vector<int> orig_vec;
 	for(int i = 0; i < m_max; ++i)
 		orig_vec.push_back(-vl_max);
+	// This is the (movement) vector and from it we can get a new chord.
+	// However, a new chord may correspond to multiple movement vectors.
+	// 'orig_vec' may not be of the simplest form among all equivalent movement vectors,
+	// so it can not be directly used.
+	// The movement vector is determined in 'find_vec'.
 #ifdef QT_CORE_LIB
 	long long step = min(max_cnt / 100, (long long)1E7);
 #else
@@ -493,6 +505,7 @@ void Chord::get_progression()
 	int len = comb(m_max - 1, t_size - 1);
 	// We will expand the chord to a size of 'm_max' by adding some notes from itself.
 	// It can be proved that "len" equals to the number of different "expansions".
+
 #ifdef QT_CORE_LIB
 	prgdialog -> setMaximum(len * 1000);
 	prgdialog -> setMinimumDuration(0);
@@ -506,6 +519,7 @@ void Chord::get_progression()
 		expand(expansion, m_max, exp_count - 1);
 		set_new_chords(expansion);
 	}
+
 #ifdef QT_CORE_LIB
 	if(continual)
 	{
@@ -917,6 +931,11 @@ void Chord::print_end()
 }
 
 void Chord::to_midi()
+// writes the results to a MIDI file
+// For single mode or continual mode with 'connect_pedal' == false, the midi file is written in one track;
+// for continual mode with 'connect_pedal' == true, it is written in three tracks.
+// The first track contains some information including title, tempo and copyright,
+// the second track contains non-pedal notes, and the third track contains pedal notes.
 {
 	int chord_count, note_count = 0;
 	if(continual)
@@ -954,6 +973,7 @@ void Chord::to_midi()
 			}
 			m_fout.write("\x00\xFF\x2F\x00\x4D\x54\x72\x6B", 8);
 			
+			// Please refer to the function 'chord_to_midi' in the file 'functions'.
 			if(in_bass)  period = chord_count;
 			int group_count = ceil(record.size() / period);
 			int addition = ((period > 34) ? 2 : 1) * group_count;
@@ -1116,12 +1136,14 @@ void Chord::choose_original()
 				&& (find(chord_library, set_id) == -1) && (find(bass_avail, alignment[0]) == -1)
 				&& (align_mode == Unlimited || valid_alignment(*this)) && ( !(enable_pedal && continual && !include_pedal(*this))
 				&& (!(enable_ex && !valid_exclusion(*this))) && ((int)intersection.size() == s_size));
+		// too ugly
 		if(b)  break;
 	}
 }
 
 Chord::Chord() = default;
 Chord::Chord(const vector<int>& _notes)
+// used in utilities
 {
 	notes = _notes;
 	remove_duplicate(notes);
@@ -1195,6 +1217,10 @@ void Chord::_set_vl_max(const int & _vl_max)
 { vl_max = _vl_max; }
 
 void Chord::find_vec(Chord& new_chord)
+// First we expand the smaller one (refer to size) of two chords to the same size of another one.
+// Then we iterate through all expansions and get 'vec' and 'sv'.
+// The one with the smallest 'sv' will be chosen.
+// Notice: set_param2 is called.
 {
 	int diff, min_diff = 1000, min_index = 0, len;
 	Chord expansion;
@@ -1248,6 +1274,8 @@ void Chord::set_est_time(const int& value)
 {
 	static double  prev[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	const double weight[9] = {1, 1, 1.5, 1.5, 1.5, 2, 2, 2, 1.5};
+	// To avoid huge fluctuation, we will calculate weighted mean with previous remaining times.
+	// However, the array itself is given somewhat randomly.
 	if(value == prgdialog -> maximum())
 	{
 		for(int i = 0; i < 9; ++i)
@@ -1259,6 +1287,8 @@ void Chord::set_est_time(const int& value)
 	double dur = (end - begin_progr) / CLOCKS_PER_SEC;
 	double rem = (double)dur / (value + 1.0) * (prgdialog -> maximum() - value)
 					 * exp2(1.0 - (double)value / prgdialog -> maximum());
+	// The last term is a modification, at the beginning it is 2 and it gradually drops to 1.
+	// It is set because the speed of the program will decrease as the size of 'new_chords' grows up.
 	double weighted_rem = rem;
 	for(int i = 0; i < 9; ++i)
 	{

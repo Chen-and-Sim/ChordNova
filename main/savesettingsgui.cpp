@@ -100,6 +100,8 @@ void Interface::set_preset_filename()
 { preset_filename = edit_filename -> text() + ".preset"; }
 
 void Interface::write_preset()
+// Format: name + " = " + value + ";"
+// '\n' is optional
 {
 	if(save_mode == SaveAs)
 		cur_preset_path = "../presets/user-presets/" + preset_filename;

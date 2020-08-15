@@ -16,11 +16,12 @@ double INF  =  1E9;
 double MINF = -1E9;
 int expansion_indexes[16][16][3432][15];
 int note_pos[12] = {1, 9, 9, 3, 3, 11, 11, 5, 13, 13, 7, 7};
-vector<int> omission[13];
+vector<int> omission[8];
 vector<int> chord_library;
 vector<vector<int>> alignment_list;
 
 void inputY_N(char& ch)
+// Input 'Y', 'y', 'N' or 'n'.
 {
 	cin >> ch; 
 	while(!cin || (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n') )
@@ -34,6 +35,10 @@ void inputY_N(char& ch)
 }
 
 void inputFilename(char* str, const char* ext, bool find_file, const char* dflt)
+// Input a string and set it to str.
+// If the string does not have a extension, 'ext' will be added to the end of the string.
+// If 'find_file' == true, the input string should be the filename of existing files.
+// If the user input 'Enter', the default value 'dflt' will be set.
 {
 	ifstream fin;
 	do{
@@ -43,8 +48,8 @@ void inputFilename(char* str, const char* ext, bool find_file, const char* dflt)
 			strcpy(str, dflt);
 			
 		char* pc = strrchr(str, '.');
-        if(pc == nullptr || *(pc + 1) == '\\' || *(pc + 1) == '/')
-		  strcat(str, ext);
+		if(pc == nullptr || *(pc + 1) == '\\' || *(pc + 1) == '/')
+			strcat(str, ext);
 		
 		if(find_file)
 		{
@@ -59,6 +64,8 @@ void inputFilename(char* str, const char* ext, bool find_file, const char* dflt)
 }
 
 void inputVec(vector<int>& vec, const int& min, const int& max, bool organize)
+// Input a vector with all elements between 'min' and 'max'.
+// If 'organize' == true, the vector will be sorted and duplicate elements will be deleted.
 {
 	bool b;  char str[10];
 	do{
@@ -100,6 +107,7 @@ void inputVec(vector<int>& vec, const int& min, const int& max, bool organize)
 
 
 int nametonum(char* str)
+// Converts pitch name to midi note number.
 {
 	int val1 = 0, val2 = 0, octave, pos;
 	char str1[100], str2[100];
@@ -191,6 +199,7 @@ int nametonum(char* str)
 }
 
 void ignore_path_ext(char* dest, char* source)
+// 'source' will be the substring of 'dest' beginning from the last '\\' or '/' to '.' (none included).
 {
 #if __WIN32
     char* pc = strrchr(source, '\\');
@@ -228,13 +237,13 @@ void next(vector<int>& v, int& id, bool first_zero)
 // e.g. id = 26 = 2^1 + 2^3 + 2^4  =>  v = {0, 2, 4, 5} or {1, 3, 4}
 
 int find_root(vector<int>& notes)
-// reference: https://www.ux1.eiu.edu/~pdhesterman/old/analysis/chord_roots.html
-// notes should be sorted in ascending order
+// Reference: https://www.ux1.eiu.edu/~pdhesterman/old/analysis/chord_roots.html
+// Notes should be sorted in ascending order.
 {
 	int interval_rank[12] = {11, 8, 6, 5, 3, 0, 10, 1, 2, 4, 7, 9}; 
 	// int intervals[11] = {5, 7, 8, 4, 9, 3, 2, 10, 1, 11, 6};
-	// interval_rank[interval] is the position of 'interval' in the array above
-	// odd numbers represent that the lower note is the root, even numbers the opposite; -1 is a random value
+	// 'interval_rank[interval]' is the position of 'interval' in the array above.
+	// Odd numbers represent that the lower note is the root, even numbers the opposite; -1 is a random value.
 	int root = *notes.rbegin();
 	int t_size = notes.size();
 	int best_interval = 6;
@@ -253,6 +262,7 @@ int find_root(vector<int>& notes)
 }
 
 void note_set_to_id(const vector<int>& note_set, vector<int>& rec)
+// 'rec' will contain 'set_id' for all 12 transpositions of 'note_set'.
 {
 	for(int j = 0; j < 12; ++j)
 	{
@@ -265,6 +275,7 @@ void note_set_to_id(const vector<int>& note_set, vector<int>& rec)
 }
 
 void dbentry(const char* filename)
+// Reads the chord database.
 {
 	chord_library.clear();
 	ifstream fin(filename, ifstream::in);
@@ -277,29 +288,30 @@ void dbentry(const char* filename)
 	do{
 		note_set.clear();
 		do{
-            fin >> note;
+			fin >> note;
 			note_set.push_back(note);
-            ch = fin.get();
-        }  while(fin && !fin.eof() && ch != '\r' && ch != '\n');
-        if(!fin)  break;
+			ch = fin.get();
+		}  while(fin && !fin.eof() && ch != '\r' && ch != '\n');
+		if(!fin)  break;
 
 		int s_size = note_set.size();
 		if(s_size == 0)  break;
 
 		bubble_sort(note_set);
 		int root = find_root(note_set);
-		vector<int> omit_choice;
-        for(int i = 0; i < s_size; ++i)
+		vector<int> omit_choice;  // contains notes from 'note_set' that can be omitted
+		for(int i = 0; i < s_size; ++i)
 		{
 			int diff = (note_set[i] - root) % 12;
 			if(diff < 0)  diff += 12;
             if(s_size >= 3 && s_size <= 7 && find(omission[s_size], note_pos[diff]) == -1)
-				omit_choice.push_back(note_set[i]);
+					omit_choice.push_back(note_set[i]);
 		}
 		bubble_sort(omit_choice);
+
 		vector<int> indexes, subset, omitted;
 		int id = -1, max_id = (1 << omit_choice.size()) - 1;
-		while(id < max_id)
+		while(id < max_id)  // iterates through all subsets of 'omit_choice'
 		{
 			next(indexes, id, false);
 			subset.clear();
@@ -320,6 +332,7 @@ void dbentry(const char* filename)
 }
 
 void read_alignment(const char* filename)
+// Reads the alignment database.
 {
 	alignment_list.clear();
 	ifstream fin(filename);
@@ -352,12 +365,13 @@ void read_alignment(const char* filename)
 }
 
 int rand(const int& min, const int& max)
-// min and max are included in the result
+// 'min' and 'max' are included in the result.
 {
 	return rand() % (max - min + 1) + min;
 }
 
 double rand(const double& min, const double& max)
+// 'min' and 'max' are included in the result.
 {
 	return (double) rand() / RAND_MAX * (max - min) + min;
 }
@@ -418,6 +432,7 @@ int sign(const int& n)
 }
 
 int comb(const int& n, const int& m)
+// Returns the combination number.
 {
 	int res = 1;
 	for(int i = 1; i <= m; ++i)
@@ -426,6 +441,7 @@ int comb(const int& n, const int& m)
 }
 
 void fprint(const char* begin, const vector<int>& v, const char* sep, const char* end)
+// prints a vector to a file
 {
 	int size = v.size();
 	fout << begin << "[";
@@ -436,6 +452,7 @@ void fprint(const char* begin, const vector<int>& v, const char* sep, const char
 }
 
 void cprint(const char* begin, const vector<int>& v, const char* sep, const char* end)
+// prints a vector to the console
 {
 	int size = v.size();
 	cout << begin << "[";
@@ -446,6 +463,8 @@ void cprint(const char* begin, const vector<int>& v, const char* sep, const char
 }
 
 vector<int> intersect(vector<int>& A, vector<int>& B, bool regular)
+// Gets the intersection of two vectors.
+// If 'regular' == false, the vectors will be sorted and duplicate elements of each vector will be deleted.
 {
 	if(!regular)
 	{
@@ -472,6 +491,7 @@ vector<int> intersect(vector<int>& A, vector<int>& B, bool regular)
 }
 
 vector<int> get_union(const vector<int>& A, const vector<int>& B)
+// Gets the union of two vectors.
 {
 	vector<int> result(A);
 	result.insert(result.end(), B.begin(), B.end());
@@ -502,6 +522,7 @@ vector<int> get_complement(const vector<int>& A, const vector<int>& B)
 }
 
 int swapInt(const int& value, const int& len)
+// Converts an integer in Big-Endian to Little-Endian, and vice versa.
 {
 	switch(len)
 	{
@@ -515,6 +536,7 @@ int swapInt(const int& value, const int& len)
 }
 
 int to_VLQ(int value)
+// Converts an integer to a variable length quantity.
 {
 	int count = 0, result = 0;
 	while(value != 0)
@@ -529,6 +551,8 @@ int to_VLQ(int value)
 }
 
 void midi_head(const int& chord_count, const int& note_count)
+// It is written only for one specific usage and it contains some copyright information.
+// Better to refer to some MIDI instructions and try to modify it.
 {
 	char str1[19] = "\x4D\x54\x68\x64\x00\x00\x00\x06\x00\x00\x00\x01\x01\xE0\x4D\x54\x72\x6B";
 	m_fout.write(str1, 18);
@@ -541,6 +565,7 @@ void midi_head(const int& chord_count, const int& note_count)
 }
 
 void chord_to_midi(vector<int>& notes, int beat)
+// Writes a single chord to MIDI with the beat of notes equal to 'beat'.
 {
 	int size = notes.size();
 	for(int i = 0; i < size; ++i)
@@ -556,6 +581,7 @@ void chord_to_midi(vector<int>& notes, int beat)
 		{
 			int vlq = to_VLQ(beat * 480);
 			int len = (beat > 34) ? 3 : 2;
+			// For simplicity we constraint 'len' under 1000, and then the length of 'vlq' would not exceed 3.
 			m_fout.write((char*)&vlq, len);
 			m_fout.put('\x80');
 		}
@@ -570,6 +596,8 @@ bool smaller(const int& num1, const int& num2)
 { return num1 < num2; }
 
 bool smallerVec(const vector<int>& v1, const vector<int>& v2)
+// Different from the overloaded '<' for vector.
+// Compares the size first and then the elements.
 {
 	int size1 = v1.size(), size2 = v2.size();
 	if(size1 < size2)  return true;

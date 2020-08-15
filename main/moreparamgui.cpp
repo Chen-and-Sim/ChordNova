@@ -195,6 +195,8 @@ void Interface::set_default_param(int index)
 }
 
 void Interface::set_param_min(int index, int min)
+// Sets the value of parameter #'index' (i.e. the parameter represented by 'var[index]').
+// If the value is smaller than 'min', it will be set equal to 'min'.
 {
 	bool isDouble;
 	int *pt1_min, *pt1_max;
@@ -246,6 +248,8 @@ void Interface::set_param_min(int index, int min)
 }
 
 void Interface::set_param_max(int index, int max)
+// Sets the value of parameter #'index' (i.e. the parameter represented by 'var[index]').
+// If the value is smaller than 'max', it will be set equal to 'max'.
 {
 	bool isDouble;
 	int *pt1_min, *pt1_max;

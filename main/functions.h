@@ -12,12 +12,21 @@
 using namespace std;
 
 extern ofstream fout, m_fout;
+// 'fout' for text output; 'm_fout' for MIDI output
 extern double INF;
 extern double MINF;
 extern int expansion_indexes[16][16][3432][15];
+// One of our goals is to expand 'notes' to a size of 'm_max' by adding some notes from itself.
+// We can create a vector 'expansion' (*) with size 'm_max' with elements from {0, 1, ..., notes.size() - 1}
+// (sorted in ascending order), then the desired expansion is simply { notes[expansion[i]] }.
+// 'expansion_indexes[min][max][i]' is the 'i'th alternative of expansion (*) for 'notes.size() = min' and 'm_max = max'.
 extern int note_pos[12];
-extern vector<int> omission[13];
+extern vector<int> omission[8];
+// 'omission[i]' represents omission allowed for i-note chords.
+// All elements in the vectors belong to {1, 3, 5, 7, 9, 11, 13}.
 extern vector<int> chord_library;
+// i.e. chord database (in integer form).
+// Contains 'set_id' of all 12 transpositions of all 'note_set's in the chord database file.
 extern vector<vector<int>> alignment_list;
 
 struct Movement
@@ -29,11 +38,14 @@ struct Movement
 
 template<typename T>
 void inputNum(T& num, const T& min, const T& max, const T& dflt)
+// Input a number between 'min' and 'max'.
+// If the user input 'Enter', the default value 'dflt' will be set.
 {
 	char ch;
 	while(true)
 	{
 		if(dflt != MINF)
+		// note the overloaded function below
 		{
 			cin.get(ch);
 			if(ch == '\n')
@@ -64,12 +76,15 @@ void inputNum(T& num, const T& min, const T& max, const T& dflt)
 
 template<typename T>
 void inputNum(T& num, const T& min, const T& max)
+// Input a number between 'min' and 'max'.
 {
 	inputNum(num, min, max, (const T)(MINF));
 }
 
 template<typename T>
 void inputNums(T& num1, T& num2, const T& min, const T& max)
+// Input two numbers between 'min' and 'max'.
+// The first one should not be larger than the second.
 {
 	cin >> num1 >> num2;
 	while(!cin || num1 < min || num1 > num2 || num2 > max)
@@ -90,7 +105,7 @@ extern int  nametonum(char*);
 extern void ignore_path_ext(char*, char*);
 extern void next(vector<int>&, int&, bool);
 extern int  find_root(vector<int>&);
-extern void note_set_to_id (const vector<int>&, vector<int>&);
+extern void note_set_to_id(const vector<int>&, vector<int>&);
 extern void dbentry(const char*);
 extern void read_alignment(const char*);
 extern int  rand   (const int&, const int&);
@@ -118,7 +133,7 @@ extern void bubble_sort(vector<int>&);
 template<typename T>
 int find(const vector<T>& v, const int& begin, const int& end, const T& target)
 // We assume that vec has been sorted in ascending order.
-// if found, return -1; otherwise, return the position of the smallest element larger than "target"
+// if found, returns -1; otherwise, returns the position of the smallest element larger than "target"
 {
 	if(end - begin == 0)  return 0;
 	if(end - begin == 1)
