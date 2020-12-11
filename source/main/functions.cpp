@@ -1,10 +1,11 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // functions.cpp
 
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <vector>
 
@@ -196,6 +197,21 @@ int nametonum(char* str)
 	if(val1 >= 0)  return val1;
 	if(val2 >= 0)  return val2;
 	return -1;
+}
+
+void chromatoname(int chroma, char* str)
+{
+	const char table[7] = {'F', 'C', 'G', 'D', 'A', 'E', 'B'};
+	str[0] = table[(chroma + 36) % 7];
+	str[1] = '\0';
+	// i.e. (chroma + 1) % 7, but the result can be a negetive number
+	switch( (chroma + 36) / 7 - 5 )
+	{
+		case -2: strcat(str, "bb"); break;
+		case -1: strcat(str, "b");  break;
+		case 1:  strcat(str, "#");  break;
+		case 2:  strcat(str, "x");  break;
+	}
 }
 
 void ignore_path_ext(char* dest, char* source)
@@ -440,15 +456,17 @@ int comb(const int& n, const int& m)
 	return res;
 }
 
-void fprint(const char* begin, const vector<int>& v, const char* sep, const char* end)
+void fprint(const char* begin, const vector<int>& v, const char* sep, const char* end, bool is_decimal)
 // prints a vector to a file
 {
+	if(!is_decimal)  fout << setiosflags(ios::uppercase) << hex;
 	int size = v.size();
 	fout << begin << "[";
 	if(size != 0)  fout << v[0];
 	for(int i = 1; i < size; ++i)
 		fout << sep << v[i];
 	fout << "]" << end;
+	fout << dec;
 }
 
 void cprint(const char* begin, const vector<int>& v, const char* sep, const char* end)
@@ -518,6 +536,38 @@ vector<int> get_complement(const vector<int>& A, const vector<int>& B)
 	}
 	for(int k = i; k < A_size; ++k)
 		result.push_back(A[k]);
+	return result;
+}
+
+vector<int> normal_form(vector<int>& set)
+// We assume that set is sorted in ascending order.
+{
+	int len = set.size();
+	int i_rec = 0, interval;
+	vector<int> intervals, best;
+	for(int i = 0; i < len; ++i)
+	{
+		intervals.clear();
+		for(int j = len - 1; j > 0; --j)
+		{
+			interval = set[(i + j) % len] - set[i];
+			if(interval < 0)  interval += 12;
+			intervals.push_back(interval);
+		}
+		if(i == 0 || intervals < best)
+		{
+			best = intervals;
+			i_rec = i;
+		}
+	}
+	vector<int> result;
+	int copy = set[i_rec];
+	for(int j = 0; j < len; ++j)
+	{
+		int val = set[(i_rec + j) % len] - copy;
+		if(val < 0)  val += 12;
+		result.push_back(val);
+	}
 	return result;
 }
 

@@ -1,4 +1,4 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // main.cpp
 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 	Interface window;
 
-	window.setWindowTitle("SmartChordGen v2.5.0808");
+	window.setWindowTitle("SmartChordGen v3.0.2020");
 	window.setWindowIcon(QIcon("icons/icon.png"));
 	window.show();
 

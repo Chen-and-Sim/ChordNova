@@ -1,4 +1,4 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // Interface.h
 
@@ -318,12 +318,18 @@ public slots:
 	void set_sv_max();
 	void set_r_min();
 	void set_r_max();
+	void set_s_min();
+	void set_s_max();
+	void set_ss_min();
+	void set_ss_max();
 	void set_h_min();
 	void set_h_max();
 	void set_g_min();
 	void set_g_max();
 	void set_x_min();
 	void set_x_max();
+	void set_q_min();
+	void set_q_max();
 	void closeMoreParam();  // mainly checks whether the orders are set correctly
 
 public:

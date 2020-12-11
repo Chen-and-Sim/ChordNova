@@ -1,4 +1,4 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // functions.h
 
@@ -6,6 +6,7 @@
 #define FUNCTIONS
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 
@@ -102,6 +103,7 @@ extern void inputFilename(char* str, const char* ext, bool find_file, const char
 extern void inputVec(vector<int>& vec, const int& min = MINF, const int& max = INF, bool organize = true);
 
 extern int  nametonum(char*);
+extern void chromatoname(int, char*);
 extern void ignore_path_ext(char*, char*);
 extern void next(vector<int>&, int&, bool);
 extern int  find_root(vector<int>&);
@@ -114,11 +116,13 @@ extern void insert (int*, int*, int, int);
 extern void set_expansion_indexes();
 extern int  sign(const int&);
 extern int  comb(const int&, const int&);
-extern void fprint(const char* begin, const vector<int>& v, const char* sep = ", ", const char* end = "\n");
+extern void fprint(const char* begin, const vector<int>& v, const char* sep = ", ",
+						 const char* end = "\n", bool is_decimal = true);
 extern void cprint(const char* begin, const vector<int>& v, const char* sep = ", ", const char* end = ", ");
 extern vector<int> intersect(vector<int>& A, vector<int>& B, bool regular = false);
 extern vector<int> get_union(const vector<int>&, const vector<int>&);
 extern vector<int> get_complement(const vector<int>&, const vector<int>&);
+extern vector<int> normal_form(vector<int>&);
 extern int  swapInt(const int& value, const int& len = 4);
 extern int  to_VLQ(int);
 extern void midi_head(const int&, const int&);

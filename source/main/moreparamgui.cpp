@@ -1,15 +1,17 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // moreparamgui.cpp
 
 #include "Interface.h"
 
 void (Interface::*set_min[_TOTAL]) () =
-	{&Interface::set_k_min, &Interface::set_t_min, &Interface::set_c_min, &Interface::set_sv_min, nullptr, nullptr,
-	 &Interface::set_r_min, &Interface::set_h_min, &Interface::set_g_min, &Interface::set_x_min,  nullptr};
+	{&Interface::set_k_min, &Interface::set_t_min, &Interface::set_c_min, &Interface::set_sv_min,
+	 nullptr,   nullptr,    &Interface::set_r_min, &Interface::set_s_min, &Interface::set_ss_min,
+	 &Interface::set_h_min, &Interface::set_g_min, &Interface::set_x_min, &Interface::set_q_min, nullptr};
 void (Interface::*set_max[_TOTAL]) () =
-	{&Interface::set_k_max, &Interface::set_t_max, &Interface::set_c_max, &Interface::set_sv_max, nullptr, nullptr,
-	 &Interface::set_r_max, &Interface::set_h_max, &Interface::set_g_max, &Interface::set_x_max,  nullptr};
+	{&Interface::set_k_max, &Interface::set_t_max, &Interface::set_c_max, &Interface::set_sv_max,
+	 nullptr,   nullptr,    &Interface::set_r_max, &Interface::set_s_max, &Interface::set_ss_max,
+	 &Interface::set_h_max, &Interface::set_g_max, &Interface::set_x_max, &Interface::set_q_max, nullptr};
 
 void Interface::moreParamGui()
 {
@@ -18,7 +20,11 @@ void Interface::moreParamGui()
 	more_param_window -> setWindowFlag(Qt::Window, true);
 	more_param_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	more_param_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
-	more_param_window -> setFixedSize(640 * scale, 540 * _scale);
+#if __WIN32
+    more_param_window -> setFixedSize(640 * scale, 615 * _scale);
+#else
+    more_param_window -> setFixedSize(640 * scale, 660 * _scale);
+#endif
 	QStringList str0 = {"Set more parameters and sort priorties", "更多指标设置及排序设置"};
 	more_param_window -> setWindowTitle(str0[language]);
 	more_param_window -> setFont(font);
@@ -55,23 +61,29 @@ void Interface::moreParamGui()
 												  "≤ 从音程涵量得的紧张度 (T%)≤"},
 												 {"≤      Number of common notes in a progression (C)     ≤",
 												  "≤  和弦进行的共同音个数 (C) ≤"},
-												 {"≤                      Total voice leading (Σvec)                     ≤",
+												 {"≤                        Total voice leading (Σvec)                       ≤",
 												  "≤    音集进行总大小 (Σvec)   ≤"},
 												 {"Number of notes in a chord (M)", "和弦构成音个数 (M)"},
 												 {"Number of notes in a chord in terms of set (N)", "和弦音集构成音个数 (N)"},
 												 {"≤                  Hindemith root of a chord (R)                   ≤",
-												  "≤  和弦的Hindemith根音 (R) ≤"},
+												  "≤ 和弦的Hindemith根音 (R) ≤"},
+												 {"≤                 Perfect fifth span of a chord (S)                 ≤",
+												  "≤      和弦的纯五跨度 (S)      ≤"},
+												 {"≤         Span of the union of adjacent chords (SS)         ≤",
+												  "≤  相邻和弦之并的跨度 (SS) ≤"},
 												 {"≤               Weighted thickness of a chord (H)               ≤",
 												  "≤ 和弦的重复音加权厚度 (H) ≤"},
 												 {"≤                Geometric center of a chord (G%)               ≤",
 												  "≤     和弦的几何中心 (G%)    ≤"},
 												 {"≤               Similarity of adjacent chords (X%)                ≤",
 												  "≤     相邻和弦相似度 (X%)     ≤"},
+												 {"≤                         Chen's Q indicator (Q)                          ≤",
+												  "≤  和弦进行的陈氏Q指标 (Q) ≤"},
 												 {"Root movement in a progression (V)", "和弦进行的根音运动音程 (V)"} };
 	QStringList str3 = {"Ascending", "升序"};
 	for(int i = 0; i < _TOTAL; ++i)
 	{
-		if((i != 4) && (i != 5) && (i != 10))
+		if((i != 4) && (i != 5) && (i != 13))
 		{
 			edit_min[i] = new QLineEdit(more_param_window);
 			grid -> addWidget(edit_min[i], i + 1, 1);
@@ -96,7 +108,7 @@ void Interface::moreParamGui()
 	for(int i = 0; i < _TOTAL; ++i)
 	{
 		connect(cb_param[i], &QCheckBox::clicked, this, &Interface::enable_param);
-		if((i != 4) && (i != 5) && (i != 10))
+		if((i != 4) && (i != 5) && (i != 13))
 		{
 			connect(edit_min[i], &QLineEdit::editingFinished, this, set_min[i]);
 			connect(edit_max[i], &QLineEdit::editingFinished, this, set_max[i]);
@@ -112,11 +124,11 @@ void Interface::moreParamGui()
 							  "**&nbsp;请于主界面设置M和N的范围，于“更多规则”处设置V的条件。<br>"
 							  "***请于排序次序框内正确填写序号(1、2、3……)。"};
 	QLabel* label3 = new QLabel(str4[language].arg(str5[language]), more_param_window);
-	grid -> addWidget(label3, 12, 0, 1, 6, Qt::AlignLeft);
+	grid -> addWidget(label3, 15, 0, 1, 6, Qt::AlignLeft);
 
 	QStringList str6 = {"OK", "确定"};
 	QPushButton* btn = new QPushButton(str6[language], more_param_window);
-	grid -> addWidget(btn, 13, 4, 1, 2, Qt::AlignRight);
+	grid -> addWidget(btn, 16, 4, 1, 2, Qt::AlignRight);
 	connect(btn, &QPushButton::clicked, this ,&Interface::closeMoreParam);
 
 	initMoreParam();
@@ -126,13 +138,15 @@ void Interface::moreParamGui()
 void Interface::initMoreParam()
 {
 	QString str;
-	QStringList str_min = {str.setNum(k_min), str.setNum(t_min), str.setNum(c_min), str.setNum(sv_min), "-1", "-1",
-								  str.setNum(r_min), str.setNum(h_min), str.setNum(g_min), str.setNum(x_min),  "-1"};
-	QStringList str_max = {str.setNum(k_max), str.setNum(t_max), str.setNum(c_max), str.setNum(sv_max), "-1", "-1",
-								  str.setNum(r_max), str.setNum(h_max), str.setNum(g_max), str.setNum(x_max),  "-1"};
+	QStringList str_min = {str.setNum(k_min), str.setNum(t_min), str.setNum(c_min), str.setNum(sv_min),
+								  "-1", "-1"       , str.setNum(r_min), str.setNum(s_min), str.setNum(ss_min),
+								  str.setNum(h_min), str.setNum(g_min), str.setNum(x_min), str.setNum(q_min), "-1"};
+	QStringList str_max = {str.setNum(k_max), str.setNum(t_max), str.setNum(c_max), str.setNum(sv_max),
+								  "-1", "-1",        str.setNum(r_max), str.setNum(s_max), str.setNum(ss_max),
+								  str.setNum(h_max), str.setNum(g_max), str.setNum(x_max), str.setNum(q_max),"-1"};
 	for(int i = 0; i < _TOTAL; ++i)
 	{
-		if((i != 4) && (i != 5) && (i != 10))
+		if((i != 4) && (i != 5) && (i != 13))
 		{
 			edit_min[i] -> setText(str_min[i]);
 			edit_max[i] -> setText(str_max[i]);
@@ -158,19 +172,19 @@ void Interface::initMoreParam()
 
 void Interface::set_default_param(int index)
 {
-	QStringList str_min = {  "0",   "0",  "0",    "0", "-1", "-1",  "0",  "0",   "0",   "0", "-1"};
-	QStringList str_max = {"100", "100", "15", "2000", "-1", "-1", "11", "50", "100", "100", "-1"};
-	vector<int> val_min = {  0,   0,  0,    0, -1, -1,  0,  0,   0,   0, -1};
-	vector<int> val_max = {100, 100, 15, 2000, -1, -1, 11, 50, 100, 100, -1};
+	QStringList str_min = {  "0",   "0",  "0",    "0", "-1", "-1",  "0",  "0",  "0",  "0",   "0",   "0", "-500", "-1"};
+	QStringList str_max = {"100", "100", "15", "2000", "-1", "-1", "11", "12", "12", "50", "100", "100",  "500", "-1"};
+	vector<int> val_min = {  0,   0,  0,    0, -1, -1,  0,  0,  0,  0,   0,   0, -500, -1};
+	vector<int> val_max = {100, 100, 15, 2000, -1, -1, 11, 12, 12, 50, 100, 100,  500, -1};
 	edit_min[index] -> setText(str_min[index]);
 	edit_max[index] -> setText(str_max[index]);
 
 	bool isDouble;
 	int *pt1_min, *pt1_max;
 	double *pt2_min, *pt2_max;
-	if(index == 2 || index == 3 || index == 6 || index == 9)
-		isDouble = false;
-	else  isDouble = true;
+	if(index == 0 || index == 1 || index == 9 || index == 12)
+		isDouble = true;
+	else  isDouble = false;
 	switch(index)
 	{
 		case 0:  pt2_min = &k_min;  pt2_max = &k_max;  break;
@@ -178,9 +192,12 @@ void Interface::set_default_param(int index)
 		case 2:  pt1_min = &c_min;  pt1_max = &c_max;  break;
 		case 3:  pt1_min = &sv_min; pt1_max = &sv_max; break;
 		case 6:  pt1_min = &r_min;  pt1_max = &r_max;  break;
-		case 7:  pt2_min = &h_min;  pt2_max = &h_max;  break;
-		case 8:  pt2_min = &g_min;  pt2_max = &g_max;  break;
-		case 9:  pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 7:  pt1_min = &s_min;  pt1_max = &s_max;  break;
+		case 8:  pt1_min = &ss_min; pt1_max = &ss_max; break;
+		case 9:  pt2_min = &h_min;  pt2_max = &h_max;  break;
+		case 10: pt1_min = &g_min;  pt1_max = &g_max;  break;
+		case 11: pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 12: pt2_min = &q_min;  pt2_max = &q_max;  break;
 	}
 	if(isDouble)
 	{
@@ -201,9 +218,9 @@ void Interface::set_param_min(int index, int min)
 	bool isDouble;
 	int *pt1_min, *pt1_max;
 	double *pt2_min, *pt2_max;
-	if(index == 2 || index == 3 || index == 6 || index == 9)
-		isDouble = false;
-	else  isDouble = true;
+	if(index == 0 || index == 1 || index == 9 || index == 12)
+		isDouble = true;
+	else  isDouble = false;
 	switch(index)
 	{
 		case 0:  pt2_min = &k_min;  pt2_max = &k_max;  break;
@@ -211,9 +228,12 @@ void Interface::set_param_min(int index, int min)
 		case 2:  pt1_min = &c_min;  pt1_max = &c_max;  break;
 		case 3:  pt1_min = &sv_min; pt1_max = &sv_max; break;
 		case 6:  pt1_min = &r_min;  pt1_max = &r_max;  break;
-		case 7:  pt2_min = &h_min;  pt2_max = &h_max;  break;
-		case 8:  pt2_min = &g_min;  pt2_max = &g_max;  break;
-		case 9:  pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 7:  pt1_min = &s_min;  pt1_max = &s_max;  break;
+		case 8:  pt1_min = &ss_min; pt1_max = &ss_max; break;
+		case 9:  pt2_min = &h_min;  pt2_max = &h_max;  break;
+		case 10: pt1_min = &g_min;  pt1_max = &g_max;  break;
+		case 11: pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 12: pt2_min = &q_min;  pt2_max = &q_max;  break;
 	}
 
 	QString text = edit_min[index] -> text(), str;
@@ -254,9 +274,9 @@ void Interface::set_param_max(int index, int max)
 	bool isDouble;
 	int *pt1_min, *pt1_max;
 	double *pt2_min, *pt2_max;
-	if(index == 2 || index == 3 || index == 6 || index == 9)
-		isDouble = false;
-	else  isDouble = true;
+	if(index == 0 || index == 1 || index == 9 || index == 12)
+		isDouble = true;
+	else  isDouble = false;
 	switch(index)
 	{
 		case 0:  pt2_min = &k_min;  pt2_max = &k_max;  break;
@@ -264,9 +284,12 @@ void Interface::set_param_max(int index, int max)
 		case 2:  pt1_min = &c_min;  pt1_max = &c_max;  break;
 		case 3:  pt1_min = &sv_min; pt1_max = &sv_max; break;
 		case 6:  pt1_min = &r_min;  pt1_max = &r_max;  break;
-		case 7:  pt2_min = &h_min;  pt2_max = &h_max;  break;
-		case 8:  pt2_min = &g_min;  pt2_max = &g_max;  break;
-		case 9:  pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 7:  pt1_min = &s_min;  pt1_max = &s_max;  break;
+		case 8:  pt1_min = &ss_min; pt1_max = &ss_max; break;
+		case 9:  pt2_min = &h_min;  pt2_max = &h_max;  break;
+		case 10: pt1_min = &g_min;  pt1_max = &g_max;  break;
+		case 11: pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 12: pt2_min = &q_min;  pt2_max = &q_max;  break;
 	}
 
 	QString text = edit_max[index] -> text(), str;
@@ -307,7 +330,7 @@ void Interface::enable_param(bool state)
 	{
 		if(cb_param[i] -> isChecked())
 		{
-			if(i != 4 && i != 5 && i != 10)
+			if(i != 4 && i != 5 && i != 13)
 			{
 				edit_min[i] -> setEnabled(true);
 				edit_max[i] -> setEnabled(true);
@@ -327,7 +350,7 @@ void Interface::enable_param(bool state)
 		}
 		else
 		{
-			if(i != 4 && i != 5 && i != 10)
+			if(i != 4 && i != 5 && i != 13)
 			{
 				set_default_param(i);
 				edit_min[i] -> setDisabled(true);
@@ -365,12 +388,18 @@ void Interface::set_sv_min() { set_param_min(3, 0); }
 void Interface::set_sv_max() { set_param_max(3, 2000); }
 void Interface::set_r_min()  { set_param_min(6, 0); }
 void Interface::set_r_max()  { set_param_max(6, 11); }
-void Interface::set_h_min()  { set_param_min(7, 0); }
-void Interface::set_h_max()  { set_param_max(7, 50); }
-void Interface::set_g_min()  { set_param_min(8, 0); }
-void Interface::set_g_max()  { set_param_max(8, 100); }
-void Interface::set_x_min()  { set_param_min(9, 0); }
-void Interface::set_x_max()  { set_param_max(9, 100); }
+void Interface::set_s_min()  { set_param_min(7, 0); }
+void Interface::set_s_max()  { set_param_max(7, 12); }
+void Interface::set_ss_min() { set_param_min(8, 0); }
+void Interface::set_ss_max() { set_param_max(8, 12); }
+void Interface::set_h_min()  { set_param_min(9, 0); }
+void Interface::set_h_max()  { set_param_max(9, 50); }
+void Interface::set_g_min()  { set_param_min(10, 0); }
+void Interface::set_g_max()  { set_param_max(10, 100); }
+void Interface::set_x_min()  { set_param_min(11, 0); }
+void Interface::set_x_max()  { set_param_max(11, 100); }
+void Interface::set_q_min()  { set_param_min(12, -500); }
+void Interface::set_q_max()  { set_param_max(12, 500); }
 
 void Interface::closeMoreParam()
 {

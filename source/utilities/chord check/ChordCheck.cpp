@@ -1,4 +1,6 @@
-// SmartChordGen-utility-ChordCheck v1.5 [Build: 2020.7.2]
+// SmartChordGen-utility-ChordCheck v3.0 [Build: 2020.11.27]
+// Lists some information of two given chords and checks whether the progression
+// from one to another meets the requirements of the main program (SmartChordGen).
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
@@ -53,8 +55,8 @@ void isSmart(Chord& A, Chord& B, const int& omit)
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  SmartChordGen v3.0 [Build: 2020.11.27]  ]]\n"
+		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
 		  << " > Utility - Chord check:\n";
 
 	vector<int> notes1, notes2;

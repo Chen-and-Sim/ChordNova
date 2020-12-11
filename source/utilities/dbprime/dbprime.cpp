@@ -1,4 +1,5 @@
-// SmartChordGen-utility-ConvertDatabaseToPrimeForm v1.5 [Build: 2020.7.2]
+// SmartChordGen-utility-dbprime v3.0 [Build: 2020.11.27]
+// Converts all chords in a chord database to their prime form.
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
@@ -10,37 +11,6 @@
 using namespace std;
 vector<vector<int>> rec;
 vector<vector<int>> organized;
-
-vector<int> normal_form(vector<int>& set)
-{
-	int len = set.size();
-	int i_rec = 0, interval;
-	vector<int> intervals, best;
-	for(int i = 0; i < len; ++i)
-	{
-		intervals.clear();
-		for(int j = len - 1; j > 0; --j)
-		{
-			interval = set[(i + j) % len] - set[i];
-			if(interval < 0)  interval += 12;
-			intervals.push_back(interval);
-		}
-		if(i == 0 || intervals < best)
-		{
-			best = intervals;
-			i_rec = i;
-		}
-	}
-	vector<int> result;
-	int copy = set[i_rec];
-	for(int j = 0; j < len; ++j)
-	{
-		int val = set[(i_rec + j) % len] - copy;
-		if(val < 0)  val += 12;
-		result.push_back(val);
-	}
-	return result;
-}
 
 vector<int> prime_form(vector<int> set)
 // We assume that "set" begins with 0.
@@ -108,8 +78,8 @@ void to_midi()
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  SmartChordGen v1.5 [Build: 2020.11.27]  ]]\n"
+		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
 		  << " > Utility - Convert Database to Prime Form:\n";
 	
 	cout << " > Please input the name of the database (.db) file: ";

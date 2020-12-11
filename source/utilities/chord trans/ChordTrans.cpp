@@ -1,4 +1,5 @@
-// SmartChordGen-utility-ChordTrans v1.5 [Build: 2020.7.2]
+// SmartChordGen-utility-ChordTrans v3.0 [Build: 2020.11.27]
+// Transposes and/or inverses the chords in a chord data file.
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
@@ -11,8 +12,8 @@ using namespace std;
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  SmartChordGen v3.0 [Build: 2020.11.27]  ]]\n"
+		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
 		  << " > Utility - Chord trans:\n";
 	
 	cout << " > Please input the name of the chord data file (the default extension is '.txt'): ";

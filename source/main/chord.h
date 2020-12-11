@@ -1,4 +1,4 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // chord.h
 
@@ -85,9 +85,12 @@ protected:
 	int    m_min, m_max;
 	int    n_min, n_max;
 	int    r_min, r_max;
+	int    s_min, s_max;
+	int   ss_min, ss_max;
 	double h_min, h_max;
-	double g_min, g_max;
+	int    g_min, g_max;
 	int    x_min, x_max;
+	double q_min, q_max;
 	int  highest, lowest; // range of notes
 	int   vl_min, vl_max; // range of movement
 	int    i_min, i_max, i_high, i_low; // range of interval
@@ -116,8 +119,11 @@ protected:
 	bool valid_exclusion(Chord&);
 	bool valid_sim(Chord&);
 	void set_vec_id(Chord&);
-	void set_g_center(Chord&);
 	void set_similarity(Chord&, Chord&, const int&);
+	void set_span(Chord&, bool);
+	void set_chroma_old(double);
+	void set_chroma(Chord&);
+	void set_name();
 	void set_param1();
 	void set_param2(Chord&);
 	void set_new_chords(Chord&);
@@ -135,7 +141,7 @@ protected:
 
 public:
 	Chord();
-	Chord(const vector<int>&);
+	Chord(const vector<int>&, double);
 	Chord(const Chord&);
 	
 	int& get_set_id();

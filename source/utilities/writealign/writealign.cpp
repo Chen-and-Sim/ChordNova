@@ -1,4 +1,5 @@
-// SmartChordGen-utility-WriteAlignmentDatabase v1.5 [Build: 2020.7.2]
+// SmartChordGen-utility-writealign v3.0 [Build: 2020.11.27]
+// Writes alignment database satisfying the given conditions.
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
@@ -285,8 +286,8 @@ void to_text()
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  SmartChordGen v3.0 [Build: 2020.11.27]  ]]\n"
+		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
 		  << " > Utility - Write Alignment Database:\n";
 	
 	cout << " > Please assign a name for the alignment database (.db): ";

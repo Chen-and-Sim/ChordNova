@@ -1,4 +1,8 @@
-// SmartChordGen-utility-CharmingChords v1.5 [Build: 2020.7.2]
+// SmartChordGen-utility-CharmingChords v3.0 [Build: 2020.11.27]
+// Find all chord pairs (A, B) that satisfies the following conditions:
+// a) the vector 'd' ('self_diff' in chorddata.h) of chord A is included in the set 'P';
+// b) the movement vector from A to B ('vec' in chorddata.h) is included in the set 'Q';
+// c) the vector 'd' of chord B is included in the set 'R'.
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 
 #include <cmath>
@@ -434,8 +438,8 @@ bool _smaller(const Chord& chord1, const Chord& chord2)
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  SmartChordGen v3.0 [Build: 2020.11.27]  ]]\n"
+		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
 		  << " > Utility - Charming Chords:\n";
 	cout << "\n > Please assign a name for the output file (the default extension is '.txt'): ";
 	char output[100] = "\0";
