@@ -45,10 +45,18 @@ int main()
 	do{
 		notes.clear();
 		result.clear();
-		do{
+		while(true)
+		{
 			fin >> note;
 			notes.push_back(note);
-		}  while(!fin.eof() && fin.get() != '\n');
+			if( fin.eof() )  break;
+			if(fin.peek() == '\n')
+			{
+				while(!fin.eof() && fin.peek() == '\n')
+					fin.get();
+				break;
+			}
+		}
 		if(notes.size() == 0)  break;
 
 		for(int i = 0; i < notes.size(); ++i)
@@ -65,8 +73,8 @@ int main()
 
 		for(int i = 0; i < result.size(); ++i)
 		{
-			fout << result[i];
 			if(i != 0)  fout << ' ';
+			fout << result[i];
 		}
 		fout << endl;
 	}  while(!fin.eof());
