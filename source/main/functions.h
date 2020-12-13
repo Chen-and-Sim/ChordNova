@@ -115,6 +115,7 @@ extern double rand (const double&, const double&);
 extern void insert (int*, int*, int, int);
 extern void set_expansion_indexes();
 extern int  sign(const int&);
+extern int  sign(const double& x, const double& bound = 1E-5);
 extern int  comb(const int&, const int&);
 extern void fprint(const char* begin, const vector<int>& v, const char* sep = ", ",
 						 const char* end = "\n", bool is_decimal = true);

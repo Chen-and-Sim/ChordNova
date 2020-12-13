@@ -447,6 +447,13 @@ int sign(const int& n)
 	return 0;
 }
 
+int sign(const double& x, const double& bound)
+{
+	if(abs(x) < bound)  return 0;
+	if(x > 0) return 1;
+	if(x < 0) return -1;
+}
+
 int comb(const int& n, const int& m)
 // Returns the combination number.
 {

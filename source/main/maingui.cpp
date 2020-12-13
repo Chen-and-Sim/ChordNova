@@ -35,8 +35,8 @@ void Interface::mainGui()
 {
 	setFixedWidth(640 * scale);
 	if(language == Chinese)
-		setFixedHeight(655 * _scale);
-	else  setFixedHeight(680 * _scale);
+		setFixedHeight(680 * _scale);
+	else  setFixedHeight(705 * _scale);
 
 	const int PARTS = 8;
 	QGridLayout** grid = new QGridLayout*[PARTS];
@@ -500,12 +500,20 @@ void Interface::mainGui()
 
 	{
 		grid[7] = new QGridLayout();
-		grid[7] -> setContentsMargins(20, 0, 20, 0);
+		grid[7] -> setContentsMargins(20, 5, 20, 0);
 
-		QStringList str1 = {"Open utilities folder...", "打开辅助工具(utilities)文件夹…"};
-		QPushButton* btn = new QPushButton(str1[language], this);
-		grid[7] -> addWidget(btn, 0, 0);
-		connect(btn, &QPushButton::clicked, this, &Interface::open_utilities);
+		QStringList str1 = {"Open utilities\nfolder...", "打开辅助工具\n(utilities)文件夹…"};
+		QPushButton* btn1 = new QPushButton(str1[language], this);
+		grid[7] -> addWidget(btn1, 0, 0);
+		connect(btn1, &QPushButton::clicked, this, &Interface::open_utilities);
+
+		QPixmap pic = QPixmap("icons/analyser.png");
+		QPushButton* btn2 = new QPushButton(this);
+		btn2 -> setIcon(pic);
+		btn2 -> setFixedSize(QSize(86 * scale, 56 * scale));
+		btn2 -> setIconSize (QSize(80 * scale, 50 * scale));
+		grid[7] -> addWidget(btn2, 0, 1, Qt::AlignCenter);
+//		connect(btn2, &QPushButton::clicked, this, &Interface::run);
 
 		QStringList str2 = {"Feedback email: rcswex@163.com\nFeedback QQ: 925792714",
 								  "问题反馈邮箱：rcswex@163.com\n问题反馈QQ：925792714"};
@@ -513,7 +521,7 @@ void Interface::mainGui()
 		label -> setAlignment(Qt::AlignRight);
 		label -> setFont(QFont("Microsoft YaHei", 11, QFont::Bold));
 		label -> setStyleSheet("color: #3F48CC;");
-		grid[7] -> addWidget(label, 0, 1, Qt::AlignRight);
+		grid[7] -> addWidget(label, 0, 2, Qt::AlignRight | Qt::AlignVCenter);
 	}
 
 	vbox -> setSpacing(15 * scale);
