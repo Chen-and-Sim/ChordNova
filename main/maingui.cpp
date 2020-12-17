@@ -1,4 +1,4 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // maingui.cpp
 
@@ -35,8 +35,8 @@ void Interface::mainGui()
 {
 	setFixedWidth(640 * scale);
 	if(language == Chinese)
-		setFixedHeight(655 * _scale);
-	else  setFixedHeight(680 * _scale);
+		setFixedHeight(680 * _scale);
+	else  setFixedHeight(705 * _scale);
 
 	const int PARTS = 8;
 	QGridLayout** grid = new QGridLayout*[PARTS];
@@ -63,18 +63,14 @@ void Interface::mainGui()
 		label3 -> setPixmap(pic1);
 		grid[0] -> addWidget(label3, 0, 2, 3, 1, Qt::AlignRight);
 
-		QLabel* label4 = new QLabel("© 2020 ", this);
+		QLabel* label4 = new QLabel("© 2020  ver.: 3.0 ", this);
 		label4 -> setAlignment(Qt::AlignRight);
-		grid[0] -> addWidget(label4, 0, 3, Qt::AlignRight | Qt::AlignBottom);
-
-		QLabel* label5 = new QLabel("ver.: 2.5.0808 ", this);
-		label5 -> setAlignment(Qt::AlignRight);
-		grid[0] -> addWidget(label5, 1, 3, Qt::AlignRight | Qt::AlignTop);
+		grid[0] -> addWidget(label4, 0, 3, 2, 1, Qt::AlignRight | Qt::AlignVCenter);
 
 		QPixmap pic2 = QPixmap("icons/name.png");
-		QLabel* label6 = new QLabel(this);
-		label6 -> setPixmap(pic2);
-		grid[0] -> addWidget(label6, 2, 3, Qt::AlignRight | Qt::AlignTop);
+		QLabel* label5 = new QLabel(this);
+		label5 -> setPixmap(pic2);
+		grid[0] -> addWidget(label5, 2, 3, Qt::AlignRight | Qt::AlignTop);
 	}
 
 	{
@@ -504,12 +500,20 @@ void Interface::mainGui()
 
 	{
 		grid[7] = new QGridLayout();
-		grid[7] -> setContentsMargins(20, 0, 20, 0);
+		grid[7] -> setContentsMargins(20, 5, 20, 0);
 
-		QStringList str1 = {"Open utilities folder...", "打开辅助工具(utilities)文件夹…"};
-		QPushButton* btn = new QPushButton(str1[language], this);
-		grid[7] -> addWidget(btn, 0, 0);
-		connect(btn, &QPushButton::clicked, this, &Interface::open_utilities);
+		QStringList str1 = {"Open utilities\nfolder...", "打开辅助工具\n(utilities)文件夹…"};
+		QPushButton* btn1 = new QPushButton(str1[language], this);
+		grid[7] -> addWidget(btn1, 0, 0);
+		connect(btn1, &QPushButton::clicked, this, &Interface::open_utilities);
+
+		QPixmap pic = QPixmap("icons/analyser.png");
+		QPushButton* btn2 = new QPushButton(this);
+		btn2 -> setIcon(pic);
+		btn2 -> setFixedSize(QSize(86 * scale, 56 * scale));
+		btn2 -> setIconSize (QSize(80 * scale, 50 * scale));
+		grid[7] -> addWidget(btn2, 0, 1, Qt::AlignCenter);
+//		connect(btn2, &QPushButton::clicked, this, &Interface::run);
 
 		QStringList str2 = {"Feedback email: rcswex@163.com\nFeedback QQ: 925792714",
 								  "问题反馈邮箱：rcswex@163.com\n问题反馈QQ：925792714"};
@@ -517,7 +521,7 @@ void Interface::mainGui()
 		label -> setAlignment(Qt::AlignRight);
 		label -> setFont(QFont("Microsoft YaHei", 11, QFont::Bold));
 		label -> setStyleSheet("color: #3F48CC;");
-		grid[7] -> addWidget(label, 0, 1, Qt::AlignRight);
+		grid[7] -> addWidget(label, 0, 2, Qt::AlignRight | Qt::AlignVCenter);
 	}
 
 	vbox -> setSpacing(15 * scale);
@@ -708,9 +712,13 @@ void Interface::closeEvent(QCloseEvent *e)
 {
 	QStringList str1 = {"Exit", "退出"};
 	QStringList str2 = {"Are you sure you would like to exit?", "你确定要退出吗？"};
-	QMessageBox::StandardButton btn =
-		QMessageBox::question(this, str1[language], str2[language], QMessageBox::Yes | QMessageBox::No);
-	if(btn == QMessageBox::Yes)
+	QStringList str3 = {"Yes", "是"};
+	QStringList str4 = {"No",  "否"};
+	QMessageBox* exit = new QMessageBox(QMessageBox::Question, str1[language], str2[language]);
+	QPushButton* open = (exit -> addButton(str3[language], QMessageBox::AcceptRole));
+	exit -> addButton(str4[language], QMessageBox::RejectRole);
+	exit -> exec();
+	if(exit -> clickedButton() == open)
 		e -> accept();
 	else  e -> ignore();
 }
@@ -912,9 +920,12 @@ void Interface::read_preset(char* filename)
 	c_min = read_data(fin, str);  c_max = read_data(fin, str);
   sv_min = read_data(fin, str); sv_max = read_data(fin, str);
 	r_min = read_data(fin, str);  r_max = read_data(fin, str);
+	s_min = read_data(fin, str);  s_max = read_data(fin, str);
+  ss_min = read_data(fin, str); ss_max = read_data(fin, str);
 	h_min = read_data(fin, str);  h_max = read_data(fin, str);
 	g_min = read_data(fin, str);  g_max = read_data(fin, str);
 	x_min = read_data(fin, str);  x_max = read_data(fin, str);
+	q_min = read_data(fin, str);  q_max = read_data(fin, str);
 	read_data(fin, sort_order);
 
 	have_set_omission  = false;
@@ -942,12 +953,12 @@ void Interface::set_to_English()
 
 void Interface::open_manual_Chinese()
 {
-	 QDesktopServices::openUrl(QUrl( ((QString)"file:%1/bin/guide/智弦（SmartChordGen）用户手册.pdf").arg(root_path)) );
+	 QDesktopServices::openUrl(QUrl( ((QString)"file:%1/bin/guide/智弦用户手册.pdf").arg(root_path)) );
 }
 
 void Interface::open_manual_English()
 {
-	 QDesktopServices::openUrl(QUrl( ((QString)"file:%1/bin/guide/SmartChordGen User Guide.pdf").arg(root_path)) );
+	 QDesktopServices::openUrl(QUrl( ((QString)"file:%1/bin/guide/SmartChordGen_User_Guide.pdf").arg(root_path)) );
 }
 
 void Interface::set_output_name()
@@ -960,7 +971,6 @@ void Interface::set_continual(bool state)
 	continual = state;
 	btn_pedal -> setEnabled(state);
 	cb_connect_pedal -> setEnabled(state);
-	cb_connect_pedal -> setChecked(state);
 	cb_remove_dup -> setEnabled(state);
 
 	if(state == true)
@@ -975,7 +985,6 @@ void Interface::set_continual(bool state)
 		notes.clear();
 		edit_loop_count -> setEnabled(true);
 		label_loop_count -> setEnabled(true);
-		connect_pedal = true;
 		cb_interlace -> setChecked(false);
 		cb_interlace -> setDisabled(true);
 	}

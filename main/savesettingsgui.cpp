@@ -1,4 +1,4 @@
-// SmartChordGen v2.5 [Build: 2020.8.8]
+// SmartChordGen v3.0 [Build: 2020.11.27]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // savesettingsgui.cpp
 
@@ -212,9 +212,12 @@ void Interface::write_preset()
 		  << "C: min = " << c_min << "; max = " << c_max << ";\n"
 		  <<"sv: min = " <<sv_min << "; max = " <<sv_max << ";\n"
 		  << "R: min = " << r_min << "; max = " << r_max << ";\n"
+		  << "S: min = " << s_min << "; max = " << s_max << ";\n"
+		  <<"SS: min = " <<ss_min << "; max = " <<ss_max << ";\n"
 		  << "H: min = " << h_min << "; max = " << h_max << ";\n"
 		  << "G: min = " << g_min << "; max = " << g_max << ";\n"
 		  << "X: min = " << x_min << "; max = " << x_max << ";\n"
+		  << "Q: min = " << q_min << "; max = " << q_max << ";\n"
 		  << "sort order = " << sort_order << ";\n";
 
 	fout.close();
