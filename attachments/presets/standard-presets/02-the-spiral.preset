@@ -1,0 +1,99 @@
+// ChordNova Preset File
+// Preset data begins below.
+title_en = The Spiral;
+title_ch = 螺旋;
+language = Chinese;
+
+output name = 02-the-spiral;
+output path = 'DESKTOP';
+output mode = single;
+output format = Both;
+
+range of notes: min = 36; max = 84;
+number of parts: min = 3; max = 5;
+number of notes: min = 3; max = 5;
+keep number of parts unchanged = false;
+ditto = true;
+
+chord database filename = 00-pop-and-jazz.db;
+title of chord database (English) = Pop and Jazz;
+title of chord database (Chinese) = 流行爵士和弦类型库;
+size of chord database = 71;
+
+input mode = manual;
+initial chord = 47 71 74 78;
+connect pedal notes = false;
+interlace = false;
+unique mode = RemoveDup;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
+
+omission for 3-note chords = [];
+omission for 4-note chords = [5];
+omission for 5-note chords = [5 7];
+omission for 6-note chords = [5 7 9];
+omission for 7-note chords = [5 7];
+
+bass note allowed = [1 3];
+
+align mode = Interval;
+intervals: i_low = 7; i_high = 7; i_min = 3; i_max = 16;
+
+enable pedal notes = false;
+in bass = true;
+pedal notes = [];
+realign = true;
+period = 4;
+
+voice leading setting = Default;
+enable steady voices = true;
+enable ascending voices = true;
+enable descending voices = true;
+steady voices: min = 0; max = 0;
+ascending voices: min = 0; max = 1;
+descending voices: min = 2; max = 3;
+range of voice leading: custom = false; min = 0; max = 4;
+custom root movement = false;
+custom exclusion = false;
+custom similarity = false;
+
+T: min = 0; max = 100;
+K: min = 0; max = 100;
+C: min = 0; max = 15;
+S: min = 0; max = 12;
+SS: min = 0; max = 12;
+H: min = 0; max = 1;
+G: min = 12; max = 88;
+sv: min = 0; max = 100;
+Q: min = -500; max = 500;
+X: min = 0; max = 100;
+KK: min = 0; max = 100;
+R: min = 0; max = 11;
+sort order = T+G+H;
+
+antechord = ;
+postchord = ;
+hide octave = true;
+substitute object = Postchord;
+test all = true;
+sample size = 1000000;
+substitute reference = default;
+output name for substitution = output-sub;
+output format for substitution = Both;
+
+P: reset value = 0; radius = 0;
+N: reset value = 0; radius = 0;
+T: reset value = 0; radius = 0;
+K: reset value = 0; radius = 0;
+C: reset value = 0; radius = 0;
+S: reset value = 0; radius = 0;
+SS: reset value = 0; radius = 0;
+sv: reset value = 0; radius = 0;
+Q: reset value = 0; radius = 0;
+X: reset value = 0; radius = 0;
+KK: reset value = 0; radius = 0;
+R: reset value = 0; radius = 0;
+reset list = ;
+percentage list = ;
+sort order = K+;
