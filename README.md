@@ -1,6 +1,6 @@
 # ChordNova 智弦 - 和声生成神器！
 
-# 招募公告：本软件功能已基本完善，现招募移动App（iOS，Android）及网页版移植开发者，报酬面议（不低于10000元）。有意者请询 rcswex@163.com、QQ：925792714。
+## 招募公告：本软件功能已基本完善，现招募移动App（iOS，Android）及网页版移植开发者，报酬面议（不低于10000元）。有意者请询 rcswex@163.com、QQ：925792714。
 ![Alt text](graphics/screenshots/SmartChordGen-main-screenshot.png)
 
 ### 智弦（ChordNova）是清华大学沈智云和星海音乐学院陈文戈共同开发的一款免费开源、功能强大的和弦进行自动生成与分析软件。
