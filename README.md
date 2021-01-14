@@ -16,7 +16,7 @@
 * Runs on multiple OS (currently available in Windows and Linux) .
 * *** Now seeking cross-platform developers for iOS/Android/Web/Mac OS.  ***
 
-## 生成音乐试听 Music examples：https://music.163.com/#/album?id=93026223
+## Music examples 生成音乐试听：https://music.163.com/#/album?id=93026223
 ### ChordNova is jointly developed by SIM Ji-woon (Tsinghua University) and CHEN Wenge (Xinghai Conservatory of Music).
 ### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
 ### Latest Release 最新版本：v3.0.2021 [20210115] Downloads 下载 ↓ 
