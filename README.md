@@ -9,13 +9,6 @@
 * 提供一系列预设和乐曲范例；支持MIDI文件输出。
 * 支持多系统（目前有Windows和Linux两个版本）。
 
-### ChordNova is a powerful open-source chord progression analysis plus generation software for multiple operating systems (currently Windows and Linux).
-* Featuring unprecedentedly detailed control over trait parameters of musical chords and progressions, that is way above mainstream softwares, which are only based on triadic chord theories. ChordNova is based on the theory of Parameteric Harmony, supporting 15+ indicators and 40+ detailed parameters through the analysis and generation process.
-* The built-in "Super Chord Substitution" (Chord Analyser) covers all possible pitch combinations of the entire 12-TET, which brings a leap forward in pop/jazz chord substitution techniques.
-* Provides a range of presets and music examples; supports MIDI file output.
-* Runs on multiple OS (currently available in Windows and Linux) .
-* *** Now seeking cross-platform developers for iOS/Android/Web/Mac OS.  ***
-
 ## Music examples 生成音乐试听：https://music.163.com/#/album?id=93026223
 ### ChordNova is jointly developed by SIM Ji-woon (Tsinghua University) and CHEN Wenge (Xinghai Conservatory of Music).
 ### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
@@ -24,3 +17,10 @@
 ### Linux 版：https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Linux.zip
 ### 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1s9jKZGTwUfPz5tQCxfLbLg ，提取码：1234
 ### 更多 README 请见：【使用前阅读】README.pdf、《智弦用户手册》(ChordNova User's Manual) 。
+
+### ChordNova is a powerful open-source chord progression analysis plus generation software for multiple operating systems (currently Windows and Linux).
+* Featuring unprecedentedly detailed control over trait parameters of musical chords and progressions, that is way above mainstream softwares, which are only based on triadic chord theories. ChordNova is based on the theory of Parameteric Harmony, supporting 15+ indicators and 40+ detailed parameters through the analysis and generation process.
+* The built-in "Super Chord Substitution" (Chord Analyser) covers all possible pitch combinations of the entire 12-TET, which brings a leap forward in pop/jazz chord substitution techniques.
+* Provides a range of presets and music examples; supports MIDI file output.
+* Runs on multiple OS (currently available in Windows and Linux) .
+* *** Now seeking cross-platform developers for iOS/Android/Web/Mac OS.  ***
