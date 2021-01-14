@@ -9,6 +9,8 @@
 * 提供一系列预设和乐曲范例；支持MIDI文件输出。
 * 支持多系统（目前有Windows和Linux两个版本）。
 
+![Alt text](graphics/icons/icon-white.png)
+
 ## 生成音乐试听 Music examples：https://music.163.com/#/album?id=93026223
 ### ChordNova is jointly developed by SIM Ji-woon (Tsinghua University) and CHEN Wenge (Xinghai Conservatory of Music).
 ### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
