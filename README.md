@@ -15,7 +15,7 @@
 ### Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Windows.exe
 ### Linux 版：https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Linux.zip
 ### 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1s9jKZGTwUfPz5tQCxfLbLg ，提取码：1234
-### 更多 README 请见：【使用前阅读】README.pdf、《智弦用户手册》(ChordNova User's Manual) 。
+### 关于软件的使用方法请阅读安装包中的《智弦用户手册》(ChordNova User's Guide) 。
 
 ![Alt text](graphics/icons/icon-white.png)
 
