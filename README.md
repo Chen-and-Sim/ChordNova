@@ -28,4 +28,4 @@
 
 ### ChordNova is jointly developed by SIM Ji-woon (Tsinghua University) and CHEN Wenge (Xinghai Conservatory of Music).
 
-![Alt text](graphics/icons/icon-white.png)
+![Alt text](attachments/icons/icon-white.png)
