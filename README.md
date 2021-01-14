@@ -12,8 +12,8 @@
 ## 生成音乐试听 Music examples：https://music.163.com/#/album?id=93026223
 ### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
 ### Latest Release 最新版本：v3.0.2021 [20210115] Downloads 下载 ↓ 
-### Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Windows.exe
-### Linux 版：https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Linux.zip
+### Windows 版： https://github.com/Chen-and-Sim/ChordNova/releases/download/v3.0.2021/ChordNova.v3.0.2021.Windows.exe
+### Linux 版：https://github.com/Chen-and-Sim/ChordNova/releases/download/v3.0.2021/ChordNova.v3.0.2021.Linux.zip
 ### 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1s9jKZGTwUfPz5tQCxfLbLg ，提取码：1234
 ### 关于软件的使用方法请阅读安装包中的《智弦用户手册》(ChordNova User's Guide) 。
 
