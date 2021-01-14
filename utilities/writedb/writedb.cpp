@@ -1,5 +1,8 @@
-// SmartChordGen-utility-WriteDatabase v1.5 [Build: 2020.7.2]
-// (c) 2020 Wenge Chen, Ji-woon Sim.
+// ChordNova-utility-writedb v3.0 [Build: 2021.1.14]
+// Writes chord database in normal form or prime form in two ways.
+// One way is to find chords satisfying the range of 'vec' ('count_vec' in chorddata.h), 
+// and the other way is to give all chords that are the subsets of a given chord.
+// (c) 2021 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
 #include <iostream>
@@ -10,37 +13,6 @@
 using namespace std;
 vector<vector<int>> rec;
 vector<vector<int>> organized;
-
-vector<int> normal_form(vector<int>& set)
-{
-	int len = set.size();
-	int i_rec = 0, interval;
-	vector<int> intervals, best;
-	for(int i = 0; i < len; ++i)
-	{
-		intervals.clear();
-		for(int j = len - 1; j > 0; --j)
-		{
-			interval = set[(i + j) % len] - set[i];
-			if(interval < 0)  interval += 12;
-			intervals.push_back(interval);
-		}
-		if(i == 0 || intervals < best)
-		{
-			best = intervals;
-			i_rec = i;
-		}
-	}
-	vector<int> result;
-	int copy = set[i_rec];
-	for(int j = 0; j < len; ++j)
-	{
-		int val = set[(i_rec + j) % len] - copy;
-		if(val < 0)  val += 12;
-		result.push_back(val);
-	}
-	return result;
-}
 
 vector<int> prime_form(vector<int> set)
 // We assume that "set" begins with 0.
@@ -225,8 +197,8 @@ void by_subset()
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  ChordNova v3.0 [Build: 2021.1.14]  ]]\n"
+		  << "[[  (c) 2021 Wenge Chen, Ji-woon Sim.  ]]\n\n"
 		  << " > Utility - Write Database:\n";
 	
 	cout << " > Please assign a name for the database (.db): ";
@@ -264,7 +236,7 @@ int main()
 
 	fout.open(_namedb, ios::trunc);
 	fout << "// SmartChordGen Chord Database\n"
-		  << "// (c) 2020 " << nameauthor << ".\n"
+		  << "// (c) 2021 " << nameauthor << ".\n"
 		  << "// Database begins below.\n"
 		  << "title_en = " << namedb << endl
 		  << "title_ch = " << namedb << endl;

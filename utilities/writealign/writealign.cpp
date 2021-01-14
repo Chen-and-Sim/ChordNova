@@ -1,5 +1,6 @@
-// SmartChordGen-utility-WriteAlignmentDatabase v1.5 [Build: 2020.7.2]
-// (c) 2020 Wenge Chen, Ji-woon Sim.
+// ChordNova-utility-writealign v3.0 [Build: 2021.1.14]
+// Writes alignment database satisfying the given conditions.
+// (c) 2021 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
 #include <iostream>
@@ -285,8 +286,8 @@ void to_text()
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.7.2]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.     ]]\n\n"
+	cout << "[[  ChordNova v3.0 [Build: 2021.1.14]  ]]\n"
+		  << "[[  (c) 2021 Wenge Chen, Ji-woon Sim.  ]]\n\n"
 		  << " > Utility - Write Alignment Database:\n";
 	
 	cout << " > Please assign a name for the alignment database (.db): ";
@@ -341,7 +342,7 @@ int main()
 
 	fout.open(_namedb, ios::trunc);
 	fout << "// SmartChordGen Chord Database\n"
-		  << "// (c) 2020 " << nameauthor << ".\n"
+		  << "// (c) 2021 " << nameauthor << ".\n"
 		  << "// Database begins below.\n"
 		  << "title_en = " << namedb << endl
 		  << "title_ch = " << namedb << endl;
