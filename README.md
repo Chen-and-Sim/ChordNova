@@ -1,3 +1,4 @@
+![Alt text](graphics/icons/icon-white.png)
 # ChordNova 智弦 - 和声生成神器！
 
 ## 招募公告：本软件功能已基本完善，现招募移动App（iOS，Android）及网页版移植开发者，报酬面议（不低于10000元）。有意者请询 rcswex@163.com、QQ：925792714。
@@ -9,7 +10,6 @@
 * 提供一系列预设和乐曲范例；支持MIDI文件输出。
 * 支持多系统（目前有Windows和Linux两个版本）。
 
-![Alt text](graphics/icons/icon-white.png)
 
 ## 生成音乐试听 Music examples：https://music.163.com/#/album?id=93026223
 ### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
