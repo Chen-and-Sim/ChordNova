@@ -1,8 +1,8 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // savesettingsgui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
 void Interface::saveSettingsGui()
 {
@@ -57,7 +57,7 @@ void Interface::saveSettingsGui()
 	QStringList str7 = {"Ok", "确定"};
 	QPushButton* btn = new QPushButton(str7[language], save_dialog);
 	grid -> addWidget(btn, 5, 0, 1, 2, Qt::AlignCenter);
-	btn -> setFixedWidth(60);
+	btn -> setFixedWidth(60 * hscale);
 	connect(btn, &QPushButton::clicked, this, &Interface::write_preset);
 	save_dialog -> show();
 }
@@ -107,7 +107,7 @@ void Interface::write_preset()
 		cur_preset_path = "../presets/user-presets/" + preset_filename;
 	fout.open(cur_preset_path.toLocal8Bit().data(), ios::trunc);
 
-	fout << "// SmartChordGen Preset File\n"
+	fout << "// ChordNova Preset File\n"
 		  << "// Preset data begins below.\n"
 		  << "title_en = " << preset[English].toLatin1().data() << ";\n"
 		  << "title_ch = " << preset[Chinese].toUtf8().data() << ";\n";
@@ -115,7 +115,8 @@ void Interface::write_preset()
 		fout << "language = Chinese;\n\n";
 	else  fout << "language = English;\n\n";
 
-	fout << "output name = " << output_name << ";\n";
+	fout << "output name = " << output_name << ";\n"
+		  << "output path = " << output_path << ";\n";
 	if(continual)  fout << "output mode = continual;\n";
 	else  fout << "output mode = single;\n";
 	switch(output_mode)
@@ -207,18 +208,57 @@ void Interface::write_preset()
 	if(enable_sim)  fout << "similarity = " << str_sim << ";\n\n";
 	else  fout << "\n";
 
-	fout << "K: min = " << k_min << "; max = " << k_max << ";\n"
-		  << "T: min = " << t_min << "; max = " << t_max << ";\n"
+	fout << "T: min = " << t_min << "; max = " << t_max << ";\n"
+		  << "K: min = " << k_min << "; max = " << k_max << ";\n"
 		  << "C: min = " << c_min << "; max = " << c_max << ";\n"
-		  <<"sv: min = " <<sv_min << "; max = " <<sv_max << ";\n"
-		  << "R: min = " << r_min << "; max = " << r_max << ";\n"
 		  << "S: min = " << s_min << "; max = " << s_max << ";\n"
 		  <<"SS: min = " <<ss_min << "; max = " <<ss_max << ";\n"
 		  << "H: min = " << h_min << "; max = " << h_max << ";\n"
 		  << "G: min = " << g_min << "; max = " << g_max << ";\n"
-		  << "X: min = " << x_min << "; max = " << x_max << ";\n"
+		  <<"sv: min = " <<sv_min << "; max = " <<sv_max << ";\n"
 		  << "Q: min = " << q_min << "; max = " << q_max << ";\n"
-		  << "sort order = " << sort_order << ";\n";
+		  << "X: min = " << x_min << "; max = " << x_max << ";\n"
+		  <<"KK: min = " <<kk_min << "; max = " <<kk_max << ";\n"
+		  << "R: min = " << r_min << "; max = " << r_max << ";\n"
+		  << "sort order = " << sort_order << ";\n\n";
+
+	fout << "antechord = " << str_ante_notes << ";\n"
+		  << "postchord = " << str_post_notes << ";\n"
+		  << "show octave = " << boolalpha << hide_octave << ";\n";
+	switch(object)
+	{
+		case Postchord:  fout << "substitute object = Postchord;\n";   break;
+		case Antechord:  fout << "substitute object = Antechord;\n";   break;
+		case BothChords: fout << "substitute object = BothChords;\n";  break;
+	}
+	fout << "test all = " << boolalpha << test_all << ";\n"
+		  << "sample size = " << sample_size << ";\n";
+	if(detailed_ref)
+		fout << "substitute reference = customized;\n";
+	else  fout << "substitute reference = default;\n";
+	fout << "output name for substitution = " << output_name_sub << ";\n";
+	switch(output_mode_sub)
+	{
+		case Both:      fout << "output format for substitution = Both;\n\n";  break;
+		case MidiOnly:	 fout << "output format for substitution = MidiOnly;\n\n";  break;
+		case TextOnly:  fout << "output format for substitution = TextOnly;\n\n";  break;
+	}
+
+	fout << "P: reset value = " << p_reset_value << "; radius = " << p_radius << ";\n"
+		  << "N: reset value = " << n_reset_value << "; radius = " << n_radius << ";\n"
+		  << "T: reset value = " << t_reset_value << "; radius = " << t_radius << ";\n"
+		  << "K: reset value = " << k_reset_value << "; radius = " << k_radius << ";\n"
+		  << "C: reset value = " << c_reset_value << "; radius = " << c_radius << ";\n"
+		  << "S: reset value = " << s_reset_value << "; radius = " << s_radius << ";\n"
+		  <<"SS: reset value = " <<ss_reset_value << "; radius = " <<ss_radius << ";\n"
+		  <<"sv: reset value = " <<sv_reset_value << "; radius = " <<sv_radius << ";\n"
+		  << "Q: reset value = " << q_reset_value << "; radius = " << q_radius << ";\n"
+		  << "X: reset value = " << x_reset_value << "; radius = " << x_radius << ";\n"
+		  <<"KK: reset value = " <<kk_reset_value << "; radius = " <<kk_radius << ";\n"
+		  << "R: reset value = " << r_reset_value << "; radius = " << r_radius << ";\n"
+		  << "reset list = " << reset_list << ";\n"
+		  << "percentage list = " << percentage_list << ";\n"
+		  << "sort order for substitution = " << sort_order_sub << ";\n";
 
 	fout.close();
 	save_dialog -> close();

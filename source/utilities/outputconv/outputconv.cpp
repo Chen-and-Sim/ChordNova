@@ -1,6 +1,6 @@
-// SmartChordGen-utility-outputconv v3.0 [Build: 2020.11.27]
+// ChordNova-utility-outputconv v3.0 [Build: 2021.1.14]
 // Converts the output file of main program (SmartChordGen) to a form that can be read by programs in utilities.
-// (c) 2020 Wenge Chen, Ji-woon Sim.
+// (c) 2021 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
 #include <iostream>
@@ -12,8 +12,8 @@ using namespace std;
 
 int main()
 {
-	cout << "[[  SmartChordGen v3.0 [Build: 2020.11.27]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
+	cout << "[[  ChordNova v3.0 [Build: 2021.1.14]  ]]\n"
+		  << "[[  (c) 2021 Wenge Chen, Ji-woon Sim.  ]]\n\n"
 		  << " > Utility - Output Conversion:\n";
 	
 	cout << " > Please input the name of the chord data file you would like to convert (the default extension is '.txt): ";

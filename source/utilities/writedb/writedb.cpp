@@ -1,8 +1,8 @@
-// SmartChordGen-utility-writedb v3.0 [Build: 2020.11.27]
+// ChordNova-utility-writedb v3.0 [Build: 2021.1.14]
 // Writes chord database in normal form or prime form in two ways.
 // One way is to find chords satisfying the range of 'vec' ('count_vec' in chorddata.h), 
 // and the other way is to give all chords that are the subsets of a given chord.
-// (c) 2020 Wenge Chen, Ji-woon Sim.
+// (c) 2021 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
 #include <iostream>
@@ -197,8 +197,8 @@ void by_subset()
 
 int main()
 {
-	cout << "[[  SmartChordGen v3.0 [Build: 2020.11.27]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
+	cout << "[[  ChordNova v3.0 [Build: 2021.1.14]  ]]\n"
+		  << "[[  (c) 2021 Wenge Chen, Ji-woon Sim.  ]]\n\n"
 		  << " > Utility - Write Database:\n";
 	
 	cout << " > Please assign a name for the database (.db): ";
@@ -236,7 +236,7 @@ int main()
 
 	fout.open(_namedb, ios::trunc);
 	fout << "// SmartChordGen Chord Database\n"
-		  << "// (c) 2020 " << nameauthor << ".\n"
+		  << "// (c) 2021 " << nameauthor << ".\n"
 		  << "// Database begins below.\n"
 		  << "title_en = " << namedb << endl
 		  << "title_ch = " << namedb << endl;

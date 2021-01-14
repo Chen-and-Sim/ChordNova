@@ -1,4 +1,4 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // chorddata.h
 
@@ -8,6 +8,7 @@
 #include <vector>
 using std::vector;
 
+enum Language      {English, Chinese};
 enum OverflowState {NoOverflow, Single, Total};
 
 class ChordData
@@ -19,20 +20,24 @@ protected:
 	double thickness;   // h
 	int root;           // r
 	int g_center;       // g
-	double chroma_old;  // k_old
+	double chroma_old;  // kk
+	double prev_chroma_old;
 	double chroma;      // k
 	double Q_indicator; // Q
 	int common_note;    // c
-	int sv;             // sv
+	int sv;             // sv, Σvec
 	int span;           // s
 	int sspan;          // ss
 	int similarity;     // x
+	int sim_orig;       // p, default = 100%
 	int steady_count;
 	int ascending_count;
 	int descending_count;
 	int root_movement;
 	char root_name[3];
-	char name[50];      // name of each note in the chord
+	bool hide_octave;
+	char name[50];             // name of each note in the chord
+	char name_with_octave[50]; // name and octave of each note in the chord
 	OverflowState overflow_state;
 	int overflow_amount;
 	
@@ -46,15 +51,21 @@ protected:
 	vector<int> alignment;     // e.g. [3, 1, 7] means the chord is aligned as '3rd note, root, 7th note'.
 
 public:
+	int orig_pos;					// Used in substitution.
 	vector<int> pedal_notes_set;
 	vector<int> pedal_notes;
-	
+
 	ChordData() = default;;
 	ChordData(const ChordData& data) = default;
-	
-	void printInitial(); // prints data of the initial chord
-	void print(const ChordData&); // prints data of a single chord
-	
+
+	void inverse_param(); // This is used when we reverse the direction of a progression in chord substitution.
+	void printInitial(Language);  // prints data of the initial chord
+	void print(const ChordData&, Language); // prints data of a single chord
+	void print_analysis(const ChordData&, const ChordData&, const char*, const char*, Language);
+	// prints data of both chords in chord analysis
+	void print_substitution(const char*, bool, bool, const ChordData&, const ChordData&, Language);
+	// prints data of a single progression in chord substitution
+
 	int& get_t_size()           { return t_size; }
 	int& get_s_size()           { return s_size; }
 	double& get_tension()       { return tension; }
@@ -69,6 +80,7 @@ public:
 	int& get_span()             { return span; }
 	int& get_sspan()            { return sspan; }
 	int& get_similarity()       { return similarity; }
+	int& get_sim_orig()         { return sim_orig; }
 	int& get_steady_count()     { return steady_count; }
 	int& get_ascending_count()  { return ascending_count; }
 	int& get_descending_count() { return descending_count; }
@@ -86,6 +98,7 @@ public:
 	vector<int>& get_pedal_notes_set() { return pedal_notes_set; }
 	
 	friend bool larger_chroma      (const ChordData&, const ChordData&);
+	friend bool larger_chroma_old  (const ChordData&, const ChordData&);
 	friend bool larger_tension     (const ChordData&, const ChordData&);
 	friend bool larger_common      (const ChordData&, const ChordData&);
 	friend bool larger_sv          (const ChordData&, const ChordData&);
@@ -97,10 +110,12 @@ public:
 	friend bool larger_thickness   (const ChordData&, const ChordData&);
 	friend bool larger_g_center    (const ChordData&, const ChordData&);
 	friend bool larger_similarity  (const ChordData&, const ChordData&);
+	friend bool larger_sim_orig    (const ChordData&, const ChordData&);
 	friend bool larger_Q_indicator (const ChordData&, const ChordData&);
 	friend bool superior_rm        (const ChordData&, const ChordData&);
 
 	friend bool smaller_chroma     (const ChordData&, const ChordData&);
+	friend bool smaller_chroma_old (const ChordData&, const ChordData&);
 	friend bool smaller_tension    (const ChordData&, const ChordData&);
 	friend bool smaller_common     (const ChordData&, const ChordData&);
 	friend bool smaller_sv         (const ChordData&, const ChordData&);
@@ -112,11 +127,13 @@ public:
 	friend bool smaller_thickness  (const ChordData&, const ChordData&);
 	friend bool smaller_g_center   (const ChordData&, const ChordData&);
 	friend bool smaller_similarity (const ChordData&, const ChordData&);
+	friend bool smaller_sim_orig   (const ChordData&, const ChordData&);
 	friend bool smaller_Q_indicator(const ChordData&, const ChordData&);
 	friend bool inferior_rm        (const ChordData&, const ChordData&);
 };
 
 extern bool larger_chroma      (const ChordData&, const ChordData&);
+extern bool larger_chroma_old  (const ChordData&, const ChordData&);
 extern bool larger_tension     (const ChordData&, const ChordData&);
 extern bool larger_common      (const ChordData&, const ChordData&);
 extern bool larger_sv          (const ChordData&, const ChordData&);
@@ -128,10 +145,12 @@ extern bool larger_sspan       (const ChordData&, const ChordData&);
 extern bool larger_thickness   (const ChordData&, const ChordData&);
 extern bool larger_g_center    (const ChordData&, const ChordData&);
 extern bool larger_similarity  (const ChordData&, const ChordData&);
+extern bool larger_sim_orig    (const ChordData&, const ChordData&);
 extern bool larger_Q_indicator (const ChordData&, const ChordData&);
 extern bool superior_rm        (const ChordData&, const ChordData&);
 
 extern bool smaller_chroma     (const ChordData&, const ChordData&);
+extern bool smaller_chroma_old (const ChordData&, const ChordData&);
 extern bool smaller_tension    (const ChordData&, const ChordData&);
 extern bool smaller_common     (const ChordData&, const ChordData&);
 extern bool smaller_sv         (const ChordData&, const ChordData&);
@@ -143,13 +162,14 @@ extern bool smaller_sspan      (const ChordData&, const ChordData&);
 extern bool smaller_thickness  (const ChordData&, const ChordData&);
 extern bool smaller_g_center   (const ChordData&, const ChordData&);
 extern bool smaller_similarity (const ChordData&, const ChordData&);
+extern bool smaller_sim_orig   (const ChordData&, const ChordData&);
 extern bool smaller_Q_indicator(const ChordData&, const ChordData&);
 extern bool inferior_rm        (const ChordData&, const ChordData&);
 
-const int _TOTAL = 14;
-const char var[_TOTAL] = {'K', 'T', 'C', 'S', 'M', 'N', 'R', 'p', 'P', 'H', 'G', 'X', 'Q', 'V'};
-// name of parameters (S = sv, p = S, P = SS)
-extern bool (*compare[_TOTAL][2]) (const ChordData&, const ChordData&);
+const int  VAR_TOTAL = 16;
+const char var[VAR_TOTAL] = {'P', 'N', 'T', 'K', 'C', 'a', 'A', 'm', 'h', 'g', 'S', 'Q', 'X', 'k', 'R', 'V'};
+// name of parameters (a = S, A = SS, S = sv, k = KK)
+extern bool (*compare[VAR_TOTAL][2]) (const ChordData&, const ChordData&);
 // to unify the compare functions
 extern vector<int> rm_priority;
 

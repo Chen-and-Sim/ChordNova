@@ -1,17 +1,19 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // moreparamgui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
-void (Interface::*set_min[_TOTAL]) () =
-	{&Interface::set_k_min, &Interface::set_t_min, &Interface::set_c_min, &Interface::set_sv_min,
-	 nullptr,   nullptr,    &Interface::set_r_min, &Interface::set_s_min, &Interface::set_ss_min,
-	 &Interface::set_h_min, &Interface::set_g_min, &Interface::set_x_min, &Interface::set_q_min, nullptr};
-void (Interface::*set_max[_TOTAL]) () =
-	{&Interface::set_k_max, &Interface::set_t_max, &Interface::set_c_max, &Interface::set_sv_max,
-	 nullptr,   nullptr,    &Interface::set_r_max, &Interface::set_s_max, &Interface::set_ss_max,
-	 &Interface::set_h_max, &Interface::set_g_max, &Interface::set_x_max, &Interface::set_q_max, nullptr};
+void (Interface::*set_min[VAR_TOTAL]) () =
+	{ nullptr,               nullptr,               &Interface::set_t_min,  &Interface::set_k_min,
+	 &Interface::set_c_min,	&Interface::set_s_min,  &Interface::set_ss_min,  nullptr,
+	 &Interface::set_h_min, &Interface::set_g_min,  &Interface::set_sv_min, &Interface::set_q_min,
+	 &Interface::set_x_min, &Interface::set_kk_min, &Interface::set_r_min,   nullptr };
+void (Interface::*set_max[VAR_TOTAL]) () =
+	{ nullptr,               nullptr,               &Interface::set_t_max,  &Interface::set_k_max,
+	 &Interface::set_c_max,	&Interface::set_s_max,  &Interface::set_ss_max,  nullptr,
+	 &Interface::set_h_max, &Interface::set_g_max,  &Interface::set_sv_max, &Interface::set_q_max,
+	 &Interface::set_x_max, &Interface::set_kk_max, &Interface::set_r_max,   nullptr };
 
 void Interface::moreParamGui()
 {
@@ -20,27 +22,26 @@ void Interface::moreParamGui()
 	more_param_window -> setWindowFlag(Qt::Window, true);
 	more_param_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
 	more_param_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
-#if __WIN32
-    more_param_window -> setFixedSize(640 * scale, 615 * _scale);
-#else
-    more_param_window -> setFixedSize(640 * scale, 660 * _scale);
-#endif
 	QStringList str0 = {"Set more parameters and sort priorties", "更多指标设置及排序设置"};
 	more_param_window -> setWindowTitle(str0[language]);
 	more_param_window -> setFont(font);
 
-	QGridLayout* grid = new QGridLayout(more_param_window);
+	int width, height;
+#if __WIN32
+	height = 640;
+#else
+	height = 685;
+#endif
 	if(language == Chinese)
-	{
-		grid -> setContentsMargins(30 * _scale, 30 * scale, 30 * _scale, 20 * scale);
-		grid -> setHorizontalSpacing(20 * scale);
-	}
-	else
-	{
-		grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 20 * scale);
-		grid -> setHorizontalSpacing(5 * scale);
-	}
+		width = 550;
+	else  width = 650;
+	more_param_window -> setFixedSize(width * hscale, height * vscale);
+
+	QGridLayout* grid = new QGridLayout(more_param_window);
+	grid -> setContentsMargins(30 * hscale, 30 * vscale, 30 * hscale, 20 * vscale);
+	grid -> setHorizontalSpacing(20 * hscale);
 	grid -> setColumnStretch(2, 0);
+	grid -> setColumnStretch(3, 1);
 
 	QStringList str1 = {"Range of parameters", "指 标 范 围"};
 	QLabel* label1 = new QLabel(str1[language], more_param_window);
@@ -54,61 +55,59 @@ void Interface::moreParamGui()
 	label2 -> setStyleSheet("color: #3F48CC;");
 	grid -> addWidget(label2, 0, 4, 1, 2, Qt::AlignCenter);
 
-	QLabel* label_param[_TOTAL];
-	QStringList str_param[_TOTAL] = { {"≤ Percentage of Cuikang Hua's chroma difference (K%) ≤",
-												  "≤  华萃康氏色差值占比 (K%)  ≤"},
-												 {"≤ Percentage of tension measured by the intervals (T%) ≤",
-												  "≤ 从音程涵量得的紧张度 (T%)≤"},
-												 {"≤      Number of common notes in a progression (C)     ≤",
-												  "≤  和弦进行的共同音个数 (C) ≤"},
-												 {"≤                        Total voice leading (Σvec)                       ≤",
-												  "≤    音集进行总大小 (Σvec)   ≤"},
-												 {"Number of notes in a chord (M)", "和弦构成音个数 (M)"},
-												 {"Number of notes in a chord in terms of set (N)", "和弦音集构成音个数 (N)"},
-												 {"≤                  Hindemith root of a chord (R)                   ≤",
-												  "≤ 和弦的Hindemith根音 (R) ≤"},
-												 {"≤                 Perfect fifth span of a chord (S)                 ≤",
-												  "≤      和弦的纯五跨度 (S)      ≤"},
-												 {"≤         Span of the union of adjacent chords (SS)         ≤",
-												  "≤  相邻和弦之并的跨度 (SS) ≤"},
-												 {"≤               Weighted thickness of a chord (H)               ≤",
-												  "≤ 和弦的重复音加权厚度 (H) ≤"},
-												 {"≤                Geometric center of a chord (G%)               ≤",
-												  "≤     和弦的几何中心 (G%)    ≤"},
-												 {"≤               Similarity of adjacent chords (X%)                ≤",
-												  "≤     相邻和弦相似度 (X%)     ≤"},
-												 {"≤                         Chen's Q indicator (Q)                          ≤",
-												  "≤  和弦进行的陈氏Q指标 (Q) ≤"},
-												 {"Root movement in a progression (V)", "和弦进行的根音运动音程 (V)"} };
+	QLabel* label_param[VAR_TOTAL];
+	QStringList str_param[VAR_TOTAL] =
+		{ {"", ""},
+		  {"Chord cardinality (N)",						 "和弦音数 (N)"},
+		  {"≤  Chord tension (T%)  ≤",					 "≤  和弦紧张度占比 (T%)  ≤"},
+		  {"≤  Chroma value (Hua) (K%)  ≤",				 "≤  华氏色彩度占比 (K%)  ≤"},
+		  {"≤  Number of common tones (C)  ≤",			 "≤  进行共同音个数 (C)  ≤"},
+		  {"≤  Chord span in fifths (S)  ≤",          "≤  和弦纯五跨度 (S)  ≤"},
+		  {"≤  Unioned chord span in fifths (SS)  ≤", "≤  相邻和弦的合跨度 (SS)  ≤"},
+		  {"Chord voice cardinality (M)",				 "和弦声部数 (M)"},
+		  {"≤  Chord thickness (H)  ≤",					 "≤  和弦八度厚度 (H)  ≤"},
+		  {"≤  Chord geometric center (G%)  ≤",		 "≤  和弦几何中心位置 (G%)  ≤"},
+		  {"≤  Total voice leading (Σvec)  ≤",			 "≤  声部运动总大小 (Σvec)  ≤"},
+		  {"≤  Q-Indicator value (Chen) (Q)  ≤",		 "≤  陈氏Q指标数值 (Q)  ≤"},
+		  {"≤  Lateral similarity (X%)  ≤",				 "≤  横向相似度 (X%)  ≤"},
+		  {"≤  Gross chroma value (KK%)  ≤",			 "≤  华氏毛色彩度占比 (KK%)  ≤"},
+		  {"≤  Chord root (Hindemith) (R)  ≤",        "≤  和弦根音（欣氏法）(R)  ≤"},
+		  {"Chord root movement interval (V)",			 "进行根音运动音程 (V)"} };
 	QStringList str3 = {"Ascending", "升序"};
-	for(int i = 0; i < _TOTAL; ++i)
+	int row = 1;
+	for(int i = 1; i < VAR_TOTAL; ++i)
 	{
-		if((i != 4) && (i != 5) && (i != 13))
+		if((i != 1) && (i != 7) && (i != 15))  // N, M, V
 		{
 			edit_min[i] = new QLineEdit(more_param_window);
-			grid -> addWidget(edit_min[i], i + 1, 1);
+			edit_min[i] -> setFixedWidth(60 * hscale);
+			grid -> addWidget(edit_min[i], row, 1);
+
 			edit_max[i] = new QLineEdit(more_param_window);
-			grid -> addWidget(edit_max[i], i + 1, 3);
+			edit_max[i] -> setFixedWidth(60 * hscale);
+			grid -> addWidget(edit_max[i], row, 3, Qt::AlignLeft);
 		}
 
 		cb_param[i] = new QCheckBox(more_param_window);
-		grid -> addWidget(cb_param[i], i + 1, 0);
+		grid -> addWidget(cb_param[i], row, 0);
 
 		label_param[i] = new QLabel(str_param[i][language], more_param_window);
-		grid -> addWidget(label_param[i], i + 1, 2, Qt::AlignCenter);
+		grid -> addWidget(label_param[i], row, 2, Qt::AlignCenter);
 
 		cb_ascending_order[i] = new QCheckBox(str3[language], more_param_window);
-		grid -> addWidget(cb_ascending_order[i], i + 1, 4);
+		grid -> addWidget(cb_ascending_order[i], row, 4);
 
 		edit_order[i] = new QLineEdit(more_param_window);
-		edit_order[i] -> setFixedWidth(40 * scale);
-		grid -> addWidget(edit_order[i], i + 1, 5);
+		edit_order[i] -> setFixedWidth(40 * hscale);
+		grid -> addWidget(edit_order[i], row, 5);
+
+		++row;
 	}
 
-	for(int i = 0; i < _TOTAL; ++i)
+	for(int i = 1; i < VAR_TOTAL; ++i)
 	{
 		connect(cb_param[i], &QCheckBox::clicked, this, &Interface::enable_param);
-		if((i != 4) && (i != 5) && (i != 13))
+		if((i != 1) && (i != 7) && (i != 15))
 		{
 			connect(edit_min[i], &QLineEdit::editingFinished, this, set_min[i]);
 			connect(edit_max[i], &QLineEdit::editingFinished, this, set_max[i]);
@@ -116,19 +115,19 @@ void Interface::moreParamGui()
 	}
 
 	QStringList str4 = {"<p style=\"line-height:120%\">%1<p>", "<p style=\"line-height:150%\">%1<p>"};
-	QStringList str5 = {"<br>*&nbsp;&nbsp;Not selecting a parameter means not applying its conditions and keep it in disorder."
-							  "<br>&nbsp;&nbsp;&nbsp;The default order is descending order.<br>"
+	QStringList str5 = {"<br>*&nbsp;&nbsp;If a parameter is unchecked, the corresponding conditions will not be applied"
+							  "<br>&nbsp;&nbsp;&nbsp;and it will be kept in disorder. The default order is descending order.<br>"
 							  "**&nbsp;Please set the range of M, N in the main Interface and set the conditions of V in 'Apply more rules'.<br>"
 							  "***Please fill in the order correctly (1, 2, 3...).",
-							  "<br>*&nbsp;&nbsp;不勾选则不应用该项指标的筛选条件，且保持乱序，默认排序为降序排列。 <br>"
+							  "<br>*&nbsp;&nbsp;不勾选则不应用该项指标的筛选条件，且保持乱序，默认排序为降序。 <br>"
 							  "**&nbsp;请于主界面设置M和N的范围，于“更多规则”处设置V的条件。<br>"
 							  "***请于排序次序框内正确填写序号(1、2、3……)。"};
 	QLabel* label3 = new QLabel(str4[language].arg(str5[language]), more_param_window);
-	grid -> addWidget(label3, 15, 0, 1, 6, Qt::AlignLeft);
+	grid -> addWidget(label3, 16, 0, 1, 6, Qt::AlignLeft);
 
 	QStringList str6 = {"OK", "确定"};
 	QPushButton* btn = new QPushButton(str6[language], more_param_window);
-	grid -> addWidget(btn, 16, 4, 1, 2, Qt::AlignRight);
+	grid -> addWidget(btn, 17, 4, 1, 2, Qt::AlignRight);
 	connect(btn, &QPushButton::clicked, this ,&Interface::closeMoreParam);
 
 	initMoreParam();
@@ -138,15 +137,17 @@ void Interface::moreParamGui()
 void Interface::initMoreParam()
 {
 	QString str;
-	QStringList str_min = {str.setNum(k_min), str.setNum(t_min), str.setNum(c_min), str.setNum(sv_min),
-								  "-1", "-1"       , str.setNum(r_min), str.setNum(s_min), str.setNum(ss_min),
-								  str.setNum(h_min), str.setNum(g_min), str.setNum(x_min), str.setNum(q_min), "-1"};
-	QStringList str_max = {str.setNum(k_max), str.setNum(t_max), str.setNum(c_max), str.setNum(sv_max),
-								  "-1", "-1",        str.setNum(r_max), str.setNum(s_max), str.setNum(ss_max),
-								  str.setNum(h_max), str.setNum(g_max), str.setNum(x_max), str.setNum(q_max),"-1"};
-	for(int i = 0; i < _TOTAL; ++i)
+	QStringList str_min = {"-1",              "-1",               str.setNum(t_min),  str.setNum(k_min),
+								  str.setNum(c_min), str.setNum(s_min),  str.setNum(ss_min), "-1",
+								  str.setNum(h_min), str.setNum(g_min),  str.setNum(sv_min), str.setNum(q_min),
+								  str.setNum(x_min), str.setNum(kk_min), str.setNum(r_min),  "-1"};
+	QStringList str_max = {"-1",              "-1",               str.setNum(t_max),  str.setNum(k_max),
+								  str.setNum(c_max), str.setNum(s_max),  str.setNum(ss_max), "-1",
+								  str.setNum(h_max), str.setNum(g_max),  str.setNum(sv_max), str.setNum(q_max),
+								  str.setNum(x_max), str.setNum(kk_max), str.setNum(r_max),  "-1"};
+	for(int i = 1; i < VAR_TOTAL; ++i)
 	{
-		if((i != 4) && (i != 5) && (i != 13))
+		if((i != 1) && (i != 7) && (i != 15))
 		{
 			edit_min[i] -> setText(str_min[i]);
 			edit_max[i] -> setText(str_max[i]);
@@ -156,7 +157,7 @@ void Interface::initMoreParam()
 	while(pos < len)
 	{
 		int i;
-		for(i = 0; i < _TOTAL; ++i)
+		for(i = 0; i < VAR_TOTAL; ++i)
 			if(var[i] == sort_order[pos])  break;
 		++pos;  ++count;
 		cb_param[i] -> setChecked(true);
@@ -172,32 +173,35 @@ void Interface::initMoreParam()
 
 void Interface::set_default_param(int index)
 {
-	QStringList str_min = {  "0",   "0",  "0",    "0", "-1", "-1",  "0",  "0",  "0",  "0",   "0",   "0", "-500", "-1"};
-	QStringList str_max = {"100", "100", "15", "2000", "-1", "-1", "11", "12", "12", "50", "100", "100",  "500", "-1"};
-	vector<int> val_min = {  0,   0,  0,    0, -1, -1,  0,  0,  0,  0,   0,   0, -500, -1};
-	vector<int> val_max = {100, 100, 15, 2000, -1, -1, 11, 12, 12, 50, 100, 100,  500, -1};
+	QStringList str_min = {"-1",  "-1",    "0",    "0",   "0",   "0",  "0", "-1",
+									"0",   "0",    "0", "-500",   "0",   "0",  "0", "-1"};
+	QStringList str_max = {"-1",  "-1",  "100",  "100",  "15",  "12", "12", "-1",
+								  "50", "100", "2000",  "500", "100", "100", "11", "-1"};
+	vector<int> val_min = {-1, -1,   0,   0,  0,  0,  0, -1,  0,   0,    0, -500,   0,   0,  0, -1};
+	vector<int> val_max = {-1, -1, 100, 100, 15, 12, 12, -1, 50, 100, 2000,  500, 100, 100, 11, -1};
 	edit_min[index] -> setText(str_min[index]);
 	edit_max[index] -> setText(str_max[index]);
 
 	bool isDouble;
 	int *pt1_min, *pt1_max;
 	double *pt2_min, *pt2_max;
-	if(index == 0 || index == 1 || index == 9 || index == 12)
+	if(index == 2 || index == 3 || index == 8 || index == 11 || index == 13)
 		isDouble = true;
 	else  isDouble = false;
 	switch(index)
 	{
-		case 0:  pt2_min = &k_min;  pt2_max = &k_max;  break;
-		case 1:  pt2_min = &t_min;  pt2_max = &t_max;  break;
-		case 2:  pt1_min = &c_min;  pt1_max = &c_max;  break;
-		case 3:  pt1_min = &sv_min; pt1_max = &sv_max; break;
-		case 6:  pt1_min = &r_min;  pt1_max = &r_max;  break;
-		case 7:  pt1_min = &s_min;  pt1_max = &s_max;  break;
-		case 8:  pt1_min = &ss_min; pt1_max = &ss_max; break;
-		case 9:  pt2_min = &h_min;  pt2_max = &h_max;  break;
-		case 10: pt1_min = &g_min;  pt1_max = &g_max;  break;
-		case 11: pt1_min = &x_min;  pt1_max = &x_max;  break;
-		case 12: pt2_min = &q_min;  pt2_max = &q_max;  break;
+		case 2:  pt2_min = &t_min;  pt2_max = &t_max;  break;
+		case 3:  pt2_min = &k_min;  pt2_max = &k_max;  break;
+		case 4:  pt1_min = &c_min;  pt1_max = &c_max;  break;
+		case 5:  pt1_min = &s_min;  pt1_max = &s_max;  break;
+		case 6:  pt1_min = &ss_min; pt1_max = &ss_max; break;
+		case 8:  pt2_min = &h_min;  pt2_max = &h_max;  break;
+		case 9:  pt1_min = &g_min;  pt1_max = &g_max;  break;
+		case 10: pt1_min = &sv_min; pt1_max = &sv_max; break;
+		case 11: pt2_min = &q_min;  pt2_max = &q_max;  break;
+		case 12: pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 13: pt2_min = &kk_min; pt2_max = &kk_max; break;
+		case 14: pt1_min = &r_min;  pt1_max = &r_max;  break;
 	}
 	if(isDouble)
 	{
@@ -218,22 +222,23 @@ void Interface::set_param_min(int index, int min)
 	bool isDouble;
 	int *pt1_min, *pt1_max;
 	double *pt2_min, *pt2_max;
-	if(index == 0 || index == 1 || index == 9 || index == 12)
+	if(index == 2 || index == 3 || index == 8 || index == 11 || index == 13)
 		isDouble = true;
 	else  isDouble = false;
 	switch(index)
 	{
-		case 0:  pt2_min = &k_min;  pt2_max = &k_max;  break;
-		case 1:  pt2_min = &t_min;  pt2_max = &t_max;  break;
-		case 2:  pt1_min = &c_min;  pt1_max = &c_max;  break;
-		case 3:  pt1_min = &sv_min; pt1_max = &sv_max; break;
-		case 6:  pt1_min = &r_min;  pt1_max = &r_max;  break;
-		case 7:  pt1_min = &s_min;  pt1_max = &s_max;  break;
-		case 8:  pt1_min = &ss_min; pt1_max = &ss_max; break;
-		case 9:  pt2_min = &h_min;  pt2_max = &h_max;  break;
-		case 10: pt1_min = &g_min;  pt1_max = &g_max;  break;
-		case 11: pt1_min = &x_min;  pt1_max = &x_max;  break;
-		case 12: pt2_min = &q_min;  pt2_max = &q_max;  break;
+		case 2:  pt2_min = &t_min;  pt2_max = &t_max;  break;
+		case 3:  pt2_min = &k_min;  pt2_max = &k_max;  break;
+		case 4:  pt1_min = &c_min;  pt1_max = &c_max;  break;
+		case 5:  pt1_min = &s_min;  pt1_max = &s_max;  break;
+		case 6:  pt1_min = &ss_min; pt1_max = &ss_max; break;
+		case 8:  pt2_min = &h_min;  pt2_max = &h_max;  break;
+		case 9:  pt1_min = &g_min;  pt1_max = &g_max;  break;
+		case 10: pt1_min = &sv_min; pt1_max = &sv_max; break;
+		case 11: pt2_min = &q_min;  pt2_max = &q_max;  break;
+		case 12: pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 13: pt2_min = &kk_min; pt2_max = &kk_max; break;
+		case 14: pt1_min = &r_min;  pt1_max = &r_max;  break;
 	}
 
 	QString text = edit_min[index] -> text(), str;
@@ -274,22 +279,23 @@ void Interface::set_param_max(int index, int max)
 	bool isDouble;
 	int *pt1_min, *pt1_max;
 	double *pt2_min, *pt2_max;
-	if(index == 0 || index == 1 || index == 9 || index == 12)
+	if(index == 2 || index == 3 || index == 8 || index == 11 || index == 13)
 		isDouble = true;
 	else  isDouble = false;
 	switch(index)
 	{
-		case 0:  pt2_min = &k_min;  pt2_max = &k_max;  break;
-		case 1:  pt2_min = &t_min;  pt2_max = &t_max;  break;
-		case 2:  pt1_min = &c_min;  pt1_max = &c_max;  break;
-		case 3:  pt1_min = &sv_min; pt1_max = &sv_max; break;
-		case 6:  pt1_min = &r_min;  pt1_max = &r_max;  break;
-		case 7:  pt1_min = &s_min;  pt1_max = &s_max;  break;
-		case 8:  pt1_min = &ss_min; pt1_max = &ss_max; break;
-		case 9:  pt2_min = &h_min;  pt2_max = &h_max;  break;
-		case 10: pt1_min = &g_min;  pt1_max = &g_max;  break;
-		case 11: pt1_min = &x_min;  pt1_max = &x_max;  break;
-		case 12: pt2_min = &q_min;  pt2_max = &q_max;  break;
+		case 2:  pt2_min = &t_min;  pt2_max = &t_max;  break;
+		case 3:  pt2_min = &k_min;  pt2_max = &k_max;  break;
+		case 4:  pt1_min = &c_min;  pt1_max = &c_max;  break;
+		case 5:  pt1_min = &s_min;  pt1_max = &s_max;  break;
+		case 6:  pt1_min = &ss_min; pt1_max = &ss_max; break;
+		case 8:  pt2_min = &h_min;  pt2_max = &h_max;  break;
+		case 9:  pt1_min = &g_min;  pt1_max = &g_max;  break;
+		case 10: pt1_min = &sv_min; pt1_max = &sv_max; break;
+		case 11: pt2_min = &q_min;  pt2_max = &q_max;  break;
+		case 12: pt1_min = &x_min;  pt1_max = &x_max;  break;
+		case 13: pt2_min = &kk_min; pt2_max = &kk_max; break;
+		case 14: pt1_min = &r_min;  pt1_max = &r_max;  break;
 	}
 
 	QString text = edit_max[index] -> text(), str;
@@ -326,11 +332,11 @@ void Interface::set_param_max(int index, int max)
 void Interface::enable_param(bool state)
 {
 	Q_UNUSED(state);
-	for(int i = 0; i < _TOTAL; ++i)
+	for(int i = 1; i < VAR_TOTAL; ++i)
 	{
 		if(cb_param[i] -> isChecked())
 		{
-			if(i != 4 && i != 5 && i != 13)
+			if(i != 1 && i != 7 && i != 15)
 			{
 				edit_min[i] -> setEnabled(true);
 				edit_max[i] -> setEnabled(true);
@@ -350,7 +356,7 @@ void Interface::enable_param(bool state)
 		}
 		else
 		{
-			if(i != 4 && i != 5 && i != 13)
+			if(i != 1 && i != 7 && i != 15)
 			{
 				set_default_param(i);
 				edit_min[i] -> setDisabled(true);
@@ -365,48 +371,70 @@ void Interface::enable_param(bool state)
 	{
 		int max_order = 0;
 		QString str;
-		for(int i = 0; i < _TOTAL; ++i)
+		for(int i = 1; i < VAR_TOTAL; ++i)
 		{
 			if(edit_order[i] -> text().toInt() > max_order)
 				max_order = edit_order[i] -> text().toInt();
 		}
-		for(int i = 0; i < _TOTAL; ++i)
+		for(int i = 1; i < VAR_TOTAL; ++i)
 		{
 			if(cb_param[i] -> isChecked() && edit_order[i] -> text().toInt() == 0)
 				edit_order[i] -> setText(str.setNum(++max_order));
 		}
+
+		vector<int> orders;
+		for(int i = 1; i < VAR_TOTAL; ++i)
+		{
+			if(cb_param[i] -> isChecked())
+			{
+				int num = edit_order[i] -> text().toInt();
+				if(num != 0)
+					orders.push_back(num);
+			}
+		}
+		bubble_sort(orders);
+		for(int j = 0; j < (int)orders.size(); ++j)
+		{
+			for(int i = 1; i < VAR_TOTAL; ++i)
+			{
+				if(edit_order[i] -> text().toInt() == orders[j])
+					edit_order[i] -> setText(str.setNum(j + 1));
+			}
+		}
 	}
 }
 
-void Interface::set_k_min()  { set_param_min(0, 0); }
-void Interface::set_k_max()  { set_param_max(0, 100); }
-void Interface::set_t_min()  { set_param_min(1, 0); }
-void Interface::set_t_max()  { set_param_max(1, 100); }
-void Interface::set_c_min()  { set_param_min(2, 0); }
-void Interface::set_c_max()  { set_param_max(2, 15); }
-void Interface::set_sv_min() { set_param_min(3, 0); }
-void Interface::set_sv_max() { set_param_max(3, 2000); }
-void Interface::set_r_min()  { set_param_min(6, 0); }
-void Interface::set_r_max()  { set_param_max(6, 11); }
-void Interface::set_s_min()  { set_param_min(7, 0); }
-void Interface::set_s_max()  { set_param_max(7, 12); }
-void Interface::set_ss_min() { set_param_min(8, 0); }
-void Interface::set_ss_max() { set_param_max(8, 12); }
-void Interface::set_h_min()  { set_param_min(9, 0); }
-void Interface::set_h_max()  { set_param_max(9, 50); }
-void Interface::set_g_min()  { set_param_min(10, 0); }
-void Interface::set_g_max()  { set_param_max(10, 100); }
-void Interface::set_x_min()  { set_param_min(11, 0); }
-void Interface::set_x_max()  { set_param_max(11, 100); }
-void Interface::set_q_min()  { set_param_min(12, -500); }
-void Interface::set_q_max()  { set_param_max(12, 500); }
+void Interface::set_t_min()  { set_param_min(2, 0); }
+void Interface::set_t_max()  { set_param_max(2, 100); }
+void Interface::set_k_min()  { set_param_min(3, 0); }
+void Interface::set_k_max()  { set_param_max(3, 100); }
+void Interface::set_c_min()  { set_param_min(4, 0); }
+void Interface::set_c_max()  { set_param_max(4, 15); }
+void Interface::set_s_min()  { set_param_min(5, 0); }
+void Interface::set_s_max()  { set_param_max(5, 12); }
+void Interface::set_ss_min() { set_param_min(6, 0); }
+void Interface::set_ss_max() { set_param_max(6, 12); }
+void Interface::set_h_min()  { set_param_min(8, 0); }
+void Interface::set_h_max()  { set_param_max(8, 50); }
+void Interface::set_g_min()  { set_param_min(9, 0); }
+void Interface::set_g_max()  { set_param_max(9, 100); }
+void Interface::set_sv_min() { set_param_min(10, 0); }
+void Interface::set_sv_max() { set_param_max(10, 2000); }
+void Interface::set_q_min()  { set_param_min(11, -500); }
+void Interface::set_q_max()  { set_param_max(11, 500); }
+void Interface::set_x_min()  { set_param_min(12, 0); }
+void Interface::set_x_max()  { set_param_max(12, 100); }
+void Interface::set_kk_min() { set_param_min(13, 0); }
+void Interface::set_kk_max() { set_param_max(13, 100); }
+void Interface::set_r_min()  { set_param_min(14, 0); }
+void Interface::set_r_max()  { set_param_max(14, 11); }
 
 void Interface::closeMoreParam()
 {
 	if(continual)
 	{
 		int pos = 0;
-		for(int i = 0; i < _TOTAL; ++i)
+		for(int i = 1; i < VAR_TOTAL; ++i)
 		{
 			if(cb_param[i] -> isChecked())
 				sort_order[pos++] = var[i];
@@ -417,7 +445,7 @@ void Interface::closeMoreParam()
 	else
 	{
 		vector<int> orders, indexes;
-		for(int i = 0; i < _TOTAL; ++i)
+		for(int i = 1; i < VAR_TOTAL; ++i)
 		{
 			if(cb_param[i] -> isChecked())
 			{
@@ -459,7 +487,6 @@ void Interface::closeMoreParam()
 			QStringList str2 = {"Sorting orders are not correct - please check and try again.",
 									  "排序次序填写不正确，请检查。"};
 			QMessageBox::warning(this, str1[language], str2[language], QMessageBox::Close);
-			return;
 		}
 	}
 

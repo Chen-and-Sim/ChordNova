@@ -1,18 +1,21 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // functions.cpp
 
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "functions.h"
 using namespace std;
 
 ofstream fout, m_fout;
+stringstream stream;
 double INF  =  1E9;
 double MINF = -1E9;
 int expansion_indexes[16][16][3432][15];
@@ -107,8 +110,160 @@ void inputVec(vector<int>& vec, const int& min, const int& max, bool organize)
 }
 
 
+void ignore_path_ext(char* dest, char* source)
+// 'source' will be the substring of 'dest' beginning from the last '\\' or '/' to '.' (none included).
+{
+#if __WIN32
+	 char* pc = strrchr(source, '\\');
+#else
+	 char* pc = strrchr(source, '/');
+#endif
+	if(pc == nullptr)
+		pc = source;
+	else  ++pc;
+	int index = 0;
+	while(*pc != '\0' && *pc!= '.')
+	{
+		dest[index] = *pc;
+		++index;  ++pc;
+	}
+	dest[index] = '\0';
+}
+
+void dbentry(const char* filename)
+// Reads the chord database.
+{
+	chord_library.clear();
+	ifstream fin(filename, ifstream::in);
+	 char str[100], ch;
+	while(fin.peek() == '/' || fin.peek() == 't')
+		  fin.getline(str, 100, '\n');
+
+	vector<int> note_set;
+	int note;
+	do{
+		note_set.clear();
+		do{
+			fin >> note;
+			note_set.push_back(note);
+			ch = fin.get();
+		}  while(fin && !fin.eof() && ch != '\r' && ch != '\n');
+		if(!fin)  break;
+
+		int s_size = note_set.size();
+		if(s_size == 0)  break;
+
+		bubble_sort(note_set);
+		int root = find_root(note_set);
+		vector<int> omit_choice;  // contains notes from 'note_set' that can be omitted
+		for(int i = 0; i < s_size; ++i)
+		{
+			int diff = (note_set[i] - root) % 12;
+			if(diff < 0)  diff += 12;
+				if(s_size >= 3 && s_size <= 7 && find(omission[s_size], note_pos[diff]) == -1)
+					omit_choice.push_back(note_set[i]);
+		}
+		bubble_sort(omit_choice);
+
+		vector<int> indexes, subset, omitted;
+		int id = -1, max_id = (1 << omit_choice.size()) - 1;
+		while(id < max_id)  // iterates through all subsets of 'omit_choice'
+		{
+			next(indexes, id, false);
+			subset.clear();
+			omitted.clear();
+			for(int i = 0; i < (int)indexes.size(); ++i)
+				subset.push_back( omit_choice[indexes[i]] );
+			for(int i = 0; i < s_size; ++i)
+			{
+				if(find(subset, note_set[i]) != -1)
+					omitted.push_back(note_set[i]);
+			}
+			if(omitted.size() != 0)
+				note_set_to_id(omitted, chord_library);
+		}
+	}  while(!fin.eof());
+	fin.close();
+	remove_duplicate(chord_library);
+}
+
+void read_alignment(const char* filename)
+// Reads the alignment database.
+{
+	alignment_list.clear();
+	ifstream fin(filename);
+	 char str[100], ch;
+	fin.getline(str, 100, '\n');
+	fin.getline(str, 100, '\n');
+	fin.getline(str, 100, '\n');
+	fin.getline(str, 100, '\n');
+	fin.getline(str, 100, '\n');
+	vector<int> single_align;
+	int num;
+	while(true)
+	{
+		single_align.clear();
+		do{
+			fin >> num;
+			single_align.push_back(num);
+			ch = fin.get();
+		}  while(fin && !fin.eof() && ch != '\n' && ch != '\r');
+		int len = single_align.size();
+		if(len == 0)  break;
+		for(int i = 0; i < len; ++i)
+		{
+			alignment_list.push_back(single_align);
+			single_align.push_back(single_align[0]);
+			single_align.erase(single_align.begin());
+		}
+		if(!fin || fin.eof())  break;
+	}
+	fin.close();
+}
+
+
+void fprint(const char* begin, const vector<int>& v, const char* sep, const char* end, bool is_decimal)
+// prints a vector to a file
+{
+	if(!is_decimal)  fout << setiosflags(ios::uppercase) << hex;
+	int size = v.size();
+	fout << begin << "[";
+	if(size != 0)  fout << v[0];
+	for(int i = 1; i < size; ++i)
+		fout << sep << v[i];
+	fout << "]" << end;
+	fout << dec;
+}
+
+void sprint(const char* begin, const vector<int>& v, const char* sep, const char* end, bool is_decimal)
+// prints a vector to stringstream
+{
+	if(!is_decimal)  stream << setiosflags(ios::uppercase) << hex;
+	int size = v.size();
+	stream << begin << "[";
+	if(size != 0)  stream << v[0];
+	for(int i = 1; i < size; ++i)
+		stream << sep << v[i];
+	stream << "]" << end;
+	stream << dec;
+}
+
+void cprint(const char* begin, const vector<int>& v, const char* sep, const char* end)
+// prints a vector to the console
+{
+	int size = v.size();
+	cout << begin << "[";
+	if(size != 0)  cout << v[0];
+	for(int i = 1; i < size; ++i)
+		cout << sep << v[i];
+	cout << "]" << end;
+}
+
+
 int nametonum(char* str)
 // Converts pitch name to midi note number.
+// e.g. B4 = B = 71, Bb4 = bB4 = 70
+// If there is any failure in converting the result will be -1.
 {
 	int val1 = 0, val2 = 0, octave, pos;
 	char str1[100], str2[100];
@@ -137,19 +292,26 @@ int nametonum(char* str)
 			{
 				case '#':  val1 += 1;  pos++;  break;
 				case 'b':  val1 -= 1;  pos++;  break;
-				default:   val1 = -1;
+				default: ;
 			}
 
 			if(val1 != -1)
 			{
 				if(str1[pos] == '-')
 					octave = (-1) * (str1[++pos] - 48);
-				else
+				else if(str1[pos] >= '0' && str1[pos] <= '9')
 					octave = str1[pos] - 48;
-				if(str1[pos + 1] != '\0' || str1[pos + 1] != ' ')
+				else if(str1[pos] == '\0')
+				{
+					octave = 4;
+					--pos;
+				}
+				else  val1 = -1;
+				if(str1[pos + 1] != '\0' && str1[pos + 1] != ' ')
 					val1 = -1;
 
-				val1 += (12 * octave);
+				if(val1 != -1)
+					val1 += (12 * octave);
 				if(val1 < 0 || val1 > 127)
 					val1 = -1;
 			}
@@ -183,12 +345,19 @@ int nametonum(char* str)
 			++pos;
 			if(str2[pos] == '-')
 				octave = (-1) * (str2[++pos] - 48);
-			else
+			else if(str2[pos] >= '0' && str2[pos] <= '9')
 				octave = str2[pos] - 48;
-			if(str2[pos + 1] != '\0' || str2[pos + 1] != ' ')
+			else if(str2[pos] == '\0')
+			{
+				octave = 4;
+				--pos;
+			}
+			else  val2 = -1;
+			if(str2[pos + 1] != '\0' && str2[pos + 1] != ' ')
 				val2 = -1;
 
-			val2 += (12 * octave);
+			if(val2 != -1)
+				val2 += (12 * octave);
 			if(val2 < 0 || val2 > 127)
 				val2 = -1;
 		}
@@ -199,12 +368,23 @@ int nametonum(char* str)
 	return -1;
 }
 
+int chromatonum(int chroma)
+// Converts a chroma value to its MIDI note number. (Cbb: -2 ~ B##: 13)
+{
+	const int table[7] = {5, 0, 7, 2, 9, 4, 11};
+	int result = table[(chroma + 36) % 7];
+	// i.e. (chroma + 1) % 7, but the result can be a negative number
+	result = result + ((chroma + 36) / 7 - 5);
+	return result;
+}
+
 void chromatoname(int chroma, char* str)
+// Converts a chroma value to its pitch names.
 {
 	const char table[7] = {'F', 'C', 'G', 'D', 'A', 'E', 'B'};
 	str[0] = table[(chroma + 36) % 7];
 	str[1] = '\0';
-	// i.e. (chroma + 1) % 7, but the result can be a negetive number
+	// i.e. (chroma + 1) % 7, but the result can be a negative number
 	switch( (chroma + 36) / 7 - 5 )
 	{
 		case -2: strcat(str, "bb"); break;
@@ -214,24 +394,347 @@ void chromatoname(int chroma, char* str)
 	}
 }
 
-void ignore_path_ext(char* dest, char* source)
-// 'source' will be the substring of 'dest' beginning from the last '\\' or '/' to '.' (none included).
+void inttostring(int num, char* str, int base)
+// i.e. 'itoa'
 {
-#if __WIN32
-    char* pc = strrchr(source, '\\');
-#else
-    char* pc = strrchr(source, '/');
-#endif
-	if(pc == nullptr)
-		pc = source;
-	else  ++pc;
-	int index = 0;
-	while(*pc != '\0' && *pc!= '.')
+	vector<int> digits;
+	while(num !=0)
 	{
-		dest[index] = *pc;
-		++index;  ++pc;
+		digits.push_back(num % base);
+		num /= base;
 	}
-	dest[index] = '\0';
+	int size = digits.size();
+	for(int i = 0; i < size; ++i)
+		str[i] = (char)(digits[size - 1 - i] + '0');
+	str[size] = '\0';
+}
+
+void note_set_to_id(const vector<int>& note_set, vector<int>& rec)
+// 'rec' will contain 'set_id' for all 12 transpositions of 'note_set'.
+{
+	for(int j = 0; j < 12; ++j)
+	{
+		int val = 0;
+		for(int i = 0; i < (int)note_set.size(); ++i)
+			val += (1 << ((note_set[i] + j) % 12));
+		rec.push_back(val);
+	}
+	merge_sort(rec.begin(), rec.end(), smaller);
+}
+
+void id_to_notes(const int& id, vector<int>& v)
+// Similar to the function 'next' but the base number is 72.
+{
+	v.clear();
+	int note = 72, copy = id;
+	while(copy != 0)
+	{
+		if(copy % 2 == 1)
+			v.push_back(note);
+		++note;
+		copy /= 2;
+	}
+}
+
+
+int rand(const int& min, const int& max)
+// 'min' and 'max' are included in the result.
+{
+	return rand() % (max - min + 1) + min;
+}
+
+double rand(const double& min, const double& max)
+// 'min' and 'max' are included in the result.
+{
+	return (double) rand() / RAND_MAX * (max - min) + min;
+}
+
+int sign(const int& n)
+{
+	if(n > 0) return 1;
+	if(n < 0) return -1;
+	return 0;
+}
+
+int sign(const double& x, const double& bound)
+// For infinitesimals within 'bound' we regard the sign of it as 0.
+{
+	if(x < bound && (-x) < bound)  return 0;
+	if(x > 0) return 1;
+	if(x < 0) return -1;
+}
+
+double round_double(const double& val, const int& precision)
+// Returns the approximated number of 'val' to 'precision' decimal places.
+// The original result is 'val_', but to avoid values like '-0.0' we make
+// use of 'int sign(const double&, const double&)'.
+{
+	double exp = 1;
+	for(int i = 0; i < precision; ++i)
+		exp *= 10;
+	double val_ = round(val * exp) / exp;
+	return abs(val_) * sign(val_);
+}
+
+int comb(const int& n, const int& m)
+// Returns the combination number.
+{
+	int res = 1;
+	for(int i = 1; i <= m; ++i)
+		res = res * (n + 1 - i) / i;
+	return res;
+}
+
+
+vector<int> intersect(vector<int>& A, vector<int>& B, bool regular)
+// Gets the intersection of two vectors.
+// If 'regular' == false, the vectors will be sorted and duplicate elements of each vector will be deleted.
+{
+	if(!regular)
+	{
+		bubble_sort(A);
+		bubble_sort(B);
+		remove_duplicate(A);
+		remove_duplicate(B);
+	}
+
+	int A_size = A.size(), B_size = B.size();
+	vector<int> result;
+	int i = 0, j = 0;
+	while(i < A_size && j < B_size)
+	{
+		if(A[i] > B[j])  ++j;
+		else if(A[i] < B[j]) ++i;
+		else
+		{
+			result.push_back(A[i]);
+			++i;  ++j;
+		}
+	}
+	return result;
+}
+
+vector<int> get_union(const vector<int>& A, const vector<int>& B)
+// Gets the union of two vectors.
+{
+	vector<int> result(A);
+	result.insert(result.end(), B.begin(), B.end());
+	bubble_sort(result);
+	remove_duplicate(result);
+	return result;
+}
+
+vector<int> get_complement(const vector<int>& A, const vector<int>& B)
+// We assume that sets U and A are sorted in ascending order; the result is A\B.
+{
+	int A_size = A.size(), B_size = B.size();
+	vector<int> result;
+	int i = 0, j = 0;
+	while(i < A_size && j < B_size)
+	{
+		while(i < A_size && j < B_size && A[i] >  B[j])  ++j;
+		while(i < A_size && j < B_size && A[i] <= B[j])
+		{
+			if(A[i] < B[j])
+				result.push_back(A[i]);
+			++i;
+		}
+	}
+	for(int k = i; k < A_size; ++k)
+		result.push_back(A[k]);
+	return result;
+}
+
+vector<int> normal_form(vector<int>& set)
+// We assume that 'set' is sorted in ascending order.
+{
+	int len = set.size();
+	int i_rec = 0, interval;
+	vector<int> intervals, best;
+	for(int i = 0; i < len; ++i)
+	{
+		intervals.clear();
+		for(int j = len - 1; j > 0; --j)
+		{
+			interval = set[(i + j) % len] - set[i];
+			if(interval < 0)  interval += 12;
+			intervals.push_back(interval);
+		}
+		if(i == 0 || intervals < best)
+		{
+			best = intervals;
+			i_rec = i;
+		}
+	}
+	vector<int> result;
+	int copy = set[i_rec];
+	for(int j = 0; j < len; ++j)
+	{
+		int val = set[(i_rec + j) % len] - copy;
+		if(val < 0)  val += 12;
+		result.push_back(val);
+	}
+	return result;
+}
+
+
+int swapInt(const int& value, const int& len)
+// Converts an integer in Big-Endian to Little-Endian, and vice versa.
+{
+	switch(len)
+	{
+		case 1:  return value;
+		case 2:  return ((value & 0x00FF) << 8) | ((value & 0xFF00) >> 8);
+		case 3:  return ((value & 0x0000FF) << 16) | (value & 0x00FF00) | ((value & 0xFF0000) >> 16);
+		case 4:  return ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8) |
+							 ((value & 0x00FF0000) >> 8)  | ((value & 0xFF000000) >> 24);
+		default:  exit(-1);
+	}
+}
+
+int to_VLQ(int value)
+// Converts an integer to a variable length quantity.
+{
+	int count = 0, result = 0;
+	while(value != 0)
+	{
+		result += ((value & 0x7F) << (8 * count));
+		if(count != 0)
+			result += (1 << ((8 * (count + 1)) - 1) );
+		value >>= 7;
+		++count;
+	}
+	return swapInt(result, count);
+}
+
+void midi_head(const int& chord_count, const int& note_count)
+// It is written only for one specific usage and it contains some copyright information.
+// Better to refer to some MIDI instructions and try to modify it.
+{
+	char str1[19] = "\x4D\x54\x68\x64\x00\x00\x00\x06\x00\x00\x00\x01\x01\xE0\x4D\x54\x72\x6B";
+	m_fout.write(str1, 18);
+	int _len = swapInt(8 * note_count + chord_count + 74);
+	m_fout.write((char*)&_len, sizeof(int));
+	char str2[71] = { "\x00\xFF\x02\x21\x28\x63\x29\x20\x32\x30\x32\x30\x20\x57\x65\x6E\x67\x65\x20\x43\x68\x65\x6E"
+							"\x2C\x20\x4A\x69\x2D\x77\x6F\x6F\x6E\x20\x53\x69\x6D\x2E\x00\xFF\x04\x05\x50\x69\x61\x6E\x6F"
+							"\x00\xFF\x51\x03\x0F\x42\x40\x00\xFF\x58\x04\x04\x02\x18\x08\x00\xFF\x59\x02\x00\x00\x00\xC0\x00"};
+	m_fout.write(str2, 70);
+}
+
+void chord_to_midi(vector<int>& notes, int beat)
+// Writes a single chord to MIDI with the beat of notes equal to 'beat'.
+{
+	int size = notes.size();
+	for(int i = 0; i < size; ++i)
+	{
+		m_fout.write("\x00\x90", 2);
+		m_fout.put((char)notes[i]);
+		m_fout.put('\x50');
+	}
+
+	for(int i = 0; i < size; ++i)
+	{
+		if(i == 0)
+		{
+			int vlq = to_VLQ(beat * 480);
+			int len = (beat > 34) ? 3 : 2;
+			// For simplicity we constraint 'len' under 1000, and then the length of 'vlq' would not exceed 3.
+			m_fout.write((char*)&vlq, len);
+			m_fout.put('\x80');
+		}
+		else  m_fout.write("\x00\x80", 2);
+		m_fout.put((char)notes[i]);
+		m_fout.put('\x40');
+	}
+}
+
+
+bool different_name(const char* str1, const char* str2)
+// Here 'str1' and 'str2' are names of a chord.
+// We extract names of each note in both chords to two vectors and compare whether they are equal.
+// In this process, all spaces and numbers representing octave are discarded.
+// If any note is represented by MIDI note number (or any other error occurs), the result is false.
+{
+	char copy1[100], copy2[100];
+	strcpy(copy1, str1);
+	strcpy(copy2, str2);
+	for(int i = 0; i < (int)strlen(copy1); ++i)
+	{
+		if(copy1[i] >= 'a' && copy1[i] <= 'z')
+			copy1[i] -= 32;
+	}
+	for(int i = 0; i < (int)strlen(copy2); ++i)
+	{
+		if(copy2[i] >= 'a' && copy2[i] <= 'z')
+			copy2[i] -= 32;
+	}
+
+	vector<vector<char>> names1;
+	vector<vector<char>> names2;
+	vector<char> name;
+
+	int pos = 0;
+	while(true)
+	{
+		name.clear();
+		while( copy1[pos] != '\0' && (copy1[pos] == ' ' || (copy1[pos] >= '0' && copy1[pos] <= '9') ) )
+			++pos;
+		if(copy1[pos] == '\0')  break;
+		while(copy1[pos] != '\0' && copy1[pos] != ' ')
+		{
+			if(copy1[pos] >= '0' && copy1[pos] <= '9')
+			{
+				++pos;
+				continue;
+			}
+			name.push_back(copy1[pos]);
+			++pos;
+		}
+		if(name.empty())  return false;
+		names1.push_back(name);
+		while( copy1[pos] != '\0' && (copy1[pos] == ' ' || (copy1[pos] >= '0' && copy1[pos] <= '9') ) )
+			++pos;
+		if(copy1[pos] == '\0')  break;
+	}
+
+	pos = 0;
+	while(true)
+	{
+		name.clear();
+		while( copy2[pos] != '\0' && (copy2[pos] == ' ' || (copy2[pos] >= '0' && copy2[pos] <= '9') ) )
+			++pos;
+		if(copy2[pos] == '\0')  break;
+		while(copy2[pos] != '\0' && copy2[pos] != ' ')
+		{
+			if(copy2[pos] >= '0' && copy2[pos] <= '9')
+			{
+				++pos;
+				continue;
+			}
+			name.push_back(copy2[pos]);
+			++pos;
+		}
+		if(name.empty())  return false;
+		names2.push_back(name);
+		while( copy2[pos] != '\0' && (copy2[pos] == ' ' || (copy2[pos] >= '0' && copy2[pos] <= '9') ) )
+			++pos;
+		if(copy2[pos] == '\0')  break;
+	}
+
+	for(int i = 0; i < (int)names1.size(); ++i)
+	{
+		bool found = false;
+		for(int j = 0; j < (int)names2.size(); ++j)
+		{
+			if(names1[i] == names2[j])
+			{
+				found = true;
+				break;
+			}
+		}
+		if(!found)  return true;
+	}
+	return false;
 }
 
 void next(vector<int>& v, int& id, bool first_zero)
@@ -275,121 +778,6 @@ int find_root(vector<int>& notes)
 			}
 		}
 	return root % 12;
-}
-
-void note_set_to_id(const vector<int>& note_set, vector<int>& rec)
-// 'rec' will contain 'set_id' for all 12 transpositions of 'note_set'.
-{
-	for(int j = 0; j < 12; ++j)
-	{
-		int val = 0;
-		for(int i = 0; i < (int)note_set.size(); ++i)
-			val += (1 << ((note_set[i] + j) % 12));
-		rec.push_back(val);
-	}
-	merge_sort(rec.begin(), rec.end(), smaller);
-}
-
-void dbentry(const char* filename)
-// Reads the chord database.
-{
-	chord_library.clear();
-	ifstream fin(filename, ifstream::in);
-    char str[100], ch;
-	while(fin.peek() == '/' || fin.peek() == 't')
-        fin.getline(str, 100, '\n');
-
-	vector<int> note_set;
-	int note;
-	do{
-		note_set.clear();
-		do{
-			fin >> note;
-			note_set.push_back(note);
-			ch = fin.get();
-		}  while(fin && !fin.eof() && ch != '\r' && ch != '\n');
-		if(!fin)  break;
-
-		int s_size = note_set.size();
-		if(s_size == 0)  break;
-
-		bubble_sort(note_set);
-		int root = find_root(note_set);
-		vector<int> omit_choice;  // contains notes from 'note_set' that can be omitted
-		for(int i = 0; i < s_size; ++i)
-		{
-			int diff = (note_set[i] - root) % 12;
-			if(diff < 0)  diff += 12;
-            if(s_size >= 3 && s_size <= 7 && find(omission[s_size], note_pos[diff]) == -1)
-					omit_choice.push_back(note_set[i]);
-		}
-		bubble_sort(omit_choice);
-
-		vector<int> indexes, subset, omitted;
-		int id = -1, max_id = (1 << omit_choice.size()) - 1;
-		while(id < max_id)  // iterates through all subsets of 'omit_choice'
-		{
-			next(indexes, id, false);
-			subset.clear();
-			omitted.clear();
-			for(int i = 0; i < (int)indexes.size(); ++i)
-				subset.push_back( omit_choice[indexes[i]] );
-			for(int i = 0; i < s_size; ++i)
-			{
-				if(find(subset, note_set[i]) != -1)
-					omitted.push_back(note_set[i]);
-			}
-			if(omitted.size() != 0)
-				note_set_to_id(omitted, chord_library);
-		}
-	}  while(!fin.eof());
-	fin.close();
-	remove_duplicate(chord_library);
-}
-
-void read_alignment(const char* filename)
-// Reads the alignment database.
-{
-	alignment_list.clear();
-	ifstream fin(filename);
-    char str[100], ch;
-	fin.getline(str, 100, '\n');
-	fin.getline(str, 100, '\n');
-	fin.getline(str, 100, '\n');
-	fin.getline(str, 100, '\n');
-	fin.getline(str, 100, '\n');
-	vector<int> single_align;
-	int num;
-	do{
-		single_align.clear();
-		do{
-			fin >> num;
-			single_align.push_back(num);
-            ch = fin.get();
-        }  while(fin && !fin.eof() && ch != '\n' && ch != '\r');
-        if(!fin)  break;
-		int len = single_align.size();
-		if(len == 0)  break;
-		for(int i = 0; i < len; ++i)
-		{
-			alignment_list.push_back(single_align);
-			single_align.push_back(single_align[0]);
-			single_align.erase(single_align.begin());
-		}
-	}  while(!fin.eof());
-	fin.close();
-}
-
-int rand(const int& min, const int& max)
-// 'min' and 'max' are included in the result.
-{
-	return rand() % (max - min + 1) + min;
-}
-
-double rand(const double& min, const double& max)
-// 'min' and 'max' are included in the result.
-{
-	return (double) rand() / RAND_MAX * (max - min) + min;
 }
 
 void insert(int* ar, int* pos, int len1, int len2)
@@ -438,214 +826,6 @@ void set_expansion_indexes()
 				}
 			}
 		}
-}
-
-int sign(const int& n)
-{
-	if(n > 0) return 1;
-	if(n < 0) return -1;
-	return 0;
-}
-
-int sign(const double& x, const double& bound)
-{
-	if(abs(x) < bound)  return 0;
-	if(x > 0) return 1;
-	if(x < 0) return -1;
-}
-
-int comb(const int& n, const int& m)
-// Returns the combination number.
-{
-	int res = 1;
-	for(int i = 1; i <= m; ++i)
-		res = res * (n + 1 - i) / i;
-	return res;
-}
-
-void fprint(const char* begin, const vector<int>& v, const char* sep, const char* end, bool is_decimal)
-// prints a vector to a file
-{
-	if(!is_decimal)  fout << setiosflags(ios::uppercase) << hex;
-	int size = v.size();
-	fout << begin << "[";
-	if(size != 0)  fout << v[0];
-	for(int i = 1; i < size; ++i)
-		fout << sep << v[i];
-	fout << "]" << end;
-	fout << dec;
-}
-
-void cprint(const char* begin, const vector<int>& v, const char* sep, const char* end)
-// prints a vector to the console
-{
-	int size = v.size();
-	cout << begin << "[";
-	if(size != 0)  cout << v[0];
-	for(int i = 1; i < size; ++i)
-		cout << sep << v[i];
-	cout << "]" << end;
-}
-
-vector<int> intersect(vector<int>& A, vector<int>& B, bool regular)
-// Gets the intersection of two vectors.
-// If 'regular' == false, the vectors will be sorted and duplicate elements of each vector will be deleted.
-{
-	if(!regular)
-	{
-		bubble_sort(A);
-		bubble_sort(B);
-		remove_duplicate(A);
-		remove_duplicate(B);
-	}
-
-	int A_size = A.size(), B_size = B.size();
-	vector<int> result;
-	int i = 0, j = 0;
-	while(i < A_size && j < B_size)
-	{
-		if(A[i] > B[j])  ++j;
-		else if(A[i] < B[j]) ++i;
-		else
-		{
-			result.push_back(A[i]);
-			++i;  ++j; 
-		} 
-	}
-	return result;
-}
-
-vector<int> get_union(const vector<int>& A, const vector<int>& B)
-// Gets the union of two vectors.
-{
-	vector<int> result(A);
-	result.insert(result.end(), B.begin(), B.end());
-	bubble_sort(result);
-	remove_duplicate(result);
-	return result;
-}
-
-vector<int> get_complement(const vector<int>& A, const vector<int>& B)
-// We assume that sets U and A are sorted in ascending order; the result is A\B.
-{
-	int A_size = A.size(), B_size = B.size();
-	vector<int> result;
-	int i = 0, j = 0;
-	while(i < A_size && j < B_size)
-	{
-		while(i < A_size && j < B_size && A[i] >  B[j])  ++j;
-		while(i < A_size && j < B_size && A[i] <= B[j])
-		{
-			if(A[i] < B[j])
-				result.push_back(A[i]);
-			++i;
-		}
-	}
-	for(int k = i; k < A_size; ++k)
-		result.push_back(A[k]);
-	return result;
-}
-
-vector<int> normal_form(vector<int>& set)
-// We assume that set is sorted in ascending order.
-{
-	int len = set.size();
-	int i_rec = 0, interval;
-	vector<int> intervals, best;
-	for(int i = 0; i < len; ++i)
-	{
-		intervals.clear();
-		for(int j = len - 1; j > 0; --j)
-		{
-			interval = set[(i + j) % len] - set[i];
-			if(interval < 0)  interval += 12;
-			intervals.push_back(interval);
-		}
-		if(i == 0 || intervals < best)
-		{
-			best = intervals;
-			i_rec = i;
-		}
-	}
-	vector<int> result;
-	int copy = set[i_rec];
-	for(int j = 0; j < len; ++j)
-	{
-		int val = set[(i_rec + j) % len] - copy;
-		if(val < 0)  val += 12;
-		result.push_back(val);
-	}
-	return result;
-}
-
-int swapInt(const int& value, const int& len)
-// Converts an integer in Big-Endian to Little-Endian, and vice versa.
-{
-	switch(len)
-	{
-		case 1:  return value;
-		case 2:  return ((value & 0x00FF) << 8) | ((value & 0xFF00) >> 8);
-		case 3:  return ((value & 0x0000FF) << 16) | (value & 0x00FF00) | ((value & 0xFF0000) >> 16);
-		case 4:  return ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8) |
-         				 ((value & 0x00FF0000) >> 8)  | ((value & 0xFF000000) >> 24);
-		default:  exit(-1);
-	}
-}
-
-int to_VLQ(int value)
-// Converts an integer to a variable length quantity.
-{
-	int count = 0, result = 0;
-	while(value != 0)
-	{
-		result += ((value & 0x7F) << (8 * count));
-		if(count != 0)
-			result += (1 << ((8 * (count + 1)) - 1) );
-		value >>= 7;
-		++count;
-	}
-	return swapInt(result, count);
-}
-
-void midi_head(const int& chord_count, const int& note_count)
-// It is written only for one specific usage and it contains some copyright information.
-// Better to refer to some MIDI instructions and try to modify it.
-{
-	char str1[19] = "\x4D\x54\x68\x64\x00\x00\x00\x06\x00\x00\x00\x01\x01\xE0\x4D\x54\x72\x6B";
-	m_fout.write(str1, 18);
-	int _len = swapInt(8 * note_count + chord_count + 74);
-	m_fout.write((char*)&_len, sizeof(int));
-	char str2[71] = { "\x00\xFF\x02\x21\x28\x63\x29\x20\x32\x30\x32\x30\x20\x57\x65\x6E\x67\x65\x20\x43\x68\x65\x6E"
-							"\x2C\x20\x4A\x69\x2D\x77\x6F\x6F\x6E\x20\x53\x69\x6D\x2E\x00\xFF\x04\x05\x50\x69\x61\x6E\x6F"
-							"\x00\xFF\x51\x03\x0F\x42\x40\x00\xFF\x58\x04\x04\x02\x18\x08\x00\xFF\x59\x02\x00\x00\x00\xC0\x00"};
-	m_fout.write(str2, 70);
-}
-
-void chord_to_midi(vector<int>& notes, int beat)
-// Writes a single chord to MIDI with the beat of notes equal to 'beat'.
-{
-	int size = notes.size();
-	for(int i = 0; i < size; ++i)
-	{
-		m_fout.write("\x00\x90", 2);
-		m_fout.put((char)notes[i]);
-		m_fout.put('\x50');
-	}
-	
-	for(int i = 0; i < size; ++i)
-	{
-		if(i == 0)
-		{
-			int vlq = to_VLQ(beat * 480);
-			int len = (beat > 34) ? 3 : 2;
-			// For simplicity we constraint 'len' under 1000, and then the length of 'vlq' would not exceed 3.
-			m_fout.write((char*)&vlq, len);
-			m_fout.put('\x80');
-		}
-		else  m_fout.write("\x00\x80", 2);
-		m_fout.put((char)notes[i]);
-		m_fout.put('\x40');
-	}
 }
 
 

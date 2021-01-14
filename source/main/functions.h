@@ -1,4 +1,4 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // functions.h
 
@@ -8,12 +8,15 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <vector>
 
 using namespace std;
 
 extern ofstream fout, m_fout;
 // 'fout' for text output; 'm_fout' for MIDI output
+extern stringstream stream;
+// for output in chord analysis
 extern double INF;
 extern double MINF;
 extern int expansion_indexes[16][16][3432][15];
@@ -37,6 +40,7 @@ struct Movement
 	double percentage;
 };
 
+// input from console
 template<typename T>
 void inputNum(T& num, const T& min, const T& max, const T& dflt)
 // Input a number between 'min' and 'max'.
@@ -102,33 +106,54 @@ extern void inputY_N(char&);
 extern void inputFilename(char* str, const char* ext, bool find_file, const char* dflt = "\0");
 extern void inputVec(vector<int>& vec, const int& min = MINF, const int& max = INF, bool organize = true);
 
-extern int  nametonum(char*);
-extern void chromatoname(int, char*);
+// file reading
 extern void ignore_path_ext(char*, char*);
-extern void next(vector<int>&, int&, bool);
-extern int  find_root(vector<int>&);
-extern void note_set_to_id(const vector<int>&, vector<int>&);
 extern void dbentry(const char*);
 extern void read_alignment(const char*);
-extern int  rand   (const int&, const int&);
-extern double rand (const double&, const double&);
-extern void insert (int*, int*, int, int);
-extern void set_expansion_indexes();
-extern int  sign(const int&);
-extern int  sign(const double& x, const double& bound = 1E-5);
-extern int  comb(const int&, const int&);
+
+// output
 extern void fprint(const char* begin, const vector<int>& v, const char* sep = ", ",
 						 const char* end = "\n", bool is_decimal = true);
+extern void sprint(const char* begin, const vector<int>& v, const char* sep = ", ",
+						 const char* end = "\n", bool is_decimal = true);
 extern void cprint(const char* begin, const vector<int>& v, const char* sep = ", ", const char* end = ", ");
+
+// type conversion
+extern int  nametonum(char* str);
+extern int  chromatonum (int);
+extern void chromatoname(int, char*);
+extern void inttostring (int num, char* str, int base = 10);
+extern void note_set_to_id(const vector<int>&, vector<int>&);
+extern void id_to_notes (const int&, vector<int>&);
+
+// mathematics
+extern int    rand(const int&, const int&);
+extern double rand(const double&, const double&);
+extern int    sign(const int&);
+extern int    sign(const double& x, const double& bound = 1E-5);
+extern double round_double(const double&, const int&);
+extern int    comb(const int&, const int&);
+
+// set operation
 extern vector<int> intersect(vector<int>& A, vector<int>& B, bool regular = false);
 extern vector<int> get_union(const vector<int>&, const vector<int>&);
 extern vector<int> get_complement(const vector<int>&, const vector<int>&);
 extern vector<int> normal_form(vector<int>&);
+
+// MIDI operation
 extern int  swapInt(const int& value, const int& len = 4);
 extern int  to_VLQ(int);
 extern void midi_head(const int&, const int&);
 extern void chord_to_midi(vector<int>& notes, int beat = 1);
 
+// misc
+extern bool different_name(const char*, const char*);
+extern void next(vector<int>&, int&, bool);
+extern int  find_root(vector<int>&);
+extern void insert(int*, int*, int, int);
+extern void set_expansion_indexes();
+
+// comparison
 extern bool smaller(const int&, const int&);
 extern bool smallerVec(const vector<int>&, const vector<int>&);
 extern bool larger_perc(const Movement&, const Movement&);

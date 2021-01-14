@@ -1,6 +1,6 @@
-// SmartChordGen-utility-dbprime v3.0 [Build: 2020.11.27]
+// ChordNova-utility-dbprime v3.0 [Build: 2021.1.14]
 // Converts all chords in a chord database to their prime form.
-// (c) 2020 Wenge Chen, Ji-woon Sim.
+// (c) 2021 Wenge Chen, Ji-woon Sim.
 
 #include <fstream>
 #include <iostream>
@@ -78,8 +78,8 @@ void to_midi()
 
 int main()
 {
-	cout << "[[  SmartChordGen v1.5 [Build: 2020.11.27]  ]]\n"
-		  << "[[  (c) 2020 Wenge Chen, Ji-woon Sim.       ]]\n\n"
+	cout << "[[  ChordNova v3.0 [Build: 2021.1.14]  ]]\n"
+		  << "[[  (c) 2021 Wenge Chen, Ji-woon Sim.  ]]\n\n"
 		  << " > Utility - Convert Database to Prime Form:\n";
 	
 	cout << " > Please input the name of the database (.db) file: ";

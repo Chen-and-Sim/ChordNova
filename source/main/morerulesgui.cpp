@@ -1,26 +1,26 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // morerulesgui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
 void Interface::moreRulesGui()
 {
 	more_rules_window = new QWidget(this);
+	more_rules_window -> installEventFilter(this);
 	more_rules_window -> setWindowModality(Qt::WindowModal);
 	more_rules_window -> setWindowFlag(Qt::Window, true);
 	more_rules_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
-	more_rules_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
 	if(language == Chinese)
-		more_rules_window -> setFixedSize(570 * scale, 510 * _scale);
-	else  more_rules_window -> setFixedSize(640 * scale, 550 * _scale);
+		more_rules_window -> setFixedSize(620 * hscale, 510 * vscale);
+	else  more_rules_window -> setFixedSize(620 * hscale, 550 * vscale);
 	QStringList str1 = {"Set more rules", "设置更多规则"};
 	more_rules_window -> setWindowTitle(str1[language]);
 	more_rules_window -> setFont(font);
 
 	QVBoxLayout* vbox = new QVBoxLayout(more_rules_window);
-	vbox -> setSpacing(10 * _scale);
-	vbox -> setContentsMargins(30 * _scale, 30 * scale, 30 * _scale, 30 * scale);
+	vbox -> setSpacing(10 * vscale);
+	vbox -> setContentsMargins(30 * hscale, 30 * vscale, 30 * hscale, 30 * vscale);
 
 	QHBoxLayout* hbox1 = new QHBoxLayout();
 	QStringList str2 = {"Number of voice leading: ", "声部进行数量："};
@@ -43,14 +43,14 @@ void Interface::moreRulesGui()
 	if(language == Chinese)
 	{
 		QLabel* label0 = new QLabel("", more_rules_window);
-		label0 -> setFixedWidth(150 * scale);
+		label0 -> setFixedWidth(100 * hscale);
 		hbox1 -> addWidget(label0, 0);
 	}
 	vbox -> addLayout(hbox1);
 
 	QGridLayout* grid1 = new QGridLayout();
 	QLabel* label1 = new QLabel("", more_rules_window);
-	label1 -> setFixedWidth(10);
+	label1 -> setFixedWidth(10 * hscale);
 	grid1 -> addWidget(label1, 0, 0);
 	grid1 -> addWidget(label1, 1, 0);
 	grid1 -> addWidget(label1, 2, 0);
@@ -71,17 +71,17 @@ void Interface::moreRulesGui()
 	connect(cb_descending, &QCheckBox::clicked, this, &Interface::enable_vl_direction);
 
 	edit_steady_min = new QLineEdit(more_rules_window);
-	edit_steady_min -> setFixedWidth(60 * scale);
+	edit_steady_min -> setFixedWidth(60 * hscale);
 	grid1 -> addWidget(edit_steady_min, 0, 2, Qt::AlignLeft);
 	connect(edit_steady_min, &QLineEdit::textChanged, this, &Interface::set_steady_min);
 
 	edit_ascending_min = new QLineEdit(more_rules_window);
-	edit_ascending_min -> setFixedWidth(60 * scale);
+	edit_ascending_min -> setFixedWidth(60 * hscale);
 	grid1 -> addWidget(edit_ascending_min, 1, 2, Qt::AlignLeft);
 	connect(edit_ascending_min, &QLineEdit::textChanged, this, &Interface::set_ascending_min);
 
 	edit_descending_min = new QLineEdit(more_rules_window);
-	edit_descending_min -> setFixedWidth(60 * scale);
+	edit_descending_min -> setFixedWidth(60 * hscale);
 	grid1 -> addWidget(edit_descending_min, 2, 2, Qt::AlignLeft);
 	connect(edit_descending_min, &QLineEdit::textChanged, this, &Interface::set_descending_min);
 
@@ -94,22 +94,22 @@ void Interface::moreRulesGui()
 	grid1 -> addWidget(label_descending, 2, 3);
 
 	edit_steady_max = new QLineEdit(more_rules_window);
-	edit_steady_max -> setFixedWidth(60 * scale);
+	edit_steady_max -> setFixedWidth(60 * hscale);
 	grid1 -> addWidget(edit_steady_max, 0, 4, Qt::AlignLeft);
 	connect(edit_steady_max, &QLineEdit::textChanged, this, &Interface::set_steady_max);
 
 	edit_ascending_max = new QLineEdit(more_rules_window);
-	edit_ascending_max -> setFixedWidth(60 * scale);
+	edit_ascending_max -> setFixedWidth(60 * hscale);
 	grid1 -> addWidget(edit_ascending_max, 1, 4, Qt::AlignLeft);
 	connect(edit_ascending_max, &QLineEdit::textChanged, this, &Interface::set_ascending_max);
 
 	edit_descending_max = new QLineEdit(more_rules_window);
-	edit_descending_max -> setFixedWidth(60 * scale);
+	edit_descending_max -> setFixedWidth(60 * hscale);
 	grid1 -> addWidget(edit_descending_max, 2, 4, Qt::AlignLeft);
 	connect(edit_descending_max, &QLineEdit::textChanged, this, &Interface::set_descending_max);
 	grid1 -> setColumnStretch(4, 1);
 	vbox -> addLayout(grid1);
-	vbox -> addSpacing(5);
+	vbox -> addSpacing(5 * vscale);
 
 	QHBoxLayout* hbox2 = new QHBoxLayout();
 	QStringList str9 = {"Range of voice leading:    ", "声部进行幅度： "};
@@ -118,7 +118,7 @@ void Interface::moreRulesGui()
 	connect(cb_vl_range, &QCheckBox::clicked, this, &Interface::enable_vl_range);
 
 	edit_vl_min = new QLineEdit(more_rules_window);
-	edit_vl_min -> setFixedWidth(60 * scale);
+	edit_vl_min -> setFixedWidth(60 * hscale);
 	hbox2 -> addWidget(edit_vl_min, 0, Qt::AlignLeft);
 	connect(edit_vl_min, &QLineEdit::textChanged, this, &Interface::set_vl_min);
 
@@ -127,11 +127,11 @@ void Interface::moreRulesGui()
 	hbox2 -> addWidget(label_vl);
 
 	edit_vl_max = new QLineEdit(more_rules_window);
-	edit_vl_max -> setFixedWidth(60 * scale);
+	edit_vl_max -> setFixedWidth(60 * hscale);
 	hbox2 -> addWidget(edit_vl_max, 1, Qt::AlignLeft);
 	connect(edit_vl_max, &QLineEdit::textChanged, this, &Interface::set_vl_max);
 	vbox -> addLayout(hbox2);
-	vbox -> addSpacing(10 * _scale);
+	vbox -> addSpacing(10 * vscale);
 
 	QGridLayout* grid2 = new QGridLayout();
 	QStringList str11 = {"Root movement and its priority: ", "根音运动音程及优先顺序："};
@@ -152,8 +152,8 @@ void Interface::moreRulesGui()
 
 	edit_custom_rm = new QLineEdit(more_rules_window);
 	if(language == English)
-		edit_custom_rm -> setFixedWidth(200 * scale);
-	else  edit_custom_rm -> setFixedWidth(250 * scale);
+		edit_custom_rm -> setFixedWidth(200 * hscale);
+	else  edit_custom_rm -> setFixedWidth(280 * hscale);
 	grid2 -> addWidget(edit_custom_rm, 1, 2, Qt::AlignLeft);
 	connect(edit_custom_rm, &QLineEdit::editingFinished, this, &Interface::input_rm);
 
@@ -175,13 +175,13 @@ void Interface::moreRulesGui()
 
 	edit_custom_ex = new QLineEdit(more_rules_window);
 	if(language == English)
-		edit_custom_ex -> setFixedWidth(200 * scale);
-	else  edit_custom_ex -> setFixedWidth(250 * scale);
+		edit_custom_ex -> setFixedWidth(200 * hscale);
+	else  edit_custom_ex -> setFixedWidth(280 * hscale);
 	grid2 -> addWidget(edit_custom_ex, 3, 2, Qt::AlignLeft);
 	connect(edit_custom_ex, &QLineEdit::editingFinished, this, &Interface::input_ex);
 
-	QStringList str17 = {"Similarity of chords (X): \n(covers the settings in 'set more parameters')",
-								"和弦相似度 (X)：\n（覆盖在“更多指标设置”\n处的设置）"};
+	QStringList str17 = {"Similarity of chords (X): \n(covers the settings in 'set parameters')",
+								"和弦相似度 (X)：\n（覆盖在“指标筛选”处的设置）"};
 	QLabel* label4 = new QLabel(str17[language], more_rules_window);
 	grid2 -> addWidget(label4, 4, 0, 2, 1, Qt::AlignTop);
 
@@ -197,32 +197,31 @@ void Interface::moreRulesGui()
 
 	edit_custom_sim = new QLineEdit(more_rules_window);
 	if(language == English)
-		edit_custom_sim -> setFixedWidth(200 * scale);
-	else  edit_custom_sim -> setFixedWidth(250 * scale);
+		edit_custom_sim -> setFixedWidth(200 * hscale);
+	else  edit_custom_sim -> setFixedWidth(280 * hscale);
 	grid2 -> addWidget(edit_custom_sim, 5, 2, Qt::AlignLeft);
 	connect(edit_custom_sim, &QLineEdit::editingFinished, this, &Interface::input_sim);
 
 	grid2 -> setColumnStretch(1, 0);
 	grid2 -> setColumnStretch(2, 1);
 	vbox -> addLayout(grid2);
-	vbox -> addSpacing(15 * _scale);
+	vbox -> addSpacing(15 * vscale);
 
 	QString str18 = "<p style=\"line-height:150%\">%1<p>";
 	QStringList str19 = {"Warning: All settings above is restricted by the range of notes;<br>"
-								"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 								"inconsistent or highly strict conditions may result in no solutions.",
 								"注意：以上设置都受音域设置的制约；不符或过严的条件可能导致无解。"};
 	QLabel* label5 = new QLabel(str18.arg(str19[language]), more_rules_window);
 	label5 -> setFont(QFont("Microsoft Yahei", 11, QFont::Bold));
 	label5 -> setStyleSheet("color: #FF0000;");
 	if(language == Chinese)
-		label5 -> setFixedHeight(30 * _scale);
-	else  label5 -> setFixedHeight(60 * _scale);
+		label5 -> setFixedHeight(30 * vscale);
+	else  label5 -> setFixedHeight(60 * vscale);
 	vbox -> addWidget(label5, 0, Qt::AlignLeft);
 
 	QStringList str20 = {"OK", "确定"};
 	QPushButton* btn = new QPushButton(str20[language], more_rules_window);
-	btn -> setFixedWidth(80 * scale);
+	btn -> setFixedWidth(80 * hscale);
 	vbox -> addWidget(btn, 1, Qt::AlignRight);
 	connect(btn, &QPushButton::clicked, this, &Interface::closeMoreRules);
 

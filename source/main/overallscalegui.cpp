@@ -1,24 +1,24 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // overallscalegui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
 void Interface::overallScaleGui()
 {
 	overall_scale_window = new QWidget(this);
+	overall_scale_window -> installEventFilter(this);
 	overall_scale_window -> setWindowModality(Qt::WindowModal);
 	overall_scale_window -> setWindowFlag(Qt::Window, true);
 	overall_scale_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
-	overall_scale_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
-	overall_scale_window -> setFixedSize(560 * scale, 170 * _scale);
+	overall_scale_window -> setFixedSize(560 * hscale, 170 * vscale);
 	QStringList str1 = {"Set overall scale", "设置整体音阶"};
 	overall_scale_window -> setWindowTitle(str1[language]);
 	overall_scale_window -> setFont(font);
 
 	QGridLayout* grid1 = new QGridLayout(overall_scale_window);
-	grid1 -> setContentsMargins(30 * _scale, 30 * scale, 30 * _scale, 30 * scale);
-	grid1 -> setVerticalSpacing(10 * scale);
+	grid1 -> setContentsMargins(30 * hscale, 30 * vscale, 30 * hscale, 30 * vscale);
+	grid1 -> setVerticalSpacing(10 * vscale);
 
 	QStringList str2 = {"Overall scale: ", "整体音阶："};
 	QLabel* label1 = new QLabel(str2[language], overall_scale_window);
@@ -37,7 +37,7 @@ void Interface::overallScaleGui()
 	btns -> addButton(btn_custom_overall_scale);
 
 	QGridLayout* grid2 = new QGridLayout();
-	grid2 -> setVerticalSpacing(5 * scale);
+	grid2 -> setVerticalSpacing(5 * vscale);
 	QLabel* label_0_11[12];
 	for(int i = 0; i < 12; ++i)
 	{
@@ -47,7 +47,7 @@ void Interface::overallScaleGui()
 		grid2 -> addWidget(label_0_11[i], 0, i, Qt::AlignCenter);
 		grid2 -> addWidget(cb_0_11[i], 1, i, Qt::AlignCenter);
 		connect(cb_0_11[i], &QCheckBox::clicked, this, &Interface::set_overall_scale);
-		grid2 -> setColumnMinimumWidth(i, 30);
+		grid2 -> setColumnMinimumWidth(i, 30 * hscale);
 	}
 	grid1 -> addLayout(grid2, 1, 2, Qt::AlignLeft);
 

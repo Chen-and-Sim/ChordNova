@@ -1,26 +1,26 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // alignmentgui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
 void Interface::alignmentGui()
 {
 	alignment_window = new QWidget(this);
+	alignment_window -> installEventFilter(this);
 	alignment_window -> setWindowModality(Qt::WindowModal);
 	alignment_window -> setWindowFlag(Qt::Window, true);
 	alignment_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
-	alignment_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
 	if(language == Chinese)
-		alignment_window -> setFixedSize(500 * scale, 350 * _scale);
-	else  alignment_window -> setFixedSize(640 * scale, 350 * _scale);
+		alignment_window -> setFixedSize(500 * hscale, 350 * vscale);
+	else  alignment_window -> setFixedSize(640 * hscale, 350 * vscale);
 	QStringList str0 = {"Set alignment", "设置排列方式"};
 	alignment_window -> setWindowTitle(str0[language]);
 	alignment_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(alignment_window);
-	grid -> setContentsMargins(20 * _scale, 25 * scale, 20 * _scale, 25 * scale);
-	grid -> setVerticalSpacing(15);
+	grid -> setContentsMargins(20 * hscale, 25 * vscale, 20 * hscale, 25 * vscale);
+	grid -> setVerticalSpacing(15 * vscale);
 
 	QStringList str1 = {"Custom alignment: ", "自定义排列："};
 	QStringList str15 = {"No constriants (not recommended)", "排列方式不限（不推荐）"};
@@ -46,14 +46,14 @@ void Interface::alignmentGui()
 	hbox1 -> addWidget(label_orig[0]);
 
 	edit_i_low = new QLineEdit(alignment_window);
-	edit_i_low -> setFixedWidth(60 * scale);
+	edit_i_low -> setFixedWidth(60 * hscale);
 	hbox1 -> addWidget(edit_i_low, 0, Qt::AlignLeft);
 	connect(edit_i_low, &QLineEdit::editingFinished, this, &Interface::set_i_low);
 
 	QStringList str3 = {"semitones;", "个半音，"};
 	label_orig[1] = new QLabel(str3[language], alignment_window);
 	hbox1 -> addWidget(label_orig[1], 1);
-	hbox1 -> setSpacing(10);
+	hbox1 -> setSpacing(10 * hscale);
 	grid -> addLayout(hbox1, 0, 1, Qt::AlignLeft);
 
 	QHBoxLayout* hbox2 = new QHBoxLayout();
@@ -62,14 +62,14 @@ void Interface::alignmentGui()
 	hbox2 -> addWidget(label_orig[2]);
 
 	edit_i_high = new QLineEdit(alignment_window);
-	edit_i_high -> setFixedWidth(60 * scale);
+	edit_i_high -> setFixedWidth(60 * hscale);
 	hbox2 -> addWidget(edit_i_high, 0, Qt::AlignLeft);
 	connect(edit_i_high, &QLineEdit::editingFinished, this, &Interface::set_i_high);
 
 	QStringList str5 = {"semitones;", "个半音，"};
 	label_orig[3] = new QLabel(str5[language], alignment_window);
 	hbox2 -> addWidget(label_orig[3], 1);
-	hbox2 -> setSpacing(10);
+	hbox2 -> setSpacing(10 * hscale);
 	grid -> addLayout(hbox2, 1, 1, Qt::AlignLeft);
 
 	QHBoxLayout* hbox3 = new QHBoxLayout();
@@ -78,7 +78,7 @@ void Interface::alignmentGui()
 	hbox3 -> addWidget(label_orig[4]);
 
 	edit_i_min = new QLineEdit(alignment_window);
-	edit_i_min -> setFixedWidth(60 * scale);
+	edit_i_min -> setFixedWidth(60 * hscale);
 	hbox3 -> addWidget(edit_i_min);
 	connect(edit_i_min, &QLineEdit::editingFinished, this, &Interface::set_i_min);
 
@@ -87,14 +87,14 @@ void Interface::alignmentGui()
 	hbox3 -> addWidget(label_orig[5]);
 
 	edit_i_max = new QLineEdit(alignment_window);
-	edit_i_max -> setFixedWidth(60 * scale);
+	edit_i_max -> setFixedWidth(60 * hscale);
 	hbox3 -> addWidget(edit_i_max, 0, Qt::AlignLeft);
 	connect(edit_i_max, &QLineEdit::editingFinished, this, &Interface::set_i_max);
 
 	QStringList str8 = {"semitones.", "个半音。"};
 	label_orig[6] = new QLabel(str8[language], alignment_window);
 	hbox3 -> addWidget(label_orig[6], 1);
-	hbox3 -> setSpacing(10);
+	hbox3 -> setSpacing(10 * hscale);
 	grid -> addLayout(hbox3, 2, 1, Qt::AlignLeft);
 
 	QHBoxLayout* hbox4 = new QHBoxLayout();
@@ -104,9 +104,9 @@ void Interface::alignmentGui()
 
 	QStringList str10 = {"Import alignment database file (.db)...", "载入排列类型库文件(.db)…"};
 	btn_align_db = new QPushButton(str10[language], alignment_window);
-	btn_align_db -> setMinimumHeight(25 * _scale);
+	btn_align_db -> setMinimumHeight(25 * vscale);
 	hbox4 -> addWidget(btn_align_db, Qt::AlignLeft);
-	hbox4 -> setSpacing(10);
+	hbox4 -> setSpacing(10 * hscale);
 	grid -> addLayout(hbox4, 4, 1, Qt::AlignLeft);
 	connect(btn_align_db, &QPushButton::clicked, this, &Interface::import_alignment);
 
@@ -117,7 +117,7 @@ void Interface::alignmentGui()
 
 	label_custom[2] = new QLabel(alignment_window);
 	hbox5 -> addWidget(label_custom[2]);
-	hbox5 -> setSpacing(10);
+	hbox5 -> setSpacing(10 * hscale);
 	grid -> addLayout(hbox5, 5, 1, Qt::AlignLeft);
 
 	QHBoxLayout* hbox6 = new QHBoxLayout();
@@ -142,7 +142,7 @@ void Interface::alignmentGui()
 	QStringList str14 = {"type(s) of alignment.", "种排列类型。"};
 	label_custom[7] = new QLabel(str14[language], alignment_window);
 	hbox6 -> addWidget(label_custom[7]);
-	hbox6 -> setSpacing(10);
+	hbox6 -> setSpacing(10 * hscale);
 	grid -> addLayout(hbox6, 6, 1, Qt::AlignLeft);
 
 	QStringList str16 = {"OK", "确定"};
