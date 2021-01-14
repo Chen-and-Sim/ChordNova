@@ -10,11 +10,11 @@
 * 提供一系列预设和乐曲范例；支持MIDI文件输出。
 * 支持多系统（目前有Windows和Linux两个版本）。
 
-## 生成音乐试听：https://music.163.com/#/album?id=93026223
-### by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM.)
-### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
-### Latest Release 最新版本：v3.0.2021 [20210115] Downloads 下载 ↓ 
-### Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Windows.exe
+### 生成音乐试听：https://music.163.com/#/album?id=93026223
+#### by Ji-woon SIM (Tsinghua Univ.) and Wenge CHEN (Xinghai CoM.)
+#### 作者：清华大学  沈智云[1]（程序设计），  星海音乐学院  陈文戈[1]（构想与调试）
+#### Latest Release 最新版本：v3.0.2021 [20210115] Downloads 下载 ↓ 
+#### Windows 版： https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Windows.exe
 #### Linux 版：https://github.com/Chen-and-Sim/SmartChordGen/releases/download/v3.0/SmartChordGen.v3.0.2020.Linux.zip
 #### 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1s9jKZGTwUfPz5tQCxfLbLg ，提取码：1234
 #### 更多 README 请见：【使用前阅读】README.pdf、《智弦用户手册》(ChordNova User's Manual) 。
