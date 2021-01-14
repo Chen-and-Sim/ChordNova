@@ -1,25 +1,25 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // omissiongui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
 void Interface::omissionGui()
 {
 	omission_window = new QWidget(this);
+	omission_window -> installEventFilter(this);
 	omission_window -> setWindowModality(Qt::WindowModal);
 	omission_window -> setWindowFlag(Qt::Window, true);
 	omission_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
-	omission_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
-	omission_window -> setFixedSize(640 * scale, 370 * _scale);
+	omission_window -> setFixedSize(640 * hscale, 370 * vscale);
 	QStringList str0 = {"Set omission", "设置省略音"};
 	omission_window -> setWindowTitle(str0[language]);
 	omission_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(omission_window);
-	grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 25 * scale);
-	grid -> setRowMinimumHeight(7, 40 * _scale);
-	grid -> setVerticalSpacing(15 * _scale);
+	grid -> setContentsMargins(20 * hscale, 30 * vscale, 20 * hscale, 25 * vscale);
+	grid -> setRowMinimumHeight(7, 40 * vscale);
+	grid -> setVerticalSpacing(15 * vscale);
 
 	QStringList str1[2] = { {"Root", "3rd",  "5th",  "7th", " 9th/2nd ",  " 11th/4th ", " 13th/6th "},
 									{"根音", "三音", "五音", "七音", "9（附2）音", "11（附4）音", "13（附6）音"} };
@@ -59,7 +59,7 @@ void Interface::omissionGui()
 							  "&nbsp;&nbsp;&nbsp;根音 = 0，三音 = 3或4，五音 = 7，七音 = 10或11，九（附二）音 = 1或2，<br>"
 							  "&nbsp;&nbsp;&nbsp;十一（附四）音 = 5或6，十三（附六）音 = 8或9。"};
 	QLabel* label3 = new QLabel(str3.arg(str4[language]), omission_window);
-	label3 -> setFixedHeight(120 * _scale);
+	label3 -> setFixedHeight(120 * vscale);
 	grid -> addWidget(label3, 6, 0, 1, 8, Qt::AlignLeft);
 
 	QStringList str5 = {"OK", "确定"};

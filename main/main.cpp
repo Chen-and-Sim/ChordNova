@@ -1,11 +1,11 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // main.cpp
 
 #include <ctime>
 #include <QApplication>
 #include <QLayout>
-#include "Interface.h"
+#include "interface.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 	Interface window;
 
-	window.setWindowTitle("SmartChordGen v3.0.2020");
+	window.setWindowTitle("ChordNova");
 	window.setWindowIcon(QIcon("icons/icon.png"));
 	window.show();
 

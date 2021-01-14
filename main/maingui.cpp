@@ -1,8 +1,9 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // maingui.cpp
 
-#include "Interface.h"
+#include <cmath>
+#include "interface.h"
 
 Interface::Interface(QWidget* parent): QWidget(parent)
 {
@@ -10,20 +11,21 @@ Interface::Interface(QWidget* parent): QWidget(parent)
 	HWND wnd = ::GetDesktopWindow();
 	HDC dc = ::GetDC(wnd);
 	double PIXX = GetDeviceCaps(dc, LOGPIXELSX);
-	scale = PIXX / 96;
-	if(scale != 1)
-		_scale = scale * 0.93;
-	else _scale = 1;
+	hscale = PIXX / 96;
+	vscale = hscale;
+	if(hscale == 1)         vscale = 1;
+	else if(hscale <= 1.5)  vscale = hscale * 0.95;
+	else  vscale = hscale * (0.95 - (hscale - 1.5) / 37.5);
 #else
-	scale = 1.0;
-	_scale = 1.0;
+	hscale = 1.0;
+	vscale = 1.0;
 #endif
 
 	root_path = QDir::currentPath();
 	root_path = root_path.mid(0, root_path.lastIndexOf('/'));
 	font = QFont("Microsoft YaHei", 9, QFont::Normal);
 	setFont(font);
-	vbox = new QVBoxLayout(this);
+	main_vbox = new QVBoxLayout(this);
 	cur_preset[Chinese] = "默认设置";
 	cur_preset[English] = "default settings";
 	cur_preset_filename = "default.preset";
@@ -33,53 +35,56 @@ Interface::Interface(QWidget* parent): QWidget(parent)
 
 void Interface::mainGui()
 {
-	setFixedWidth(640 * scale);
+	setFixedWidth(660 * hscale);
 	if(language == Chinese)
-		setFixedHeight(680 * _scale);
-	else  setFixedHeight(705 * _scale);
+		setFixedHeight(680 * vscale);
+	else  setFixedHeight(700 * vscale);
+	setContentsMargins(30 * hscale, 10 * vscale, 30 * hscale, 15 * vscale);
+	main_vbox -> setContentsMargins(0, 0, 0, 0);
 
 	const int PARTS = 8;
 	QGridLayout** grid = new QGridLayout*[PARTS];
 	for(int i = 0; i < PARTS; ++i)
 		grid[i] = new QGridLayout();
-
+// For unknown reason we have to use 'hscale' in both directions in the following code.
 
 	{
-		grid[0] -> setHorizontalSpacing(10 * scale);
-		grid[0] -> setVerticalSpacing(scale);
-		grid[0] -> setContentsMargins(10 * scale, 0, 5 * scale, 0);
+		grid[0] -> setHorizontalSpacing(10 * hscale);
+		grid[0] -> setVerticalSpacing(0);
+		grid[0] -> setContentsMargins(0, 0, 0, 0);
 
 		QString str1 = "程序：清华大学 沈智云\nProgram by Ji-woon Sim    \n(Tsinghua University)";
 		QLabel* label1 = new QLabel(str1, this);
-		grid[0] -> addWidget(label1, 0, 0, 3, 1);
+		grid[0] -> addWidget(label1, 0, 0, 2, 1);
 
 		QString str2 = "构想：星海音乐学院 陈文戈\nConcept by Wenge Chen\n(Xinghai Conservatory of Music)  ";
 		QLabel* label2 = new QLabel(str2, this);
-		grid[0] -> addWidget(label2, 0, 1, 3, 1);
+		grid[0] -> addWidget(label2, 0, 1, 2, 1);
 
 		QPixmap pic1 = QPixmap("icons/icon.png");
-		pic1 = pic1.scaled(57 * scale, 57 * _scale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		pic1 = pic1.scaled(50 * hscale, 50 * hscale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		QLabel* label3 = new QLabel(this);
 		label3 -> setPixmap(pic1);
-		grid[0] -> addWidget(label3, 0, 2, 3, 1, Qt::AlignRight);
+		grid[0] -> addWidget(label3, 0, 2, 2, 1, Qt::AlignCenter);
 
-		QLabel* label4 = new QLabel("© 2020  ver.: 3.0 ", this);
+		QLabel* label4 = new QLabel("© 2021   ver.: 3.0", this);
 		label4 -> setAlignment(Qt::AlignRight);
-		grid[0] -> addWidget(label4, 0, 3, 2, 1, Qt::AlignRight | Qt::AlignVCenter);
+		grid[0] -> addWidget(label4, 0, 3, Qt::AlignRight | Qt::AlignVCenter);
 
 		QPixmap pic2 = QPixmap("icons/name.png");
+		pic2 = pic2.scaled(170 * hscale, 20 * hscale, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 		QLabel* label5 = new QLabel(this);
 		label5 -> setPixmap(pic2);
-		grid[0] -> addWidget(label5, 2, 3, Qt::AlignRight | Qt::AlignTop);
+		grid[0] -> addWidget(label5, 1, 3, Qt::AlignRight);
 	}
 
 	{
-		grid[1] -> setVerticalSpacing(0);
-		grid[1] -> setHorizontalSpacing(5 * scale);
+		grid[1] -> setVerticalSpacing(2 * hscale);
+		grid[1] -> setHorizontalSpacing(5 * hscale);
 		grid[1] -> setColumnStretch(0, 0);
 		grid[1] -> setColumnStretch(1, 1);
-		grid[1] -> setColumnMinimumWidth(3, 87 * scale);
-		grid[1] -> setContentsMargins(20 * scale, 0, 20 * scale, 0);
+		grid[1] -> setColumnMinimumWidth(3, 87 * hscale);
+		grid[1] -> setContentsMargins(0, 0, 0, 0);
 
 		QStringList str1 = {"Current preset file: ", "当前预设文件："};
 		label_preset_filename = new QLabel(str1[language], this);
@@ -101,13 +106,13 @@ void Interface::mainGui()
 		btn1 -> setFont(QFont("Microsoft YaHei", 9, QFont::Bold));
 		if(language == English)
 		{
-			btn1 -> setFixedWidth(190 * scale);
-			btn2 -> setFixedWidth(190 * scale);
+			btn1 -> setFixedWidth(190 * hscale);
+			btn2 -> setFixedWidth(190 * hscale);
 		}
 		else
 		{
-			btn1 -> setFixedWidth(150 * scale);
-			btn2 -> setFixedWidth(150 * scale);
+			btn1 -> setFixedWidth(150 * hscale);
+			btn2 -> setFixedWidth(150 * hscale);
 		}
 		grid[1] -> addWidget(btn1, 0, 2, Qt::AlignRight);
 		grid[1] -> addWidget(btn2, 1, 2, Qt::AlignRight);
@@ -118,10 +123,10 @@ void Interface::mainGui()
 		QPushButton* btn4 = new QPushButton("User Guide");
 		QPushButton* btn5 = new QPushButton("中文");
 		QPushButton* btn6 = new QPushButton("用户手册");
-        btn3 -> setFixedWidth(75 * scale);
-        btn4 -> setFixedWidth(75 * scale);
-        btn5 -> setFixedWidth(75 * scale);
-        btn6 -> setFixedWidth(75 * scale);
+		btn3 -> setFixedWidth(75 * hscale);
+		btn4 -> setFixedWidth(75 * hscale);
+		btn5 -> setFixedWidth(75 * hscale);
+		btn6 -> setFixedWidth(75 * hscale);
 		grid[1] -> addWidget(btn3, 0, 3, Qt::AlignRight);
 		grid[1] -> addWidget(btn4, 1, 3, Qt::AlignRight);
 		grid[1] -> addWidget(btn5, 0, 4);
@@ -134,14 +139,29 @@ void Interface::mainGui()
 	}
 
 	{
-		grid[2] -> setVerticalSpacing(5 * scale);
+		grid[2] -> setVerticalSpacing(5 * hscale);
+		grid[2] -> setContentsMargins(0, 0, 0, 0);
+		grid[2] -> setColumnStretch(1, 0);
+		grid[2] -> setColumnStretch(2, 0);
+		grid[2] -> setColumnStretch(3, 1);
+		grid[2] -> setColumnStretch(4, 1);
+		grid[2] -> setColumnMinimumWidth(2, 70 * hscale);
+
 		QStringList str1 = {"Output filename:\n(omit extension)", "输出文件名：\n（省略扩展名）"};
 		QLabel* label1 = new QLabel(str1[language], this);
 		label1 -> setAlignment(Qt::AlignRight);
 		grid[2] -> addWidget(label1, 0, 0, Qt::AlignRight);
 
+		QPixmap pic1 = QPixmap("icons/settings.png");
+		QPushButton* btn1 = new QPushButton(this);
+		btn1 -> setIcon(pic1);
+		btn1 -> setFixedSize(QSize(25 * hscale, 25 * hscale));
+		btn1 -> setIconSize (QSize(20 * hscale, 20 * hscale));
+		grid[2] -> addWidget(btn1, 0, 1, Qt::AlignVCenter | Qt::AlignLeft);
+		connect(btn1, &QPushButton::clicked, this, &Interface::set_output_path);
+
 		edit_output_name = new QLineEdit(this);
-		grid[2] -> addWidget(edit_output_name, 0, 1, 1, 3);
+		grid[2] -> addWidget(edit_output_name, 0, 2, 1, 3);
 		connect(edit_output_name, &QLineEdit::textChanged, this, &Interface::set_output_name);
 
 		QStringList str2 = {"Generating mode:", "生成模式："};
@@ -153,8 +173,8 @@ void Interface::mainGui()
 		btn_continual = new QRadioButton(str3[language], this);
 		btn_single    = new QRadioButton(str4[language], this);
 		connect(btn_continual, SIGNAL(toggled(bool)), this, SLOT(set_continual(bool)));
-		grid[2] -> addWidget(btn_continual, 1, 1);
-		grid[2] -> addWidget(btn_single   , 1, 2, 1, 2);
+		grid[2] -> addWidget(btn_continual, 1, 1, 1, 2);
+		grid[2] -> addWidget(btn_single   , 1, 3, 1, 2);
 
 		QButtonGroup* btns1 = new QButtonGroup(this);
 		btns1 -> addButton(btn_continual);
@@ -170,9 +190,9 @@ void Interface::mainGui()
 		btn_def  = new QRadioButton(str6[language], this);
 		btn_midi = new QRadioButton(str7[language], this);
 		btn_text = new QRadioButton(str8[language], this);
-		grid[2] -> addWidget(btn_def , 2, 1);
-		grid[2] -> addWidget(btn_midi, 2, 2);
-		grid[2] -> addWidget(btn_text, 2, 3);
+		grid[2] -> addWidget(btn_def , 2, 1, 1, 2);
+		grid[2] -> addWidget(btn_midi, 2, 3);
+		grid[2] -> addWidget(btn_text, 2, 4);
 		QButtonGroup* btns2 = new QButtonGroup(this);
 		btns2 -> addButton(btn_def);
 		btns2 -> addButton(btn_midi);
@@ -181,21 +201,21 @@ void Interface::mainGui()
 		connect(btn_midi, SIGNAL(toggled(bool)), this, SLOT(set_output_format(bool)));
 		connect(btn_text, SIGNAL(toggled(bool)), this, SLOT(set_output_format(bool)));
 
-		QPixmap pic = QPixmap("icons/go.png");
-		QPushButton* btn = new QPushButton(this);
-		btn -> setIcon(pic);
-		btn -> setFixedSize(QSize(86 * scale, 56 * scale));
-		btn -> setIconSize (QSize(80 * scale, 50 * scale));
-		grid[2] -> addWidget(btn, 0, 4, 3, 1, Qt::AlignCenter);
-		connect(btn, &QPushButton::clicked, this, &Interface::run);
+		QPixmap pic2 = QPixmap("icons/go.png");
+		QPushButton* btn2 = new QPushButton(this);
+		btn2 -> setIcon(pic2);
+		btn2 -> setFixedSize(QSize(86 * hscale, 56 * hscale));
+		btn2 -> setIconSize (QSize(80 * hscale, 50 * hscale));
+		grid[2] -> addWidget(btn2, 0, 5, 3, 1, Qt::AlignCenter);
+		connect(btn2, &QPushButton::clicked, this, &Interface::run);
 	}
 
 	{
-		grid[3] -> setContentsMargins(20 * scale, 5 * scale, 20 * scale, 0);
+		grid[3] -> setContentsMargins(0, 5 * hscale, 0, 0);
 		if(language == Chinese)
-			grid[3] -> setHorizontalSpacing(10 * scale);
-		else  grid[3] -> setHorizontalSpacing(5 * scale);
-		grid[3] -> setVerticalSpacing(5 * scale);
+			grid[3] -> setHorizontalSpacing(10 * hscale);
+		else  grid[3] -> setHorizontalSpacing(5 * hscale);
+		grid[3] -> setVerticalSpacing(5 * hscale);
 
 		QStringList str1 = {"Number of progressions: ", "和弦进行数量："};
 		label_loop_count = new QLabel(str1[language], this);
@@ -205,8 +225,8 @@ void Interface::mainGui()
 
 		edit_loop_count = new QLineEdit(this);
 		if(language == Chinese)
-			edit_loop_count -> setFixedWidth(60 * scale);
-		else  edit_loop_count -> setFixedWidth(40 * scale);
+			edit_loop_count -> setFixedWidth(60 * hscale);
+		else  edit_loop_count -> setFixedWidth(40 * hscale);
 		if(language == Chinese)
 			grid[3] -> addWidget(edit_loop_count, 0, 1, 1, 3, Qt::AlignLeft);
 		else  grid[3] -> addWidget(edit_loop_count, 0, 3, Qt::AlignLeft);
@@ -220,8 +240,8 @@ void Interface::mainGui()
 
 		edit_note_min = new QLineEdit(this);
 		if(language == Chinese)
-			edit_note_min -> setFixedWidth(60 * scale);
-		else  edit_note_min -> setFixedWidth(40 * scale);
+			edit_note_min -> setFixedWidth(60 * hscale);
+		else  edit_note_min -> setFixedWidth(40 * hscale);
 		grid[3] -> addWidget(edit_note_min, 1, 1, Qt::AlignLeft);
 		connect(edit_note_min, &QLineEdit::editingFinished, this, &Interface::set_note_min);
 
@@ -231,8 +251,8 @@ void Interface::mainGui()
 
 		edit_note_max = new QLineEdit(this);
 		if(language == Chinese)
-			edit_note_max -> setFixedWidth(60 * scale);
-		else  edit_note_max -> setFixedWidth(40 * scale);
+			edit_note_max -> setFixedWidth(60 * hscale);
+		else  edit_note_max -> setFixedWidth(40 * hscale);
 		grid[3] -> addWidget(edit_note_max, 1, 3, Qt::AlignLeft);
 		grid[3] -> setColumnStretch(3, 1);
 		connect(edit_note_max, &QLineEdit::editingFinished, this, &Interface::set_note_max);
@@ -247,8 +267,8 @@ void Interface::mainGui()
 
 		edit_m_min = new QLineEdit(this);
 		edit_n_min = new QLineEdit(this);
-		edit_m_min -> setFixedWidth(40 * scale);
-		edit_n_min -> setFixedWidth(40 * scale);
+		edit_m_min -> setFixedWidth(40 * hscale);
+		edit_n_min -> setFixedWidth(40 * hscale);
 		connect(edit_m_min, &QLineEdit::textEdited, this, &Interface::sync_minmax);
 		connect(edit_m_min, &QLineEdit::textEdited, this, &Interface::sync_nm);
 		connect(edit_m_min, &QLineEdit::editingFinished, this, &Interface::set_m_min);
@@ -263,8 +283,8 @@ void Interface::mainGui()
 
 		edit_m_max = new QLineEdit(this);
 		edit_n_max = new QLineEdit(this);
-		edit_m_max -> setFixedWidth(40 * scale);
-		edit_n_max -> setFixedWidth(40 * scale);
+		edit_m_max -> setFixedWidth(40 * hscale);
+		edit_n_max -> setFixedWidth(40 * hscale);
 		connect(edit_m_max, &QLineEdit::textEdited, this, &Interface::sync_nm);
 		connect(edit_m_max, &QLineEdit::editingFinished, this, &Interface::set_m_max);
 		connect(edit_n_max, &QLineEdit::editingFinished, this, &Interface::set_n_max);
@@ -284,7 +304,7 @@ void Interface::mainGui()
 	{
 		QHBoxLayout* hbox1 = new QHBoxLayout();
 		QHBoxLayout* hbox2 = new QHBoxLayout();
-		hbox2 -> setSpacing(5 * scale);
+		hbox2 -> setSpacing(5 * hscale);
 
 		QStringList str1 = {"Chord database: ", "和弦类型库："};
 		QLabel* label1 = new QLabel(str1[language], this);
@@ -327,21 +347,21 @@ void Interface::mainGui()
 		QLabel* _label2 = new QLabel(" ", this);
 		hbox2 -> addWidget(_label2, 1);
 
-		grid[4] -> setContentsMargins(20 * scale, 5 * scale, 20 * scale, 0);
-		grid[4] -> setVerticalSpacing(5 * scale);
+		grid[4] -> setContentsMargins(0, 10 * hscale, 0, 0);
+		grid[4] -> setVerticalSpacing(7 * hscale);
 		grid[4] -> addLayout(hbox1, 0, 0);
 		grid[4] -> addLayout(hbox2, 1, 0);
 	}
 
 	{
-		grid[5] -> setContentsMargins(20 * scale, 5 * scale, 20 * scale, 0);
+		grid[5] -> setContentsMargins(0, 5 * hscale, 0, 0);
 		grid[5] -> setVerticalSpacing(0);
-		  grid[5] -> setRowMinimumHeight(1, 25 * scale);
+		grid[5] -> setRowMinimumHeight(1, 20 * hscale);
 
 		QPushButton* btn1 = new QPushButton(this);
 		btn1 -> setIcon(QIcon("icons/overall-scale.png"));
-		btn1 -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn1 -> setIconSize(QSize(60 * scale, 60 * scale));
+		btn1 -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn1 -> setIconSize(QSize(60 * hscale, 60 * hscale));
 		grid[5] -> addWidget(btn1, 0, 0, Qt::AlignCenter);
 		connect(btn1, &QPushButton::clicked, this, &Interface::overallScaleGui);
 
@@ -353,8 +373,8 @@ void Interface::mainGui()
 
 		QPushButton* btn2 = new QPushButton(this);
 		btn2 -> setIcon(QIcon("icons/omission.png"));
-		btn2 -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn2 -> setIconSize(QSize(60 * scale, 60 * scale));
+		btn2 -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn2 -> setIconSize(QSize(60 * hscale, 60 * hscale));
 		grid[5] -> addWidget(btn2, 0, 1, Qt::AlignCenter);
 		connect(btn2, &QPushButton::clicked, this, &Interface::omissionGui);
 
@@ -366,8 +386,8 @@ void Interface::mainGui()
 
 		QPushButton* btn3 = new QPushButton(this);
 		btn3 -> setIcon(QIcon("icons/inversion.png"));
-		btn3 -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn3 -> setIconSize(QSize(60 * scale, 60 * scale));
+		btn3 -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn3 -> setIconSize(QSize(60 * hscale, 60 * hscale));
 		grid[5] -> addWidget(btn3, 0, 2, Qt::AlignCenter);
 		connect(btn3, &QPushButton::clicked, this, &Interface::inversionGui);
 
@@ -379,49 +399,49 @@ void Interface::mainGui()
 
 		QPushButton* btn4 = new QPushButton(this);
 		btn4 -> setIcon(QIcon("icons/alignment.png"));
-		btn4 -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn4 -> setIconSize(QSize(60 * scale, 60 * scale));
+		btn4 -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn4 -> setIconSize(QSize(60 * hscale, 60 * hscale));
 		grid[5] -> addWidget(btn4, 0, 3, Qt::AlignCenter);
 		connect(btn4, &QPushButton::clicked, this, &Interface::alignmentGui);
 
-		QStringList str4 = {"Alignment", "排列方式"};
+		QStringList str4 = {"Alignment", "和弦排列"};
 		QLabel* label4 = new QLabel(str4[language], this);
 		grid[5] -> addWidget(label4, 1, 3, Qt::AlignHCenter | Qt::AlignBottom);
 		label_alignment = new QLabel(this);
 		grid[5] -> addWidget(label_alignment, 2, 3, Qt::AlignCenter);
 
 		QPushButton* btn5 = new QPushButton(this);
-		btn5 -> setIcon(QIcon("icons/more-param.png"));
-		btn5 -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn5 -> setIconSize (QSize(60 * scale, 60 * scale));
+		btn5 -> setIcon(QIcon("icons/pedal-notes.png"));
+		btn5 -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn5 -> setIconSize (QSize(60 * hscale, 60 * hscale));
 		grid[5] -> addWidget(btn5, 0, 4, Qt::AlignCenter);
-		connect(btn5, &QPushButton::clicked, this, &Interface::moreParamGui);
+		connect(btn5, &QPushButton::clicked, this, &Interface::pedalNotesGui);
 
-		QStringList str5 = {"Set parameters", "指标筛选"};
+		QStringList str5 = {"Pedal notes", "持续音"};
 		QLabel* label5 = new QLabel(str5[language], this);
 		grid[5] -> addWidget(label5, 1, 4, Qt::AlignHCenter | Qt::AlignBottom);
-		label_more_param = new QLabel(this);
-		grid[5] -> addWidget(label_more_param, 2, 4, Qt::AlignCenter);
+		label_pedal_notes = new QLabel(this);
+		grid[5] -> addWidget(label_pedal_notes, 2, 4, Qt::AlignCenter);
 
-		btn_pedal = new QPushButton(this);
-		btn_pedal -> setIcon(QIcon("icons/pedal-notes.png"));
-		btn_pedal -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn_pedal -> setIconSize (QSize(60 * scale, 60 * scale));
-		grid[5] -> addWidget(btn_pedal, 0, 5, Qt::AlignCenter);
-		connect(btn_pedal, &QPushButton::clicked, this, &Interface::pedalNotesGui);
+		QPushButton* btn6 = new QPushButton(this);
+		btn6 -> setIcon(QIcon("icons/more-param.png"));
+		btn6 -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn6 -> setIconSize (QSize(60 * hscale, 60 * hscale));
+		grid[5] -> addWidget(btn6, 0, 5, Qt::AlignCenter);
+		connect(btn6, &QPushButton::clicked, this, &Interface::moreParamGui);
 
-		QStringList str6 = {"Pedal notes", "持续音"};
+		QStringList str6 = {"Set parameters", "指标筛选"};
 		QLabel* label6 = new QLabel(str6[language], this);
 		grid[5] -> addWidget(label6, 1, 5, Qt::AlignHCenter | Qt::AlignBottom);
-		label_pedal_notes = new QLabel(this);
-		grid[5] -> addWidget(label_pedal_notes, 2, 5, Qt::AlignCenter);
+		label_more_param = new QLabel(this);
+		grid[5] -> addWidget(label_more_param, 2, 5, Qt::AlignCenter);
 
-		QPushButton* btn7 = new QPushButton(this);
-		btn7 -> setIcon(QIcon("icons/more-rules.png"));
-		btn7 -> setFixedSize(QSize(66 * scale, 66 * scale));
-		btn7 -> setIconSize (QSize(60 * scale, 60 * scale));
-		grid[5] -> addWidget(btn7, 0, 6, Qt::AlignCenter);
-		connect(btn7, &QPushButton::clicked, this, &Interface::moreRulesGui);
+		btn_pedal = new QPushButton(this);
+		btn_pedal -> setIcon(QIcon("icons/more-rules.png"));
+		btn_pedal -> setFixedSize(QSize(66 * hscale, 66 * hscale));
+		btn_pedal -> setIconSize (QSize(60 * hscale, 60 * hscale));
+		grid[5] -> addWidget(btn_pedal, 0, 6, Qt::AlignCenter);
+		connect(btn_pedal, &QPushButton::clicked, this, &Interface::moreRulesGui);
 
 		QStringList str7 = {"More rules", "更多规则"};
 		QLabel* label7 = new QLabel(str7[language], this);
@@ -432,11 +452,11 @@ void Interface::mainGui()
 
 	{
 		grid[6] = new QGridLayout();
-		grid[6] -> setVerticalSpacing(5);
-		if(language == Chinese)
-			grid[6] -> setContentsMargins(20, 0, 20 * scale, 0);
-		else  grid[6] -> setContentsMargins(0, 0, 15, 0);
+		grid[6] -> setVerticalSpacing(5 * hscale);
+		grid[6] -> setContentsMargins(0, 0, 0, 0);
 		grid[6] -> setColumnStretch(0, 0);
+		grid[6] -> setColumnStretch(1, 0);
+		grid[6] -> setColumnStretch(2, 0);
 		grid[6] -> setColumnStretch(3, 1);
 
 		QStringList str1 = {"Initial chord: ", "起始和弦："};
@@ -464,20 +484,17 @@ void Interface::mainGui()
 		connect(btn_manual, SIGNAL(toggled(bool)), this, SLOT(set_manual(bool)));
 
 		edit_initial = new QLineEdit(this);
-		edit_initial -> setMinimumWidth(200);
-		edit_initial -> setDisabled(true);
+		edit_initial -> setMinimumWidth(200 * hscale);
 		grid[6] -> addWidget(edit_initial, 0, 3, Qt::AlignLeft);
 		connect(edit_initial, &QLineEdit::editingFinished, this, &Interface::input_initial);
 
 		QStringList str6 = {"Connect pedal notes", "连结持续音时值"};
 		cb_connect_pedal = new QCheckBox(str6[language], this);
-		cb_connect_pedal -> setDisabled(true);
 		grid[6] -> addWidget(cb_connect_pedal, 1, 1);
 		connect(cb_connect_pedal, &QCheckBox::stateChanged, this, &Interface::set_connect_pedal);
 
 		QStringList str7 = {"Interlace with initial chord in MIDI file in single mode", "单个模式MIDI文件中交联初始和弦"};
 		cb_interlace = new QCheckBox(str7[language], this);
-		cb_interlace -> setDisabled(true);
 		grid[6] -> addWidget(cb_interlace, 1, 2, 1, 2);
 		connect(cb_interlace, &QCheckBox::stateChanged, this, &Interface::set_interlace);
 
@@ -500,20 +517,23 @@ void Interface::mainGui()
 
 	{
 		grid[7] = new QGridLayout();
-		grid[7] -> setContentsMargins(20, 5, 20, 0);
-
-		QStringList str1 = {"Open utilities\nfolder...", "打开辅助工具\n(utilities)文件夹…"};
-		QPushButton* btn1 = new QPushButton(str1[language], this);
-		grid[7] -> addWidget(btn1, 0, 0);
-		connect(btn1, &QPushButton::clicked, this, &Interface::open_utilities);
+		grid[7] -> setContentsMargins(0, 5 * hscale, 0, 0);
 
 		QPixmap pic = QPixmap("icons/analyser.png");
-		QPushButton* btn2 = new QPushButton(this);
-		btn2 -> setIcon(pic);
-		btn2 -> setFixedSize(QSize(86 * scale, 56 * scale));
-		btn2 -> setIconSize (QSize(80 * scale, 50 * scale));
+		QPushButton* btn1 = new QPushButton(this);
+		btn1 -> setIcon(pic);
+		btn1 -> setFixedSize(QSize(106 * hscale, 56 * hscale));
+		btn1 -> setIconSize (QSize(100 * hscale, 50 * hscale));
+		grid[7] -> addWidget(btn1, 0, 0, Qt::AlignLeft);
+		grid[7] -> setColumnStretch(0, 0);
+		connect(btn1, &QPushButton::clicked, this, &Interface::analyserGui);
+
+		QStringList str1 = {"  Open utilities folder...  ", "  打开辅助工具(utilities)文件夹…  "};
+		QPushButton* btn2 = new QPushButton(str1[language], this);
+		btn2 -> setFixedHeight(56 * hscale);
 		grid[7] -> addWidget(btn2, 0, 1, Qt::AlignCenter);
-//		connect(btn2, &QPushButton::clicked, this, &Interface::run);
+		grid[7] -> setColumnStretch(1, 1);
+		connect(btn2, &QPushButton::clicked, this, &Interface::open_utilities);
 
 		QStringList str2 = {"Feedback email: rcswex@163.com\nFeedback QQ: 925792714",
 								  "问题反馈邮箱：rcswex@163.com\n问题反馈QQ：925792714"};
@@ -522,11 +542,12 @@ void Interface::mainGui()
 		label -> setFont(QFont("Microsoft YaHei", 11, QFont::Bold));
 		label -> setStyleSheet("color: #3F48CC;");
 		grid[7] -> addWidget(label, 0, 2, Qt::AlignRight | Qt::AlignVCenter);
+		grid[7] -> setColumnStretch(2, 1);
 	}
 
-	vbox -> setSpacing(15 * scale);
+	main_vbox -> setSpacing(15 * hscale);
 	for(int i = 0; i < PARTS; ++i)
-		vbox -> addLayout(grid[i]);
+		main_vbox -> addLayout(grid[i]);
 	initMain();
 }
 
@@ -653,7 +674,7 @@ void Interface::initMain()
 	}
 	else  btn_manual -> setChecked(true);
 	edit_initial -> setText(str_notes);
-	set_initial();
+	set_notes(notes, edit_initial);
 	cb_connect_pedal -> setChecked(connect_pedal);
 	cb_interlace -> setChecked(interlace);
 	switch(unique_mode)
@@ -662,30 +683,6 @@ void Interface::initMain()
 		case RemoveDup:	  cb_remove_dup -> setChecked(true);
 		case Disabled: ;
 	}
-}
-
-void Interface::doPainting()
-{
-	QPainter painter(this);
-
-	painter.setPen(QColor("#99D9EA"));
-	painter.setBrush(QBrush("#99D9EA"));
-	painter.drawRect(0, 0, 640 * scale, 75 * _scale);
-
-	painter.setPen(QColor("#EFE4B0"));
-	painter.setBrush(QBrush("#EFE4B0"));
-	painter.drawRect(0, 75 * _scale, 640 * scale, 65 * _scale);
-
-	painter.setPen(QColor("#00A2E8"));
-	painter.drawLine(445 * scale, 85 * _scale, 445 * scale, 135 * _scale);
-
-	painter.drawLine(20 * scale, 245 * _scale, 620 * scale, 245 * _scale);
-	painter.drawLine(20 * scale, 315 * _scale, 620 * scale, 315 * _scale);
-	painter.drawLine(20 * scale, 380 * _scale, 620 * scale, 380 * _scale);
-    painter.drawLine(20 * scale, 505 * _scale, 620 * scale, 505 * _scale);
-	if(language == Chinese)
-		painter.drawLine(20 * scale, 600 * _scale, 620 * scale, 600 * _scale);
-	else  painter.drawLine(20 * scale, 630 * _scale, 620 * scale, 630 * _scale);
 }
 
 void Interface::clear(QLayout* layout)
@@ -702,10 +699,65 @@ void Interface::clear(QLayout* layout)
 	}
 }
 
+bool Interface::eventFilter(QObject* watched, QEvent* e)
+{
+	if(e->type() == QEvent::Paint)
+	{
+		if(watched == analyser_window)
+		{
+			QPainter painter;
+			painter.begin(analyser_window);
+			painter.setPen(QColor("#00A2E8"));
+			if(language == Chinese)
+				painter.drawLine(20 * hscale, 270 * vscale, 365 * hscale, 270 * vscale);
+			else  painter.drawLine(20 * hscale, 305 * vscale, 420 * hscale, 305 * vscale);
+			painter.end();
+			return true;
+		}
+		else  return false;
+	}
+	else if(e->type() == QEvent::Close)
+	{
+		if(watched == overall_scale_window)
+			closeOverallScale();
+		else if(watched == omission_window)
+			closeOmission();
+		else if(watched == inversion_window)
+			closeInversion();
+		else if(watched == alignment_window)
+			closeAlignment();
+		else if(watched == pedal_notes_window)
+			closePedalNotes();
+		else if(watched == more_rules_window)
+			closeMoreRules();
+		else  return false;
+	}
+	return false;
+}
+
 void Interface::paintEvent(QPaintEvent *e)
 {
 	Q_UNUSED(e);
-	doPainting();
+	QPainter painter(this);
+
+	painter.setPen(QColor("#99D9EA"));
+	painter.setBrush(QBrush("#99D9EA"));
+	painter.drawRect(0, 0, 660 * hscale, 70 * vscale);
+
+	painter.setPen(QColor("#EFE4B0"));
+	painter.setBrush(QBrush("#EFE4B0"));
+	painter.drawRect(0, 70 * vscale, 660 * hscale, 65 * vscale);
+
+	painter.setPen(QColor("#00A2E8"));
+	painter.drawLine(467 * hscale, 80 * vscale, 467 * hscale, 130 * vscale);
+
+	painter.drawLine(30 * hscale, 240 * vscale, 630 * hscale, 240 * vscale);
+	painter.drawLine(30 * hscale, 315 * vscale, 630 * hscale, 315 * vscale);
+	painter.drawLine(30 * hscale, 385 * vscale, 630 * hscale, 385 * vscale);
+	painter.drawLine(30 * hscale, 505 * vscale, 630 * hscale, 505 * vscale);
+	if(language == Chinese)
+		painter.drawLine(30 * hscale, 595 * vscale, 630 * hscale, 595 * vscale);
+	else  painter.drawLine(30 * hscale, 620 * vscale, 630 * hscale, 620 * vscale);
 }
 
 void Interface::closeEvent(QCloseEvent *e)
@@ -794,6 +846,29 @@ void Interface::read_preset(char* filename)
 	else  language = English;
 
 	read_data(fin, output_name);
+	read_data(fin, output_path);
+	if(strcmp(output_path, "'DESKTOP'") == 0)
+	{
+#if __WIN32
+		bool b = false;
+		LPITEMIDLIST pidl;
+		LPMALLOC pShellMalloc;
+		if(SUCCEEDED(SHGetMalloc(&pShellMalloc)))
+		{
+			if( SUCCEEDED(SHGetSpecialFolderLocation(NULL, CSIDL_DESKTOP, &pidl)) )
+			{
+				SHGetPathFromIDListA(pidl, output_path);
+				strcat(output_path, "/");
+				pShellMalloc -> Free(pidl);
+				b = true;
+			}
+			pShellMalloc -> Release();
+		}
+		if(!b)  strcpy(output_path, "../output/");
+#else
+		strcpy(output_path, "~/Desktop/");
+#endif
+	}
 	read_data(fin, str);
 	continual = (strcmp(str, "continual") == 0);
 	read_data(fin, str);
@@ -822,7 +897,7 @@ void Interface::read_preset(char* filename)
 	if(!automatic)
 	{
 		read_data(fin, str_notes);
-		set_initial();
+		set_notes(notes, edit_initial);
 	}
 	connect_pedal = read_data(fin, str);
 	interlace = read_data(fin, str);
@@ -915,18 +990,52 @@ void Interface::read_preset(char* filename)
 		set_sim();
 	}
 
-	k_min = read_data(fin, str);  k_max = read_data(fin, str);
 	t_min = read_data(fin, str);  t_max = read_data(fin, str);
+	k_min = read_data(fin, str);  k_max = read_data(fin, str);
 	c_min = read_data(fin, str);  c_max = read_data(fin, str);
-  sv_min = read_data(fin, str); sv_max = read_data(fin, str);
-	r_min = read_data(fin, str);  r_max = read_data(fin, str);
 	s_min = read_data(fin, str);  s_max = read_data(fin, str);
   ss_min = read_data(fin, str); ss_max = read_data(fin, str);
 	h_min = read_data(fin, str);  h_max = read_data(fin, str);
 	g_min = read_data(fin, str);  g_max = read_data(fin, str);
-	x_min = read_data(fin, str);  x_max = read_data(fin, str);
+  sv_min = read_data(fin, str); sv_max = read_data(fin, str);
 	q_min = read_data(fin, str);  q_max = read_data(fin, str);
+	x_min = read_data(fin, str);  x_max = read_data(fin, str);
+  kk_min = read_data(fin, str); kk_max = read_data(fin, str);
+	r_min = read_data(fin, str);  r_max = read_data(fin, str);
 	read_data(fin, sort_order);
+
+	read_data(fin, str_ante_notes);
+	read_data(fin, str_post_notes);
+	hide_octave = read_data(fin, str);
+	read_data(fin, str);
+	if(strcmp(str, "Postchord") == 0)  object = Postchord;
+	else if(strcmp(str, "Antechord") == 0)   object = Antechord;
+	else if(strcmp(str, "BothChords") == 0)  object = BothChords;
+	test_all = read_data(fin, str);
+	sample_size = read_data(fin, str);
+	read_data(fin, str);
+	detailed_ref = (strcmp(str, "customized") == 0);
+	read_data(fin, output_name_sub);
+	read_data(fin, str);
+	if(strcmp(str, "Both") == 0)  output_mode_sub = Both;
+	else if(strcmp(str, "TextOnly") == 0)  output_mode_sub = TextOnly;
+	else if(strcmp(str, "MidiOnly") == 0)  output_mode_sub = MidiOnly;
+
+	p_reset_value = read_data(fin, str);  p_radius = read_data(fin, str);
+	n_reset_value = read_data(fin, str);  n_radius = read_data(fin, str);
+	t_reset_value = read_data(fin, str);  t_radius = read_data(fin, str);
+	k_reset_value = read_data(fin, str);  k_radius = read_data(fin, str);
+	c_reset_value = read_data(fin, str);  c_radius = read_data(fin, str);
+	s_reset_value = read_data(fin, str);  s_radius = read_data(fin, str);
+  ss_reset_value = read_data(fin, str); ss_radius = read_data(fin, str);
+  sv_reset_value = read_data(fin, str); sv_radius = read_data(fin, str);
+	q_reset_value = read_data(fin, str);  q_radius = read_data(fin, str);
+	x_reset_value = read_data(fin, str);  x_radius = read_data(fin, str);
+  kk_reset_value = read_data(fin, str); kk_radius = read_data(fin, str);
+	r_reset_value = read_data(fin, str);  r_radius = read_data(fin, str);
+	read_data(fin, reset_list);
+	read_data(fin, percentage_list);
+	read_data(fin, sort_order_sub);
 
 	have_set_omission  = false;
 	have_set_alignment = false;
@@ -940,14 +1049,14 @@ void Interface::read_preset(char* filename)
 void Interface::set_to_Chinese()
 {
 	language = Chinese;
-	clear(vbox);
+	clear(main_vbox);
 	mainGui();
 }
 
 void Interface::set_to_English()
 {
 	language = English;
-	clear(vbox);
+	clear(main_vbox);
 	mainGui();
 }
 
@@ -958,12 +1067,28 @@ void Interface::open_manual_Chinese()
 
 void Interface::open_manual_English()
 {
-	 QDesktopServices::openUrl(QUrl( ((QString)"file:%1/bin/guide/SmartChordGen_User_Guide.pdf").arg(root_path)) );
+	 QDesktopServices::openUrl(QUrl( ((QString)"file:%1/bin/guide/ChordNova_User_Guide.pdf").arg(root_path)) );
 }
 
 void Interface::set_output_name()
 {
 	strcpy(output_name, edit_output_name -> text().toUtf8().data());
+}
+
+void Interface::set_output_path()
+{
+	QFileDialog* dialog = new QFileDialog(this);
+	QStringList str = {"Choose output path", "选择输出文件夹"};
+	dialog -> setWindowTitle(str[language]);
+	dialog -> setFileMode(QFileDialog::Directory);
+	dialog -> setDirectory(root_path + output_path);
+	if(dialog -> exec())
+	{
+		QStringList temp = dialog -> selectedFiles();
+		if(temp[0].right(0) != '/')
+			temp[0] += '/';
+		strcpy(output_path, temp[0].toLocal8Bit().data());
+	}
 }
 
 void Interface::set_continual(bool state)
@@ -976,13 +1101,11 @@ void Interface::set_continual(bool state)
 	if(state == true)
 	// continual mode is selected
 	{
-		edit_initial -> clear();
 		if(edit_loop_count -> text() == "/")
 		{
 			edit_loop_count -> setText("10");
 			loop_count = 10;
 		}
-		notes.clear();
 		edit_loop_count -> setEnabled(true);
 		label_loop_count -> setEnabled(true);
 		cb_interlace -> setChecked(false);
@@ -1297,47 +1420,87 @@ void Interface::set_manual(bool state)
 void Interface::input_initial()
 {
 	strcpy(str_notes, edit_initial -> text().toLatin1().data());
-	set_initial();
+	set_notes(notes, edit_initial);
 }
 
-void Interface::set_initial()
+void Interface::set_notes(vector<int>& notes, QLineEdit* edit)
 {
 	notes.clear();
+	QString str_notes = edit -> text();
 	char _note[50];
 	int note;
-	QString text = str_notes;
-	int pos1 = 0, pos2 = 0, len = text.size();
+	int pos1 = 0, pos2 = 0, len = str_notes.size();
+	bool no_octave = true;
 	if(len >= 45)
 	{
-		edit_initial -> clear();
+		edit -> clear();
 		notes.clear();
 		return;
 	}
 	while(pos1 < len)
 	{
 		pos2 = 0;
-		while(pos1 < len && text[pos1] == ' ')
+		while(pos1 < len && str_notes[pos1] == ' ')
 			++pos1;
 		if(pos1 == len)  break;
-		while(pos1 < len && text[pos1] != ' ')
+		while(pos1 < len && str_notes[pos1] != ' ')
 		{
-			_note[pos2] = text[pos1].toLatin1();
+			_note[pos2] = str_notes[pos1].toLatin1();
 			++pos1;  ++pos2;
 		}
 		_note[pos2] = '\0';
+		int _len = strlen(_note);
 		if(_note[0] >= '0' && _note[0] <= '9')
+		{
 			note = atoi(_note);
-		else  note = nametonum(_note);
+			no_octave = false;
+		}
+		else
+		{
+			note = nametonum(_note);
+			if(_note[_len - 1] >= '0' && _note[_len - 1] <= '9')
+				no_octave = false;
+		}
 		if(note < 0)
 		{
-			edit_initial -> clear();
+			edit -> clear();
 			notes.clear();
 			return;
 		}
 		notes.push_back(note);
 	}
-	bubble_sort(notes);
-	remove_duplicate(notes);
+
+	if(no_octave)
+	{
+		t_size = notes.size();
+		for(int i = t_size - 1; i > 0; --i)
+		{
+			if(notes[i - 1] > notes[i])
+			{
+				int octave = (notes[i - 1] - notes[i]) / 12;
+				notes[i - 1] -= (octave + 1) * 12;
+			}
+			int octave_h = (127 - notes[i]) / 12;
+			int octave_l = floor(notes[0] / 12);
+			if(octave_h + octave_l < 0)
+			{
+				edit -> clear();
+				notes.clear();
+				return;
+			}
+			else
+			{
+				int octave = (octave_h - octave_l) / 2;
+				for(int i = 0; i < t_size; ++i)
+					notes[i] += octave * 12;
+			}
+		}
+	}
+	else
+	{
+		bubble_sort(notes);
+		remove_duplicate(notes);
+	}
 }
 
 void Interface::set_connect_pedal(int state)
@@ -1497,9 +1660,9 @@ void Interface::run()
 	if(completed -> clickedButton() == open)
 	{
 		if(output_mode != TextOnly)
-			QDesktopServices::openUrl(QUrl( ((QString)"file:%1/output/%2.mid").arg(root_path).arg(output_name) ));
+			QDesktopServices::openUrl(QUrl( ((QString)"file:%1%2.mid").arg(output_path).arg(output_name) ));
 		if(output_mode != MidiOnly)
-			QDesktopServices::openUrl(QUrl( ((QString)"file:%1/output/%2.txt").arg(root_path).arg(output_name) ));
+			QDesktopServices::openUrl(QUrl( ((QString)"file:%1%2.txt").arg(output_path).arg(output_name) ));
 	}
 	rm_priority.assign(temp1.begin(), temp1.end());
 	notes.assign(temp2.begin(), temp2.end());

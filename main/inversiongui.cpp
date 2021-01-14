@@ -1,25 +1,25 @@
-// SmartChordGen v3.0 [Build: 2020.11.27]
+// ChordNova v3.0 [Build: 2021.1.14]
 // (c) 2020 Wenge Chen, Ji-woon Sim.
 // inversiongui.cpp
 
-#include "Interface.h"
+#include "interface.h"
 
 void Interface::inversionGui()
 {
 	inversion_window = new QWidget(this);
+	inversion_window -> installEventFilter(this);
 	inversion_window -> setWindowModality(Qt::WindowModal);
 	inversion_window -> setWindowFlag(Qt::Window, true);
 	inversion_window -> setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
-	inversion_window -> setWindowFlag(Qt::WindowCloseButtonHint, false);
 	if(language == Chinese)
-		inversion_window -> setFixedSize(640 * scale, 250 * _scale);
-	else  inversion_window -> setFixedSize(640 * scale, 225 * _scale);
+		inversion_window -> setFixedSize(640 * hscale, 250 * vscale);
+	else  inversion_window -> setFixedSize(640 * hscale, 225 * vscale);
 	QStringList str0 = {"Set inversion", "设置转位"};
 	inversion_window -> setWindowTitle(str0[language]);
 	inversion_window -> setFont(font);
 
 	QGridLayout* grid = new QGridLayout(inversion_window);
-	grid -> setContentsMargins(20 * _scale, 30 * scale, 20 * _scale, 30 * scale);
+	grid -> setContentsMargins(20 * hscale, 30 * vscale, 20 * hscale, 30 * vscale);
 
 	QStringList str1 = {"Bass note allowed: ", "允许作为低音："};
 	QLabel* label1 = new QLabel(str1[language], inversion_window);
@@ -52,11 +52,11 @@ void Interface::inversionGui()
 	grid -> addWidget(btn, 3, 7);
 	connect(btn, &QPushButton::clicked, this, &Interface::closeInversion);
 
-	grid -> setColumnMinimumWidth(0, 80 * scale);
-	grid -> setColumnMinimumWidth(1, 50 * scale);
-	grid -> setColumnMinimumWidth(2, 50 * scale);
-	grid -> setColumnMinimumWidth(3, 50 * scale);
-	grid -> setColumnMinimumWidth(4, 60 * scale);
+	grid -> setColumnMinimumWidth(0, 80 * hscale);
+	grid -> setColumnMinimumWidth(1, 50 * hscale);
+	grid -> setColumnMinimumWidth(2, 50 * hscale);
+	grid -> setColumnMinimumWidth(3, 50 * hscale);
+	grid -> setColumnMinimumWidth(4, 60 * hscale);
 	grid -> setRowStretch(2, 1);
 
 	initInversion();
