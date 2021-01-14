@@ -1,7 +1,6 @@
-![Alt text](graphics/icons/icon-white.png)
 # ChordNova 智弦 - 和声生成神器！
 
-## 招募公告：本软件功能已基本完善，现招募移动App（iOS，Android）及网页版移植开发者，报酬面议（不低于10000元）。有意者请询 rcswex@163.com、QQ：925792714。
+## 招募公告：本软件除用户手册以外的所有功能已实现完成，现招募移动App（iOS，Android）及网页版移植开发者，报酬面议（不低于10000元）。有意者请询 rcswex@163.com、QQ：925792714。
 ![Alt text](graphics/screenshots/ChordNova-main-screenshot.png)
 
 ### 智弦（ChordNova）是清华大学沈智云和星海音乐学院陈文戈共同开发的一款免费开源、功能强大的和弦进行自动生成与分析软件。
@@ -18,6 +17,8 @@
 ### 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1s9jKZGTwUfPz5tQCxfLbLg ，提取码：1234
 ### 更多 README 请见：【使用前阅读】README.pdf、《智弦用户手册》(ChordNova User's Manual) 。
 
+![Alt text](graphics/icons/icon-white.png)
+
 ### ChordNova is a powerful open-source chord progression analysis plus generation software for multiple operating systems (currently Windows and Linux).
 * Featuring unprecedentedly detailed control over trait parameters of musical chords and progressions, that is way above mainstream softwares, which are only based on triadic chord theories. ChordNova is based on the theory of Parameteric Harmony, supporting 15+ indicators and 40+ detailed parameters through the analysis and generation process.
 * The powerful built-in Chord Analyser/subsititor covers all possible pitch combinations of the entire 12-TET, which brings a leap forward in pop/jazz chord substitution techniques.
@@ -26,3 +27,5 @@
 * *** Now seeking cross-platform developers for iOS/Android/Web/Mac OS.  ***
 
 ### ChordNova is jointly developed by SIM Ji-woon (Tsinghua University) and CHEN Wenge (Xinghai Conservatory of Music).
+
+![Alt text](graphics/icons/icon-white.png)
