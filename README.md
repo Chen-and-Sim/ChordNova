@@ -31,8 +31,6 @@
 
 ## 生成音乐试听 Music examples：https://music.163.com/#/album?id=93026223
 
-![Alt text](screenshots/ChordNova-main-screenshot-zh-cn.png)
-
 新功能 —— 和弦替代器：点击左下角「和弦进行速查/替代」(Chord Analyser) 可计算替代和弦进行。
 
 ![Alt text](screenshots/ChordNova-sub-screenshot-zh-cn.png)
