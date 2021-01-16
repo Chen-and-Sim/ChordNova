@@ -1,4 +1,4 @@
-# [ENGLISH] ChordNova - Chord progressions beyond boundaries!
+# [ENGLISH] ChordNova - Beyond boundaries!
 
 ![Alt text](screenshots/ChordNova-main-screenshot-en.png)
 
