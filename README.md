@@ -1,4 +1,4 @@
-# ChordNova - Chord progressions beyond boundaries!
+# [ENGLISH] ChordNova - Chord progressions beyond boundaries!
 
 ![Alt text](screenshots/ChordNova-main-screenshot-en.png)
 
@@ -18,7 +18,7 @@
 
 ![Alt text](attachments/icons/icon-white.png)
 
-# ChordNova 智弦 - 和声生成神器！
+# [中文] ChordNova 智弦 - 和声生成神器！
 
 ## 招募公告：本软件除用户手册以外的所有功能都已实现完成，现招募移动App（iOS，Android）及网页版移植开发者，报酬面议（不低于10000元）。有意者请询 rcswex@163.com、QQ：925792714。
 ![Alt text](screenshots/ChordNova-main-screenshot-zh-cn.png)
