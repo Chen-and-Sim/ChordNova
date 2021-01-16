@@ -1,0 +1,102 @@
+// ChordNova Preset File
+// Preset data begins below.
+title_en = Jazz with drop voicings;
+title_ch = 爵士乐风格（使用“低移音”排列）;
+language = Chinese;
+
+output name = 09-jazz-with-drop-voicings;
+output path = 'DESKTOP';
+output mode = continual;
+output format = Both;
+
+number of progressions = 50;
+range of notes: min = 48; max = 76;
+number of parts: min = 4; max = 5;
+number of notes: min = 4; max = 5;
+keep number of parts unchanged = false;
+ditto = true;
+
+chord database filename = 00-pop-and-jazz.db;
+title of chord database (English) = Pop and Jazz;
+title of chord database (Chinese) = 流行爵士和弦类型库;
+size of chord database = 65;
+
+input mode = automatic;
+connect pedal notes = true;
+interlace = false;
+unique mode = RemoveDup;
+
+have set overall scale = false;
+overall scale = [0 1 2 3 4 5 6 7 8 9 10 11];
+
+omission for 3-note chords = [];
+omission for 4-note chords = [5];
+omission for 5-note chords = [3 5];
+omission for 6-note chords = [3 5 7];
+omission for 7-note chords = [3 5];
+
+bass note allowed = [1 9 11 13];
+
+align mode = List;
+alignment database filename = 04-drop-voicings.db;
+title of alignment database (English) = Drop voicings (up to 9th);
+title of alignment database (Chinese) = “低移音”排列（三、七、九和弦）;
+size of alignment database = 44;
+
+enable pedal notes = false;
+in bass = true;
+pedal notes = [];
+realign = true;
+period = 4;
+
+voice leading setting = Default;
+enable steady voices = true;
+enable ascending voices = true;
+enable descending voices = true;
+steady voices: min = 0; max = 4;
+ascending voices: min = 0; max = 4;
+descending voices: min = 0; max = 4;
+range of voice leading: custom = false; min = 0; max = 4;
+custom root movement = false;
+custom exclusion = false;
+custom similarity = false;
+
+T: min = 40; max = 70;
+K: min = 0; max = 100;
+C: min = 0; max = 15;
+S: min = 0; max = 12;
+SS: min = 0; max = 12;
+H: min = 0; max = 50;
+G: min = 0; max = 100;
+sv: min = 0; max = 2000;
+Q: min = -500; max = 500;
+X: min = 0; max = 100;
+KK: min = 0; max = 100;
+R: min = 0; max = 11;
+sort order = T;
+
+antechord = ;
+postchord = ;
+hide octave = true;
+substitute object = Postchord;
+test all = true;
+sample size = 1000000;
+substitute reference = default;
+output name for substitution = output-sub;
+output format for substitution = Both;
+
+P: reset value = 0; radius = 0;
+N: reset value = 0; radius = 0;
+T: reset value = 0; radius = 0;
+K: reset value = 0; radius = 0;
+C: reset value = 0; radius = 0;
+S: reset value = 0; radius = 0;
+SS: reset value = 0; radius = 0;
+sv: reset value = 0; radius = 0;
+Q: reset value = 0; radius = 0;
+X: reset value = 0; radius = 0;
+KK: reset value = 0; radius = 0;
+R: reset value = 0; radius = 0;
+reset list = ;
+percentage list = ;
+sort order = K+;
