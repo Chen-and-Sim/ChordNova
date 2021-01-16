@@ -1,3 +1,5 @@
+![Alt text](attachments/icons/icon-white.png)
+
 # [ENGLISH] ChordNova - Beyond boundaries!
 
 ![Alt text](screenshots/ChordNova-main-screenshot-en.png)
@@ -15,6 +17,7 @@
 
 ### ChordNova is jointly developed by SIM Ji-woon (Tsinghua University) and CHEN Wenge (Xinghai Conservatory of Music).
 
+---
 
 ![Alt text](attachments/icons/icon-white.png)
 
