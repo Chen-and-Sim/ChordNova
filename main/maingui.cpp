@@ -894,11 +894,6 @@ void Interface::read_preset(char* filename)
 
 	read_data(fin, str);
 	automatic = (strcmp(str, "automatic") == 0);
-	if(!automatic)
-	{
-		read_data(fin, str_notes);
-		set_notes(notes, edit_initial);
-	}
 	connect_pedal = read_data(fin, str);
 	interlace = read_data(fin, str);
 	read_data(fin, str);
@@ -1044,6 +1039,12 @@ void Interface::read_preset(char* filename)
 	if(language == Chinese)
 		set_to_Chinese();
 	else  set_to_English();
+
+	if(!automatic)
+	{
+		read_data(fin, str_notes);
+		set_notes(notes, edit_initial);
+	}
 }
 
 void Interface::set_to_Chinese()
