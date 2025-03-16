@@ -42,5 +42,11 @@
 ### Latest Release 最新版本：v3.0.2021 [20210115] Downloads 下载 ↓ 
 ### Windows 版： https://github.com/Chen-and-Sim/ChordNova/releases/download/v3.0.2021/ChordNova.v3.0.2021.Windows.exe
 ### Linux 版：https://github.com/Chen-and-Sim/ChordNova/releases/download/v3.0.2021/ChordNova.v3.0.2021.Linux.zip
+### Arch Linux： [AUR chordnova-git](https://aur.archlinux.org/packages/chordnova-git)
+
+```bash
+yay -Syu chordnova
+```
+
 ### 下载慢：提供百度网盘下载 链接：https://pan.baidu.com/s/1s9jKZGTwUfPz5tQCxfLbLg ，提取码：1234
 ### 关于软件的使用方法请阅读安装包中的《智弦用户手册》(ChordNova User's Guide) 。
